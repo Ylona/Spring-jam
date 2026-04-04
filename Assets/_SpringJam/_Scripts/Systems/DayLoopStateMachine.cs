@@ -6,26 +6,41 @@ namespace SpringJam.Systems.DayLoop
     public sealed class DayLoopStateMachine
     {
         public event Action<DayLoopSnapshot> LoopStarted;
+        public event Action<DayLoopSnapshot> PhaseChanged;
         public event Action<DayLoopEndContext> LoopEnded;
         public event Action<DayLoopTaskSnapshot> TaskChanged;
         public event Action<string> KnowledgeLearned;
 
         private readonly float dayDurationSeconds;
+        private readonly float startDayDurationSeconds;
         private readonly List<RuntimeTaskState> runtimeTasks;
         private readonly Dictionary<string, RuntimeTaskState> runtimeTaskLookup;
         private readonly HashSet<string> learnedKnowledge;
 
         private bool hasBegun;
         private float elapsedSeconds;
+        private float phaseElapsedSeconds;
+        private DayLoopPhase currentPhase;
 
         public DayLoopStateMachine(float dayDurationSeconds, IEnumerable<DayLoopTaskDefinition> taskDefinitions)
+            : this(dayDurationSeconds, 0f, taskDefinitions)
+        {
+        }
+
+        public DayLoopStateMachine(float dayDurationSeconds, float startDayDurationSeconds, IEnumerable<DayLoopTaskDefinition> taskDefinitions)
         {
             if (dayDurationSeconds <= 0f)
             {
                 throw new ArgumentOutOfRangeException(nameof(dayDurationSeconds), "Day duration must be greater than zero.");
             }
 
+            if (startDayDurationSeconds < 0f)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startDayDurationSeconds), "Start day duration cannot be negative.");
+            }
+
             this.dayDurationSeconds = dayDurationSeconds;
+            this.startDayDurationSeconds = startDayDurationSeconds;
             runtimeTasks = BuildRuntimeTasks(taskDefinitions);
             runtimeTaskLookup = new Dictionary<string, RuntimeTaskState>(runtimeTasks.Count, StringComparer.Ordinal);
             learnedKnowledge = new HashSet<string>(StringComparer.Ordinal);
@@ -38,7 +53,10 @@ namespace SpringJam.Systems.DayLoop
 
         public int ActiveLoopIndex { get; private set; }
         public float DayDurationSeconds => dayDurationSeconds;
+        public float StartDayDurationSeconds => startDayDurationSeconds;
         public float ElapsedSeconds => elapsedSeconds;
+        public float PhaseElapsedSeconds => phaseElapsedSeconds;
+        public DayLoopPhase CurrentPhase => currentPhase;
         public DayLoopSnapshot CurrentSnapshot => hasBegun ? CreateSnapshot() : null;
 
         public void Begin()
@@ -58,19 +76,61 @@ namespace SpringJam.Systems.DayLoop
                 return;
             }
 
-            elapsedSeconds += deltaTime;
-            if (elapsedSeconds < dayDurationSeconds)
+            float remainingDelta = deltaTime;
+            while (remainingDelta > 0f)
             {
+                if (currentPhase == DayLoopPhase.StartDay)
+                {
+                    if (startDayDurationSeconds <= 0f)
+                    {
+                        StartActiveDay();
+                        continue;
+                    }
+
+                    float remainingStartDaySeconds = startDayDurationSeconds - phaseElapsedSeconds;
+                    if (remainingDelta < remainingStartDaySeconds)
+                    {
+                        phaseElapsedSeconds += remainingDelta;
+                        return;
+                    }
+
+                    phaseElapsedSeconds = startDayDurationSeconds;
+                    remainingDelta -= remainingStartDaySeconds;
+                    StartActiveDay();
+                    continue;
+                }
+
+                float remainingDaySeconds = dayDurationSeconds - elapsedSeconds;
+                if (remainingDelta < remainingDaySeconds)
+                {
+                    elapsedSeconds += remainingDelta;
+                    phaseElapsedSeconds += remainingDelta;
+                    return;
+                }
+
+                elapsedSeconds = dayDurationSeconds;
+                phaseElapsedSeconds = dayDurationSeconds;
+                EndLoop(DayLoopEndReason.TimeExpired);
                 return;
             }
+        }
 
-            elapsedSeconds = dayDurationSeconds;
-            EndLoop(DayLoopEndReason.TimeExpired);
+        public bool StartActiveDay()
+        {
+            if (!hasBegun || currentPhase != DayLoopPhase.StartDay)
+            {
+                return false;
+            }
+
+            currentPhase = DayLoopPhase.ActiveDay;
+            phaseElapsedSeconds = 0f;
+            PhaseChanged?.Invoke(CreateSnapshot());
+            return true;
         }
 
         public bool TryCompleteTask(string taskId)
         {
-            if (!hasBegun)
+            if (!hasBegun || currentPhase != DayLoopPhase.ActiveDay)
             {
                 return false;
             }
@@ -118,7 +178,7 @@ namespace SpringJam.Systems.DayLoop
 
         public bool TryLearnKnowledge(string knowledgeId)
         {
-            if (!hasBegun)
+            if (!hasBegun || currentPhase != DayLoopPhase.ActiveDay)
             {
                 return false;
             }
@@ -153,6 +213,8 @@ namespace SpringJam.Systems.DayLoop
         {
             ActiveLoopIndex++;
             elapsedSeconds = 0f;
+            phaseElapsedSeconds = 0f;
+            currentPhase = DayLoopPhase.StartDay;
 
             foreach (RuntimeTaskState task in runtimeTasks)
             {
@@ -225,6 +287,9 @@ namespace SpringJam.Systems.DayLoop
 
             return new DayLoopSnapshot(
                 ActiveLoopIndex,
+                currentPhase,
+                phaseElapsedSeconds,
+                currentPhase == DayLoopPhase.StartDay ? startDayDurationSeconds : dayDurationSeconds,
                 elapsedSeconds,
                 dayDurationSeconds,
                 taskSnapshots.AsReadOnly(),

@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace SpringJam.Systems.DayLoop
 {
+    public enum DayLoopPhase
+    {
+        StartDay,
+        ActiveDay,
+    }
+
     [Serializable]
     public sealed class DayLoopTaskDefinition
     {
@@ -48,12 +54,18 @@ namespace SpringJam.Systems.DayLoop
     {
         public DayLoopSnapshot(
             int loopIndex,
+            DayLoopPhase phase,
+            float phaseElapsedSeconds,
+            float phaseDurationSeconds,
             float elapsedSeconds,
             float dayDurationSeconds,
             IReadOnlyList<DayLoopTaskSnapshot> tasks,
             IReadOnlyCollection<string> learnedKnowledge)
         {
             LoopIndex = loopIndex;
+            Phase = phase;
+            PhaseElapsedSeconds = phaseElapsedSeconds;
+            PhaseDurationSeconds = phaseDurationSeconds;
             ElapsedSeconds = elapsedSeconds;
             DayDurationSeconds = dayDurationSeconds;
             Tasks = tasks;
@@ -61,6 +73,12 @@ namespace SpringJam.Systems.DayLoop
         }
 
         public int LoopIndex { get; }
+        public DayLoopPhase Phase { get; }
+        public float PhaseElapsedSeconds { get; }
+        public float PhaseDurationSeconds { get; }
+        public float PhaseRemainingSeconds => Mathf.Max(0f, PhaseDurationSeconds - PhaseElapsedSeconds);
+        public float PhaseProgress => PhaseDurationSeconds <= 0f ? 1f : Mathf.Clamp01(PhaseElapsedSeconds / PhaseDurationSeconds);
+        public bool IsPlayablePhase => Phase == DayLoopPhase.ActiveDay;
         public float ElapsedSeconds { get; }
         public float DayDurationSeconds { get; }
         public float RemainingSeconds => Mathf.Max(0f, DayDurationSeconds - ElapsedSeconds);

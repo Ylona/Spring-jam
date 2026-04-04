@@ -18,6 +18,8 @@ namespace SpringJam.Systems.DayLoop
 
         [Min(5f)]
         [SerializeField] private float dayDurationSeconds = 120f;
+        [Min(0f)]
+        [SerializeField] private float startDayDurationSeconds = 3f;
         [SerializeField] private List<DayLoopTaskDefinition> taskDefinitions = new List<DayLoopTaskDefinition>(DefaultTaskDefinitions);
 
         private DayLoopStateMachine stateMachine;
@@ -25,12 +27,15 @@ namespace SpringJam.Systems.DayLoop
         public static DayLoopRuntime Instance { get; private set; }
 
         public event Action<DayLoopSnapshot> LoopStarted;
+        public event Action<DayLoopSnapshot> PhaseChanged;
         public event Action<DayLoopEndContext> LoopEnded;
         public event Action<DayLoopTaskSnapshot> TaskChanged;
         public event Action<string> KnowledgeLearned;
 
         public DayLoopSnapshot CurrentSnapshot => stateMachine != null ? stateMachine.CurrentSnapshot : null;
         public float DayDurationSeconds => dayDurationSeconds;
+        public float StartDayDurationSeconds => startDayDurationSeconds;
+        public DayLoopPhase CurrentPhase => stateMachine != null ? stateMachine.CurrentPhase : DayLoopPhase.StartDay;
 
         private void Awake()
         {
@@ -49,8 +54,9 @@ namespace SpringJam.Systems.DayLoop
 
             try
             {
-                stateMachine = new DayLoopStateMachine(dayDurationSeconds, taskDefinitions);
+                stateMachine = new DayLoopStateMachine(dayDurationSeconds, startDayDurationSeconds, taskDefinitions);
                 stateMachine.LoopStarted += HandleLoopStarted;
+                stateMachine.PhaseChanged += HandlePhaseChanged;
                 stateMachine.LoopEnded += HandleLoopEnded;
                 stateMachine.TaskChanged += HandleTaskChanged;
                 stateMachine.KnowledgeLearned += HandleKnowledgeLearned;
@@ -83,6 +89,7 @@ namespace SpringJam.Systems.DayLoop
             if (stateMachine != null)
             {
                 stateMachine.LoopStarted -= HandleLoopStarted;
+                stateMachine.PhaseChanged -= HandlePhaseChanged;
                 stateMachine.LoopEnded -= HandleLoopEnded;
                 stateMachine.TaskChanged -= HandleTaskChanged;
                 stateMachine.KnowledgeLearned -= HandleKnowledgeLearned;
@@ -92,6 +99,11 @@ namespace SpringJam.Systems.DayLoop
             {
                 Instance = null;
             }
+        }
+
+        public bool StartActiveDay()
+        {
+            return stateMachine != null && stateMachine.StartActiveDay();
         }
 
         public bool TryCompleteTask(string taskId)
@@ -131,6 +143,11 @@ namespace SpringJam.Systems.DayLoop
         private void HandleLoopStarted(DayLoopSnapshot snapshot)
         {
             LoopStarted?.Invoke(snapshot);
+        }
+
+        private void HandlePhaseChanged(DayLoopSnapshot snapshot)
+        {
+            PhaseChanged?.Invoke(snapshot);
         }
 
         private void HandleLoopEnded(DayLoopEndContext context)
