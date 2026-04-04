@@ -1,27 +1,32 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.TextCore.Text;
+using UnityEngine.UIElements;
 
 namespace SpringJam.Dialogue
 {
     [DefaultExecutionOrder(-200)]
     public sealed class DialogueRuntimeController : MonoBehaviour
     {
-        private static readonly Color PromptBackgroundColor = new Color32(22, 40, 65, 215);
-        private static readonly Color DialogueBackgroundColor = new Color32(16, 11, 39, 232);
-        private static readonly Color AccentColor = new Color32(243, 181, 168, 255);
-        private static readonly Color BodyColor = new Color32(255, 221, 203, 255);
+        private const string OverlayResourcePath = "UI/DialogueOverlay";
+        private const string PanelSettingsResourcePath = "UI/DialoguePanelSettings";
 
         private static DialogueRuntimeController instance;
 
         private readonly DialogueSession session = new DialogueSession();
 
         private InputSystem_Actions controls;
-        private GameObject promptRoot;
-        private GameObject dialogueRoot;
-        private Text promptText;
-        private Text speakerText;
-        private Text bodyText;
-        private Text footerText;
+        private PanelSettings panelSettings;
+        private bool ownsPanelSettings;
+        private PanelTextSettings panelTextSettings;
+        private bool ownsPanelTextSettings;
+        private FontAsset runtimeFontAsset;
+        private UIDocument uiDocument;
+        private VisualElement promptShell;
+        private VisualElement dialogueShell;
+        private Label promptLabel;
+        private Label speakerLabel;
+        private Label bodyLabel;
+        private Label footerLabel;
         private string worldPromptText = string.Empty;
         private int consumedInputFrame = -1;
 
@@ -62,6 +67,21 @@ namespace SpringJam.Dialogue
 
         private void OnDestroy()
         {
+            if (ownsPanelSettings && panelSettings != null)
+            {
+                Destroy(panelSettings);
+            }
+
+            if (ownsPanelTextSettings && panelTextSettings != null)
+            {
+                Destroy(panelTextSettings);
+            }
+
+            if (runtimeFontAsset != null)
+            {
+                Destroy(runtimeFontAsset);
+            }
+
             if (instance == this)
             {
                 instance = null;
@@ -139,31 +159,81 @@ namespace SpringJam.Dialogue
             consumedInputFrame = Time.frameCount;
         }
 
+        private void BuildUi()
+        {
+            VisualTreeAsset overlayAsset = Resources.Load<VisualTreeAsset>(OverlayResourcePath);
+            StyleSheet overlayStyleSheet = Resources.Load<StyleSheet>(OverlayResourcePath);
+            if (overlayAsset == null)
+            {
+                Debug.LogError($"Dialogue overlay UXML is missing at Resources/{OverlayResourcePath}.uxml", this);
+                return;
+            }
+
+            uiDocument = GetComponent<UIDocument>();
+            if (uiDocument == null)
+            {
+                uiDocument = gameObject.AddComponent<UIDocument>();
+            }
+
+            panelSettings = Resources.Load<PanelSettings>(PanelSettingsResourcePath);
+            ownsPanelSettings = panelSettings == null;
+            if (panelSettings == null)
+            {
+                panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
+                panelSettings.name = "DialoguePanelSettingsRuntime";
+            }
+
+            panelTextSettings = EnsurePanelTextSettings(panelSettings);
+            ConfigurePanelSettings(panelSettings);
+
+            uiDocument.panelSettings = panelSettings;
+            uiDocument.sortingOrder = 1000;
+
+            VisualElement root = uiDocument.rootVisualElement;
+            root.Clear();
+            root.pickingMode = PickingMode.Ignore;
+
+            if (overlayStyleSheet != null)
+            {
+                root.styleSheets.Add(overlayStyleSheet);
+            }
+
+            TemplateContainer overlayRoot = overlayAsset.CloneTree();
+            overlayRoot.pickingMode = PickingMode.Ignore;
+            overlayRoot.style.flexGrow = 1f;
+            overlayRoot.style.width = Length.Percent(100);
+            overlayRoot.style.height = Length.Percent(100);
+            root.Add(overlayRoot);
+
+            promptShell = root.Q<VisualElement>("prompt-shell");
+            dialogueShell = root.Q<VisualElement>("dialogue-shell");
+            promptLabel = root.Q<Label>("prompt-label");
+            speakerLabel = root.Q<Label>("speaker-label");
+            bodyLabel = root.Q<Label>("body-label");
+            footerLabel = root.Q<Label>("footer-label");
+
+            ApplyRuntimeTextDefaults(root);
+        }
+
         private void RefreshUi()
         {
             bool showDialogue = session.IsOpen;
-            if (dialogueRoot != null)
-            {
-                dialogueRoot.SetActive(showDialogue);
-            }
+            SetVisibility(dialogueShell, showDialogue);
 
-            if (showDialogue)
+            if (showDialogue && speakerLabel != null && bodyLabel != null && footerLabel != null)
             {
                 DialogueLine line = session.CurrentLine;
-                speakerText.text = string.IsNullOrWhiteSpace(line.SpeakerName) ? "Caretaker" : line.SpeakerName;
-                bodyText.text = line.Body;
-                footerText.text = BuildFooterText();
+                speakerLabel.text = string.IsNullOrWhiteSpace(line.SpeakerName) ? "Caretaker" : line.SpeakerName;
+                bodyLabel.text = line.Body;
+                footerLabel.text = BuildFooterText();
             }
 
             bool showPrompt = !showDialogue && !string.IsNullOrWhiteSpace(worldPromptText);
-            if (promptRoot != null)
-            {
-                promptRoot.SetActive(showPrompt);
-            }
+            SetVisibility(promptShell, showPrompt);
 
-            if (showPrompt)
+            if (showPrompt && promptLabel != null)
             {
-                promptText.text = string.Format("E  {0}", worldPromptText);
+                promptLabel.text = $"E  {worldPromptText}";
             }
         }
 
@@ -172,128 +242,79 @@ namespace SpringJam.Dialogue
             return session.IsOnLastLine ? "E Close    Esc Cancel" : "E Continue    Esc Cancel";
         }
 
-        private void BuildUi()
+        private void ApplyRuntimeTextDefaults(VisualElement root)
         {
-            Font font = LoadFont();
-            Transform canvasTransform = CreateCanvasRoot();
+            FontAsset fontAsset = EnsureRuntimeFontAsset();
+            if (fontAsset == null)
+            {
+                return;
+            }
 
-            promptRoot = CreatePanel(
-                canvasTransform,
-                "InteractionPrompt",
-                PromptBackgroundColor,
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0f, 68f),
-                new Vector2(360f, 52f));
-            promptText = CreateText(promptRoot.transform, "PromptText", font, 21, TextAnchor.MiddleCenter, BodyColor);
-            Stretch(promptText.rectTransform, new Vector2(14f, 8f), new Vector2(-14f, -8f));
+            StyleFontDefinition fontDefinition = new StyleFontDefinition(FontDefinition.FromSDFFont(fontAsset));
+            root.style.unityFontDefinition = fontDefinition;
 
-            dialogueRoot = CreatePanel(
-                canvasTransform,
-                "DialoguePanel",
-                DialogueBackgroundColor,
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f),
-                new Vector2(0f, 36f),
-                new Vector2(1100f, 220f));
-
-            speakerText = CreateText(dialogueRoot.transform, "SpeakerText", font, 24, TextAnchor.UpperLeft, AccentColor);
-            SetRect(speakerText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(20f, -18f), new Vector2(-40f, 30f));
-
-            bodyText = CreateText(dialogueRoot.transform, "BodyText", font, 28, TextAnchor.UpperLeft, BodyColor);
-            bodyText.horizontalOverflow = HorizontalWrapMode.Wrap;
-            bodyText.verticalOverflow = VerticalWrapMode.Overflow;
-            SetRect(bodyText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(20f, -56f), new Vector2(-40f, -102f));
-
-            footerText = CreateText(dialogueRoot.transform, "FooterText", font, 18, TextAnchor.LowerRight, AccentColor);
-            SetRect(footerText.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-20f, 16f), new Vector2(-40f, 26f));
+            ApplyFontToLabel(promptLabel, fontDefinition);
+            ApplyFontToLabel(speakerLabel, fontDefinition);
+            ApplyFontToLabel(bodyLabel, fontDefinition);
+            ApplyFontToLabel(footerLabel, fontDefinition);
         }
 
-        private Transform CreateCanvasRoot()
+        private static void ApplyFontToLabel(Label label, StyleFontDefinition fontDefinition)
         {
-            GameObject canvasObject = new GameObject("DialogueCanvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvasObject.transform.SetParent(transform, false);
+            if (label == null)
+            {
+                return;
+            }
 
-            Canvas canvas = canvasObject.GetComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 1000;
-
-            CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
-
-            return canvasObject.transform;
+            label.style.unityFontDefinition = fontDefinition;
+            label.enableRichText = false;
         }
 
-        private static GameObject CreatePanel(
-            Transform parent,
-            string name,
-            Color backgroundColor,
-            Vector2 anchorMin,
-            Vector2 anchorMax,
-            Vector2 pivot,
-            Vector2 anchoredPosition,
-            Vector2 size)
+        private PanelTextSettings EnsurePanelTextSettings(PanelSettings settings)
         {
-            GameObject panelObject = new GameObject(name, typeof(RectTransform), typeof(Image));
-            panelObject.transform.SetParent(parent, false);
+            PanelTextSettings resolvedTextSettings = settings.textSettings;
+            ownsPanelTextSettings = resolvedTextSettings == null;
+            if (resolvedTextSettings == null)
+            {
+                resolvedTextSettings = ScriptableObject.CreateInstance<PanelTextSettings>();
+                resolvedTextSettings.name = "DialoguePanelTextSettingsRuntime";
+                resolvedTextSettings.hideFlags = HideFlags.DontSave;
+            }
 
-            Image image = panelObject.GetComponent<Image>();
-            image.color = backgroundColor;
+            FontAsset fontAsset = EnsureRuntimeFontAsset();
+            if (fontAsset != null && resolvedTextSettings.defaultFontAsset == null)
+            {
+                resolvedTextSettings.defaultFontAsset = fontAsset;
+            }
 
-            RectTransform rectTransform = panelObject.GetComponent<RectTransform>();
-            rectTransform.anchorMin = anchorMin;
-            rectTransform.anchorMax = anchorMax;
-            rectTransform.pivot = pivot;
-            rectTransform.anchoredPosition = anchoredPosition;
-            rectTransform.sizeDelta = size;
-            return panelObject;
+            settings.textSettings = resolvedTextSettings;
+            return resolvedTextSettings;
         }
 
-        private static Text CreateText(Transform parent, string name, Font font, int fontSize, TextAnchor alignment, Color color)
+        private FontAsset EnsureRuntimeFontAsset()
         {
-            GameObject textObject = new GameObject(name, typeof(RectTransform), typeof(Text));
-            textObject.transform.SetParent(parent, false);
+            if (runtimeFontAsset != null)
+            {
+                return runtimeFontAsset;
+            }
 
-            Text text = textObject.GetComponent<Text>();
-            text.font = font;
-            text.fontSize = fontSize;
-            text.alignment = alignment;
-            text.color = color;
-            text.supportRichText = false;
-            text.horizontalOverflow = HorizontalWrapMode.Wrap;
-            text.verticalOverflow = VerticalWrapMode.Truncate;
-            return text;
+            Font font = LoadRuntimeFont();
+            if (font == null)
+            {
+                return null;
+            }
+
+            runtimeFontAsset = FontAsset.CreateFontAsset(font);
+            if (runtimeFontAsset != null)
+            {
+                runtimeFontAsset.name = $"DialogueRuntime-{font.name}";
+                runtimeFontAsset.hideFlags = HideFlags.DontSave;
+            }
+
+            return runtimeFontAsset;
         }
 
-        private static void Stretch(RectTransform rectTransform, Vector2 insetMin, Vector2 insetMax)
-        {
-            rectTransform.anchorMin = Vector2.zero;
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            rectTransform.offsetMin = insetMin;
-            rectTransform.offsetMax = insetMax;
-        }
-
-        private static void SetRect(
-            RectTransform rectTransform,
-            Vector2 anchorMin,
-            Vector2 anchorMax,
-            Vector2 pivot,
-            Vector2 anchoredPosition,
-            Vector2 sizeDelta)
-        {
-            rectTransform.anchorMin = anchorMin;
-            rectTransform.anchorMax = anchorMax;
-            rectTransform.pivot = pivot;
-            rectTransform.anchoredPosition = anchoredPosition;
-            rectTransform.sizeDelta = sizeDelta;
-        }
-
-        private static Font LoadFont()
+        private static Font LoadRuntimeFont()
         {
             Font font = TryLoadBuiltinFont("LegacyRuntime.ttf");
             if (font != null)
@@ -322,6 +343,25 @@ namespace SpringJam.Dialogue
             }
         }
 
+        private static void ConfigurePanelSettings(PanelSettings settings)
+        {
+            settings.scaleMode = PanelScaleMode.ScaleWithScreenSize;
+            settings.referenceResolution = new Vector2Int(1920, 1080);
+            settings.match = 0.5f;
+            settings.sortingOrder = 1000;
+            settings.clearColor = false;
+        }
+
+        private static void SetVisibility(VisualElement element, bool isVisible)
+        {
+            if (element == null)
+            {
+                return;
+            }
+
+            element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
         private static DialogueRuntimeController EnsureInstance()
         {
             if (instance != null)
@@ -340,4 +380,3 @@ namespace SpringJam.Dialogue
         }
     }
 }
-

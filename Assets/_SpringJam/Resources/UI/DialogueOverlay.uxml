@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="dialogue-overlay" class="dialogue-overlay">
+        <ui:VisualElement name="prompt-shell" class="prompt-shell">
+            <ui:Label name="prompt-label" class="prompt-label" text="" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="dialogue-shell" class="dialogue-shell">
+            <ui:Label name="speaker-label" class="speaker-label" text="" />
+            <ui:Label name="body-label" class="body-label" text="" />
+            <ui:Label name="footer-label" class="footer-label" text="" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

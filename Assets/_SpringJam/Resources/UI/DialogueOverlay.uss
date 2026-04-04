@@ -1,0 +1,89 @@
+.dialogue-overlay {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 36px;
+}
+
+.prompt-shell {
+    align-self: flex-start;
+    margin-bottom: 32px;
+    max-width: 420px;
+    min-height: 52px;
+    padding-top: 8px;
+    padding-right: 14px;
+    padding-bottom: 8px;
+    padding-left: 14px;
+    background-color: rgba(22, 40, 65, 0.84);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(201, 218, 184, 0.22);
+    border-right-color: rgba(201, 218, 184, 0.22);
+    border-bottom-color: rgba(201, 218, 184, 0.22);
+    border-left-color: rgba(201, 218, 184, 0.22);
+}
+
+.prompt-label {
+    color: rgb(255, 221, 203);
+    font-size: 21px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.dialogue-shell {
+    width: 90%;
+    max-width: 1100px;
+    min-height: 220px;
+    padding-top: 18px;
+    padding-right: 20px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+    background-color: rgba(16, 11, 39, 0.91);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(205, 122, 135, 0.28);
+    border-right-color: rgba(205, 122, 135, 0.28);
+    border-bottom-color: rgba(205, 122, 135, 0.28);
+    border-left-color: rgba(205, 122, 135, 0.28);
+}
+
+.speaker-label {
+    margin-bottom: 12px;
+    color: rgb(243, 181, 168);
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.body-label {
+    flex-grow: 1;
+    color: rgb(255, 221, 203);
+    font-size: 28px;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.footer-label {
+    margin-top: 16px;
+    color: rgb(243, 181, 168);
+    font-size: 18px;
+    -unity-text-align: lower-right;
+    white-space: normal;
+}
