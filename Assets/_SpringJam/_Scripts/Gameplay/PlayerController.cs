@@ -1,8 +1,8 @@
+﻿using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField] private int speed = 3;
 
     private InputSystem_Actions playerControlls;
@@ -32,6 +32,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!CanMove())
+        {
+            movement = Vector3.zero;
+            return;
+        }
+
         float x = playerControlls.Player.Move.ReadValue<Vector2>().x;
         float z = playerControlls.Player.Move.ReadValue<Vector2>().y;
 
@@ -41,5 +47,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rb.MovePosition(transform.position + movement * speed * Time.fixedDeltaTime);
+    }
+
+    private static bool CanMove()
+    {
+        DayLoopRuntime runtime = DayLoopRuntime.Instance;
+        return runtime == null || runtime.CurrentPhase == DayLoopPhase.ActiveDay;
     }
 }
