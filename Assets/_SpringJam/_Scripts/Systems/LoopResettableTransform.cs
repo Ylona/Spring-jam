@@ -17,7 +17,7 @@ namespace SpringJam.Systems.DayLoop
 
         private void Awake()
         {
-            attachedRigidbody = GetComponent<Rigidbody>();
+            CacheComponents();
 
             if (captureStateOnAwake)
             {
@@ -60,13 +60,17 @@ namespace SpringJam.Systems.DayLoop
             transform.rotation = capturedRotation;
             transform.localScale = capturedLocalScale;
 
-            if (resetRigidbodies && attachedRigidbody != null)
+            if (resetRigidbodies)
             {
-                attachedRigidbody.position = capturedPosition;
-                attachedRigidbody.rotation = capturedRotation;
-                attachedRigidbody.linearVelocity = Vector3.zero;
-                attachedRigidbody.angularVelocity = Vector3.zero;
-                attachedRigidbody.Sleep();
+                Rigidbody rigidbody = CacheComponents();
+                if (rigidbody != null)
+                {
+                    rigidbody.position = capturedPosition;
+                    rigidbody.rotation = capturedRotation;
+                    rigidbody.linearVelocity = Vector3.zero;
+                    rigidbody.angularVelocity = Vector3.zero;
+                    rigidbody.Sleep();
+                }
             }
 
             MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
@@ -106,6 +110,16 @@ namespace SpringJam.Systems.DayLoop
 
             subscribedRuntime.LoopStarted -= HandleLoopStarted;
             subscribedRuntime = null;
+        }
+
+        private Rigidbody CacheComponents()
+        {
+            if (attachedRigidbody == null)
+            {
+                attachedRigidbody = GetComponent<Rigidbody>();
+            }
+
+            return attachedRigidbody;
         }
     }
 }
