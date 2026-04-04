@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField] private int speed;
+    [SerializeField] private int speed = 3;
 
     private InputSystem_Actions playerControlls;
     private Rigidbody rb;
