@@ -1,7 +1,7 @@
 ﻿using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ILoopResetListener
 {
     [SerializeField] private int speed = 3;
 
@@ -29,7 +29,6 @@ public class PlayerController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!CanMove())
@@ -47,6 +46,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         rb.MovePosition(transform.position + movement * speed * Time.fixedDeltaTime);
+    }
+
+    public void OnLoopReset()
+    {
+        movement = Vector3.zero;
     }
 
     private static bool CanMove()
