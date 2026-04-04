@@ -19,6 +19,11 @@ public class PlayerController : MonoBehaviour
         playerControlls.Enable();
     }
 
+    private void OnDestroy()
+    {
+        playerControlls.Disable();
+    }
+
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -29,8 +34,6 @@ public class PlayerController : MonoBehaviour
     {
         float x = playerControlls.Player.Move.ReadValue<Vector2>().x;
         float z = playerControlls.Player.Move.ReadValue<Vector2>().y;
-
-        Debug.Log(x + " , " + z);
 
         movement = new Vector3(x, 0, z).normalized;
     }
