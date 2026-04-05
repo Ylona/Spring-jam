@@ -8,32 +8,30 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private LayerMask interactableLayer;
     [SerializeField] private Transform interactPoint;
 
-    private InputSystem_Actions controls;
+    private PlayerInputHandler input;
     private IInteractable currentInteractable;
 
     private void Awake()
     {
-        controls = new InputSystem_Actions();
+        input = GetComponent<PlayerInputHandler>();
+        input.OnInteract += TryInteract;
+
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        controls.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controls.Disable();
+        input.OnInteract -= TryInteract;
     }
 
     private void Update()
     {
         FindInteractable();
 
-        if (controls.Player.Interact.WasPressedThisFrame() && currentInteractable != null && CanInteract())
-        {
-            currentInteractable.Interact();
-        }
+    }
+
+    private void TryInteract()
+    {
+        currentInteractable?.Interact();
     }
 
     private void FindInteractable()
@@ -72,10 +70,5 @@ public class PlayerInteractor : MonoBehaviour
         Gizmos.DrawWireSphere(interactPoint.position, interactRange);
     }
 
-    private static bool CanInteract()
-    {
-        DayLoopRuntime runtime = DayLoopRuntime.Instance;
-        return runtime == null || runtime.CurrentPhase == DayLoopPhase.ActiveDay;
-    }
 
 }
