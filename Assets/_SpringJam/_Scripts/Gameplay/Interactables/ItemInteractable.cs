@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public class ItemInteractable : BaseInteractable
 {
     [Header("Item")]
+    [SerializeField] private bool canBePickedUp = true;
     [SerializeField] private string itemId = "item";
     [SerializeField] private string displayName = "Item";
     [SerializeField] private string pickupPrompt = "Pick Up";
@@ -73,6 +74,12 @@ public class ItemInteractable : BaseInteractable
             return;
         }
 
+        if (!canBePickedUp)
+        {
+            ApplyInteractionProgression();
+            return;
+        }
+
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
@@ -91,6 +98,13 @@ public class ItemInteractable : BaseInteractable
         if (IsHeld)
         {
             return string.Empty;
+        }
+
+        if (!canBePickedUp)
+        {
+            return string.IsNullOrWhiteSpace(pickupPrompt)
+                ? base.GetInteractionText(interactor)
+                : pickupPrompt.Trim();
         }
 
         if (interactor != null && interactor.HasHeldItem)
