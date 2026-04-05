@@ -211,6 +211,7 @@ namespace SpringJam.Dialogue
             VisualElement root = uiDocument.rootVisualElement;
             root.Clear();
             root.pickingMode = PickingMode.Ignore;
+            StretchToParent(root);
 
             if (overlayStyleSheet != null)
             {
@@ -219,9 +220,7 @@ namespace SpringJam.Dialogue
 
             TemplateContainer overlayRoot = overlayAsset.CloneTree();
             overlayRoot.pickingMode = PickingMode.Ignore;
-            overlayRoot.style.flexGrow = 1f;
-            overlayRoot.style.width = Length.Percent(100);
-            overlayRoot.style.height = Length.Percent(100);
+            StretchToParent(overlayRoot);
             root.Add(overlayRoot);
 
             promptShell = root.Q<VisualElement>("prompt-shell");
@@ -369,6 +368,20 @@ namespace SpringJam.Dialogue
             settings.match = 0.5f;
             settings.sortingOrder = 1000;
             settings.clearColor = false;
+        }
+
+        private static void StretchToParent(VisualElement element)
+        {
+            if (element == null)
+            {
+                return;
+            }
+
+            element.style.position = Position.Absolute;
+            element.style.left = 0f;
+            element.style.top = 0f;
+            element.style.right = 0f;
+            element.style.bottom = 0f;
         }
 
         private static void SetVisibility(VisualElement element, bool isVisible)

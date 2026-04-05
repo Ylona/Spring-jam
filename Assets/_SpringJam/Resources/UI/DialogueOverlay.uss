@@ -2,15 +2,21 @@
     flex-grow: 1;
     width: 100%;
     height: 100%;
-    justify-content: flex-end;
-    align-items: center;
     padding-left: 24px;
     padding-right: 24px;
     padding-bottom: 36px;
 }
 
+.bottom-stack {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
 .prompt-shell {
-    align-self: flex-start;
+    align-self: center;
     margin-bottom: 32px;
     max-width: 420px;
     min-height: 52px;

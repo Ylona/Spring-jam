@@ -576,6 +576,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f6c157eb677e0049ac62f9793440883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteractable
+  interactionText: Interact
+  doorPromptText: Open
   onDoorUsed:
     m_PersistentCalls:
       m_Calls: []
@@ -919,6 +921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09ff9f22754a5a45b3abe711de55082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
+  interactionText: Interact
+  itemPromptText: Collect
 --- !u!136 &960429748
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1069,7 +1073,8 @@ MonoBehaviour:
       - speakerName: Bunny
         body: You're awake in the same morning too, aren't you?
       - speakerName: Bunny
-        body: I tucked some seeds near the old path before the light turns warm. Keep that in mind when the day folds over.
+        body: I tucked some seeds near the old path before the light turns warm.
+          Keep that in mind when the day folds over.
       knowledgeIdsToLearn:
       - bunny-loop-hint
       taskIdsToComplete: []
