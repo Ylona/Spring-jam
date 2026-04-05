@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &3292349183176788554
 GameObject:
@@ -191,6 +191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7284926925706814954}
   - component: {fileID: 1662498786594613018}
+  - component: {fileID: 2739387873173671416}
   - component: {fileID: 2438899782924322314}
   - component: {fileID: 5144099727759075635}
   - component: {fileID: 6501150216397800123}
@@ -231,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 3
---- !u!114 &6501150216397800123
+--- !u!114 &2739387873173671416
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -240,11 +241,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8069800074909061852}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fa196d122264acfa5b59ecad7091d4e, type: 3}
+  m_Script: {fileID: 11500000, guid: ac756b2ad31db3d4a823af8db887dd72, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  captureStateOnAwake: 1
-  resetRigidbodies: 1
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
+  interactRange: 1
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  interactPoint: {fileID: 305529562707431105}
 --- !u!54 &2438899782924322314
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -295,3 +299,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6501150216397800123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069800074909061852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fa196d122264acfa5b59ecad7091d4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  captureStateOnAwake: 1
+  resetRigidbodies: 1

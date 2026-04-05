@@ -1,4 +1,5 @@
 using UnityEngine;
+using SpringJam.Systems.DayLoop;
 
 public class PlayerInteractor : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class PlayerInteractor : MonoBehaviour
     {
         FindInteractable();
 
-        if (controls.Player.Interact.WasPressedThisFrame() && currentInteractable != null)
+        if (controls.Player.Interact.WasPressedThisFrame() && currentInteractable != null && CanInteract())
         {
             currentInteractable.Interact();
         }
@@ -70,4 +71,11 @@ public class PlayerInteractor : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(interactPoint.position, interactRange);
     }
+
+    private static bool CanInteract()
+    {
+        DayLoopRuntime runtime = DayLoopRuntime.Instance;
+        return runtime == null || runtime.CurrentPhase == DayLoopPhase.ActiveDay;
+    }
+
 }

@@ -9,5 +9,7 @@ public class NpcInteractable : BaseInteractable
     public override void Interact()
     {
         Debug.Log("Hello there");
+        onNpcTalkedTo?.Invoke();
     }
+
 }

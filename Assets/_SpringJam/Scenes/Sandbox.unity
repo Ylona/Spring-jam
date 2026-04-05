@@ -1,4 +1,4 @@
-﻿%YAML 1.1
+%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -362,7 +362,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -370,6 +369,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!114 &330585548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,14 +512,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 4
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
@@ -947,28 +942,69 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1021302452 stripped
+--- !u!1 &963248501
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 8069800074909061852, guid: 53e4d429427694d4eac59f5a484535f8, type: 3}
-  m_PrefabInstance: {fileID: 4861633905417194644}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1021302453
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 963248502}
+  - component: {fileID: 963248503}
+  m_Layer: 0
+  m_Name: Day Loop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &963248502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963248501}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963248503
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1021302452}
+  m_GameObject: {fileID: 963248501}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac756b2ad31db3d4a823af8db887dd72, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f3f776bd9fc4b2bb1912726d392a2f1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  interactRange: 1
-  interactableLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  interactPoint: {fileID: 2063725842}
+  m_EditorClassIdentifier: 
+  dayDurationSeconds: 120
+  startDayDurationSeconds: 3
+  taskDefinitions:
+  - taskId: bloom-flowers
+    displayName: Help the flowers bloom
+    startsUnlocked: 1
+    requiredForCookingUnlock: 1
+  - taskId: guide-bees
+    displayName: Guide the bees to the right plants
+    startsUnlocked: 1
+    requiredForCookingUnlock: 1
+  - taskId: learn-routines
+    displayName: Learn the villagers' routines
+    startsUnlocked: 1
+    requiredForCookingUnlock: 1
+  - taskId: cook-spring-meal
+    displayName: Cook a spring meal
+    startsUnlocked: 0
+    requiredForCookingUnlock: 0
 --- !u!1 &1089371788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,11 +1569,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2048011937}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &2063725842 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 305529562707431105, guid: 53e4d429427694d4eac59f5a484535f8, type: 3}
-  m_PrefabInstance: {fileID: 4861633905417194644}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2144223277
 GameObject:
   m_ObjectHideFlags: 0
@@ -1683,74 +1714,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8069800074909061852, guid: 53e4d429427694d4eac59f5a484535f8, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 1021302453}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53e4d429427694d4eac59f5a484535f8, type: 3}
---- !u!1 &963248501
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 963248502}
-  - component: {fileID: 963248503}
-  m_Layer: 0
-  m_Name: Day Loop
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &963248502
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963248501}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &963248503
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963248501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f3f776bd9fc4b2bb1912726d392a2f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dayDurationSeconds: 120
-  startDayDurationSeconds: 3
-  taskDefinitions:
-  - taskId: bloom-flowers
-    displayName: Help the flowers bloom
-    startsUnlocked: 1
-    requiredForCookingUnlock: 1
-  - taskId: guide-bees
-    displayName: Guide the bees to the right plants
-    startsUnlocked: 1
-    requiredForCookingUnlock: 1
-  - taskId: learn-routines
-    displayName: Learn the villagers' routines
-    startsUnlocked: 1
-    requiredForCookingUnlock: 1
-  - taskId: cook-spring-meal
-    displayName: Cook a spring meal
-    startsUnlocked: 0
-    requiredForCookingUnlock: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
