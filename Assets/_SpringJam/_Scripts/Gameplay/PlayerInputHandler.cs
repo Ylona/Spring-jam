@@ -3,6 +3,7 @@ using SpringJam.Dialogue;
 using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class PlayerInputHandler : MonoBehaviour
 {
     public Vector2 MoveInput { get; private set; }

@@ -1,4 +1,3 @@
-using SpringJam.Dialogue;
 using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
@@ -13,6 +12,11 @@ public class PlayerController : MonoBehaviour, ILoopResetListener
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
+        if (input == null)
+        {
+            input = gameObject.AddComponent<PlayerInputHandler>();
+        }
+
         rb = GetComponent<Rigidbody>();
     }
 

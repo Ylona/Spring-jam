@@ -1,5 +1,5 @@
 public interface IInteractable
 {
-    void Interact();
-    string GetInteractionText();
+    void Interact(PlayerInteractor interactor);
+    string GetInteractionText(PlayerInteractor interactor);
 }
