@@ -11,6 +11,7 @@ namespace SpringJam.Dialogue
         private const string PanelSettingsResourcePath = "UI/DialoguePanelSettings";
 
         private static DialogueRuntimeController instance;
+        private static bool isShuttingDown;
 
         private readonly DialogueSession session = new DialogueSession();
 
@@ -36,6 +37,7 @@ namespace SpringJam.Dialogue
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
         {
+            isShuttingDown = false;
             EnsureInstance();
         }
 
@@ -48,11 +50,17 @@ namespace SpringJam.Dialogue
             }
 
             instance = this;
+            isShuttingDown = false;
             DontDestroyOnLoad(gameObject);
 
             controls = new InputSystem_Actions();
             BuildUi();
             RefreshUi();
+        }
+
+        private void OnApplicationQuit()
+        {
+            isShuttingDown = true;
         }
 
         private void OnEnable()
@@ -67,19 +75,24 @@ namespace SpringJam.Dialogue
 
         private void OnDestroy()
         {
+            if (instance == this)
+            {
+                isShuttingDown = true;
+            }
+
             if (ownsPanelSettings && panelSettings != null)
             {
-                Destroy(panelSettings);
+                DestroyOwnedObject(panelSettings);
             }
 
             if (ownsPanelTextSettings && panelTextSettings != null)
             {
-                Destroy(panelTextSettings);
+                DestroyOwnedObject(panelTextSettings);
             }
 
             if (runtimeFontAsset != null)
             {
-                Destroy(runtimeFontAsset);
+                DestroyOwnedObject(runtimeFontAsset);
             }
 
             if (instance == this)
@@ -124,12 +137,17 @@ namespace SpringJam.Dialogue
 
         public static bool TryStartConversation(DialogueConversation conversation)
         {
-            return EnsureInstance().TryStartConversationInternal(conversation);
+            DialogueRuntimeController controller = EnsureInstance();
+            return controller != null && controller.TryStartConversationInternal(conversation);
         }
 
         public static void SetInteractionPrompt(string promptTextValue)
         {
-            EnsureInstance().SetInteractionPromptInternal(promptTextValue);
+            DialogueRuntimeController controller = EnsureInstance();
+            if (controller != null)
+            {
+                controller.SetInteractionPromptInternal(promptTextValue);
+            }
         }
 
         private bool TryStartConversationInternal(DialogueConversation conversation)
@@ -181,6 +199,7 @@ namespace SpringJam.Dialogue
             {
                 panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
                 panelSettings.name = "DialoguePanelSettingsRuntime";
+                panelSettings.hideFlags = HideFlags.DontSave;
             }
 
             panelTextSettings = EnsurePanelTextSettings(panelSettings);
@@ -362,11 +381,32 @@ namespace SpringJam.Dialogue
             element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
+        private static void DestroyOwnedObject(Object target)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (Application.isPlaying)
+            {
+                Destroy(target);
+                return;
+            }
+
+            DestroyImmediate(target);
+        }
+
         private static DialogueRuntimeController EnsureInstance()
         {
             if (instance != null)
             {
                 return instance;
+            }
+
+            if (isShuttingDown || !Application.isPlaying)
+            {
+                return null;
             }
 
             instance = FindFirstObjectByType<DialogueRuntimeController>();
