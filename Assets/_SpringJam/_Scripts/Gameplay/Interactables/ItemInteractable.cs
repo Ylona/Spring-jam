@@ -108,13 +108,18 @@ public class ItemInteractable : BaseInteractable
         Vector3 localPosition,
         Quaternion localRotation)
     {
+        Transform target = ResolveAttachmentTarget(anchor, holder != null ? holder.HeldItemAnchor : null, "attach");
+        if (target == null)
+        {
+            return;
+        }
+
         RefreshSocketReferenceFromHierarchy();
         ReleaseFromSocket();
 
         currentHolder = holder;
         isPlaced = false;
 
-        Transform target = anchor != null ? anchor : transform;
         transform.SetParent(target, false);
         transform.localPosition = localPosition;
         transform.localRotation = localRotation;
@@ -129,6 +134,12 @@ public class ItemInteractable : BaseInteractable
         bool markAsLoopStartPlacement,
         bool invokePlacedEvent)
     {
+        Transform target = ResolveAttachmentTarget(anchor, socket != null ? socket.SocketAnchor : null, "place");
+        if (target == null)
+        {
+            return;
+        }
+
         ReleaseFromHolder();
         RefreshSocketReferenceFromHierarchy();
         ReleaseFromSocket();
@@ -136,7 +147,6 @@ public class ItemInteractable : BaseInteractable
         currentSocket = socket;
         isPlaced = true;
 
-        Transform target = anchor != null ? anchor : transform;
         transform.SetParent(target, false);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
@@ -301,6 +311,24 @@ public class ItemInteractable : BaseInteractable
         }
 
         currentSocket = GetComponentInParent<ItemSocketInteractable>();
+    }
+
+    private Transform ResolveAttachmentTarget(Transform primaryTarget, Transform fallbackTarget, string action)
+    {
+        Transform target = primaryTarget != null ? primaryTarget : fallbackTarget;
+        if (target == null)
+        {
+            Debug.LogWarning($"Cannot {action} {name} because no attachment target was provided.", this);
+            return null;
+        }
+
+        if (target == transform)
+        {
+            Debug.LogWarning($"Cannot {action} {name} because it would parent itself.", this);
+            return null;
+        }
+
+        return target;
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)
