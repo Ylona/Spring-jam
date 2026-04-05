@@ -1052,6 +1052,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7a59ce72d9b4e4487354f8429e367a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcInteractable
+  interactionText: Talk
+  fallbackInteractionText: Talk
+  dialogueVariants:
+  - conditions:
+      requiredKnowledgeIds: []
+      blockedKnowledgeIds:
+      - bunny-loop-hint
+      requiredCompletedTaskIds: []
+      requiredIncompleteTaskIds: []
+    sequence:
+      sequenceId: bunny-test-intro
+      interactionText: Talk
+      speakerName: Bunny
+      lines:
+      - speakerName: Bunny
+        body: You're awake in the same morning too, aren't you?
+      - speakerName: Bunny
+        body: I tucked some seeds near the old path before the light turns warm. Keep that in mind when the day folds over.
+      knowledgeIdsToLearn:
+      - bunny-loop-hint
+      taskIdsToComplete: []
+      onSequenceCompleted:
+        m_PersistentCalls:
+          m_Calls: []
+  - conditions:
+      requiredKnowledgeIds:
+      - bunny-loop-hint
+      blockedKnowledgeIds: []
+      requiredCompletedTaskIds: []
+      requiredIncompleteTaskIds: []
+    sequence:
+      sequenceId: bunny-test-reminder
+      interactionText: Talk
+      speakerName: Bunny
+      lines:
+      - speakerName: Bunny
+        body: There, you remembered.
+      - speakerName: Bunny
+        body: Try the old path early and the valley might answer back a little faster.
+      knowledgeIdsToLearn: []
+      taskIdsToComplete: []
+      onSequenceCompleted:
+        m_PersistentCalls:
+          m_Calls: []
   onNpcTalkedTo:
     m_PersistentCalls:
       m_Calls: []

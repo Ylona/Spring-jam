@@ -1,14 +1,17 @@
 using UnityEngine;
-using UnityEngine.Events;
+
 public abstract class BaseInteractable : MonoBehaviour, IInteractable
 {
+    [Header("Interaction")]
+    [SerializeField] private string interactionText = "Interact";
+
     public virtual void Interact()
     {
-        Debug.Log("Default interact");
+        Debug.Log("Default interact", this);
     }
 
     public virtual string GetInteractionText()
     {
-        return "Interact";
+        return string.IsNullOrWhiteSpace(interactionText) ? "Interact" : interactionText.Trim();
     }
 }
