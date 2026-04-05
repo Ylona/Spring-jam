@@ -11,7 +11,7 @@ public class NpcInteractable : BaseInteractable
     [SerializeField] private List<ConditionalDialogueSequenceDefinition> dialogueVariants = new List<ConditionalDialogueSequenceDefinition>();
     [SerializeField] private UnityEvent onNpcTalkedTo;
 
-    public override void Interact()
+    public override void Interact(PlayerInteractor interactor)
     {
         DialogueSequenceDefinition sequence = SelectSequence();
         if (sequence == null)
@@ -31,7 +31,7 @@ public class NpcInteractable : BaseInteractable
         DialogueRuntimeController.TryStartConversation(conversation);
     }
 
-    public override string GetInteractionText()
+    public override string GetInteractionText(PlayerInteractor interactor)
     {
         DialogueSequenceDefinition sequence = SelectSequence();
         if (sequence != null && !string.IsNullOrWhiteSpace(sequence.InteractionText))
@@ -39,7 +39,9 @@ public class NpcInteractable : BaseInteractable
             return sequence.InteractionText;
         }
 
-        return string.IsNullOrWhiteSpace(fallbackInteractionText) ? base.GetInteractionText() : fallbackInteractionText.Trim();
+        return string.IsNullOrWhiteSpace(fallbackInteractionText)
+            ? base.GetInteractionText(interactor)
+            : fallbackInteractionText.Trim();
     }
 
     private void CompleteSequence(DialogueSequenceDefinition sequence)
