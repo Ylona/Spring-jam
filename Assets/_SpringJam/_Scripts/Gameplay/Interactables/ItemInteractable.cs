@@ -211,11 +211,7 @@ public class ItemInteractable : BaseInteractable
     {
         if (attachedRigidbody != null)
         {
-            attachedRigidbody.useGravity = false;
-            attachedRigidbody.isKinematic = true;
-            attachedRigidbody.linearVelocity = Vector3.zero;
-            attachedRigidbody.angularVelocity = Vector3.zero;
-            attachedRigidbody.Sleep();
+            ApplyKinematicState(false);
         }
 
         SetCollidersEnabled(false);
@@ -225,11 +221,7 @@ public class ItemInteractable : BaseInteractable
     {
         if (attachedRigidbody != null)
         {
-            attachedRigidbody.useGravity = false;
-            attachedRigidbody.isKinematic = true;
-            attachedRigidbody.linearVelocity = Vector3.zero;
-            attachedRigidbody.angularVelocity = Vector3.zero;
-            attachedRigidbody.Sleep();
+            ApplyKinematicState(false);
         }
 
         RestoreColliderStates();
@@ -239,22 +231,39 @@ public class ItemInteractable : BaseInteractable
     {
         if (attachedRigidbody != null)
         {
-            attachedRigidbody.useGravity = looseUseGravity;
-            attachedRigidbody.isKinematic = looseIsKinematic;
-            attachedRigidbody.linearVelocity = Vector3.zero;
-            attachedRigidbody.angularVelocity = Vector3.zero;
-
             if (looseIsKinematic)
             {
-                attachedRigidbody.Sleep();
+                ApplyKinematicState(looseUseGravity);
             }
             else
             {
+                attachedRigidbody.isKinematic = false;
+                attachedRigidbody.useGravity = looseUseGravity;
+                attachedRigidbody.linearVelocity = Vector3.zero;
+                attachedRigidbody.angularVelocity = Vector3.zero;
                 attachedRigidbody.WakeUp();
             }
         }
 
         RestoreColliderStates();
+    }
+
+    private void ApplyKinematicState(bool useGravity)
+    {
+        if (attachedRigidbody == null)
+        {
+            return;
+        }
+
+        if (!attachedRigidbody.isKinematic)
+        {
+            attachedRigidbody.linearVelocity = Vector3.zero;
+            attachedRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        attachedRigidbody.useGravity = useGravity;
+        attachedRigidbody.isKinematic = true;
+        attachedRigidbody.Sleep();
     }
 
     private void RestoreColliderStates()
