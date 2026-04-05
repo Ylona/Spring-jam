@@ -232,6 +232,181 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 98489644}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &300500001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 300500002}
+  - component: {fileID: 300500003}
+  - component: {fileID: 300500004}
+  m_Layer: 0
+  m_Name: spring-pot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &300500002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.35, y: 0.41, z: -0.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 300500006}
+  m_Father: {fileID: 1823733896}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &300500003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a09ff9f22754a5a45b3abe711de55082, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
+  interactionText: Interact
+  knowledgeIdsToLearn: []
+  taskIdsToComplete:
+  - cook-spring-meal
+  itemId: spring-pot
+  displayName: Spring Pot
+  pickupPrompt: Cook meal
+  looseUseGravity: 1
+  looseIsKinematic: 0
+  onPickedUp:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropped:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlaced:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!65 &300500004
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500001}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1, y: 0.9, z: 1.1}
+  m_Center: {x: 0, y: 0.32, z: 0}
+--- !u!1 &300500005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 300500006}
+  - component: {fileID: 300500008}
+  - component: {fileID: 300500007}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &300500006
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.28, z: 0}
+  m_LocalScale: {x: 0.9, y: 0.55, z: 0.9}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 300500002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &300500007
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500005}
+  m_Enabled: 1
+  m_CastShadows: 3
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &300500008
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300500005}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +716,7 @@ GameObject:
   - component: {fileID: 421625326}
   - component: {fileID: 421625327}
   m_Layer: 0
-  m_Name: door-to-nowhere
+  m_Name: bloom-station
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -577,7 +752,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteractable
   interactionText: Interact
-  doorPromptText: Open
+  knowledgeIdsToLearn: []
+  taskIdsToComplete:
+  - bloom-flowers
+  doorPromptText: Bloom flowers
   onDoorUsed:
     m_PersistentCalls:
       m_Calls: []
@@ -887,7 +1065,7 @@ GameObject:
   - component: {fileID: 960429747}
   - component: {fileID: 960429749}
   m_Layer: 0
-  m_Name: cherry
+  m_Name: bee-station
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -920,12 +1098,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a09ff9f22754a5a45b3abe711de55082, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
   interactionText: Interact
+  knowledgeIdsToLearn: []
+  taskIdsToComplete:
+  - guide-bees
   itemId: cherry
   displayName: Cherry
-  pickupPrompt: Pick Up Cherry
+  pickupPrompt: Guide bees
   looseUseGravity: 1
   looseIsKinematic: 0
   onPickedUp:
@@ -1031,8 +1212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f3f776bd9fc4b2bb1912726d392a2f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayDurationSeconds: 120
-  startDayDurationSeconds: 3
+  dayDurationSeconds: 60
+  startDayDurationSeconds: 0
   taskDefinitions:
   - taskId: bloom-flowers
     displayName: Help the flowers bloom
@@ -1062,7 +1243,7 @@ GameObject:
   - component: {fileID: 1089371791}
   - component: {fileID: 1089371790}
   m_Layer: 0
-  m_Name: bunny
+  m_Name: routine-bunny
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1098,7 +1279,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NpcInteractable
   interactionText: Talk
-  fallbackInteractionText: Talk
+  knowledgeIdsToLearn: []
+  taskIdsToComplete:
+  - learn-routines
+  fallbackInteractionText: Learn routines
   dialogueVariants:
   - conditions:
       requiredKnowledgeIds: []
@@ -1108,7 +1292,7 @@ MonoBehaviour:
       requiredIncompleteTaskIds: []
     sequence:
       sequenceId: bunny-test-intro
-      interactionText: Talk
+      interactionText: Learn routines
       speakerName: Bunny
       lines:
       - speakerName: Bunny
@@ -1130,7 +1314,7 @@ MonoBehaviour:
       requiredIncompleteTaskIds: []
     sequence:
       sequenceId: bunny-test-reminder
-      interactionText: Talk
+      interactionText: Learn routines
       speakerName: Bunny
       lines:
       - speakerName: Bunny
@@ -1461,6 +1645,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2100000001}
+  - {fileID: 300500002}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1957415855

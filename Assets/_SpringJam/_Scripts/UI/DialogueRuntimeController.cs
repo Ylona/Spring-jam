@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using SpringJam.Systems.DayLoop;
+using SpringJam.UI;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
@@ -9,11 +13,23 @@ namespace SpringJam.Dialogue
     {
         private const string OverlayResourcePath = "UI/DialogueOverlay";
         private const string PanelSettingsResourcePath = "UI/DialoguePanelSettings";
+        private const int PetalCount = 5;
+
+        private static readonly TaskDescriptor DefaultTaskDescriptor = new TaskDescriptor("TASK", "task-card--default");
+        private static readonly Dictionary<string, TaskDescriptor> TaskDescriptors = new Dictionary<string, TaskDescriptor>(StringComparer.Ordinal)
+        {
+            { "bloom-flowers", new TaskDescriptor("BUD", "task-card--flowers") },
+            { "guide-bees", new TaskDescriptor("HIVE", "task-card--bees") },
+            { "learn-routines", new TaskDescriptor("PATH", "task-card--routines") },
+            { "cook-spring-meal", new TaskDescriptor("FEAST", "task-card--meal") },
+        };
 
         private static DialogueRuntimeController instance;
         private static bool isShuttingDown;
 
         private readonly DialogueSession session = new DialogueSession();
+        private readonly Dictionary<string, TaskRowBinding> taskRows = new Dictionary<string, TaskRowBinding>(StringComparer.Ordinal);
+        private readonly List<VisualElement> petalElements = new List<VisualElement>(PetalCount);
 
         private InputSystem_Actions controls;
         private PanelSettings panelSettings;
@@ -28,8 +44,18 @@ namespace SpringJam.Dialogue
         private Label speakerLabel;
         private Label bodyLabel;
         private Label footerLabel;
+        private VisualElement journalShell;
+        private Label journalTitleLabel;
+        private VisualElement skyBand;
+        private VisualElement sunTrack;
+        private VisualElement sunDisc;
+        private VisualElement petalStrip;
+        private Label timeHintLabel;
+        private VisualElement taskList;
         private string worldPromptText = string.Empty;
         private int consumedInputFrame = -1;
+        private DayLoopRuntime subscribedDayLoop;
+        private DayLoopSnapshot currentDayLoopSnapshot;
 
         public static bool IsDialogueOpen => instance != null && instance.session.IsOpen;
         public static bool ConsumedInputThisFrame => instance != null && instance.consumedInputFrame == Time.frameCount;
@@ -55,6 +81,7 @@ namespace SpringJam.Dialogue
 
             controls = new InputSystem_Actions();
             BuildUi();
+            TrySubscribeDayLoop();
             RefreshUi();
         }
 
@@ -66,11 +93,14 @@ namespace SpringJam.Dialogue
         private void OnEnable()
         {
             controls?.Enable();
+            TrySubscribeDayLoop();
+            RefreshTaskJournal();
         }
 
         private void OnDisable()
         {
             controls?.Disable();
+            UnsubscribeDayLoop();
         }
 
         private void OnDestroy()
@@ -79,6 +109,8 @@ namespace SpringJam.Dialogue
             {
                 isShuttingDown = true;
             }
+
+            UnsubscribeDayLoop();
 
             if (ownsPanelSettings && panelSettings != null)
             {
@@ -103,6 +135,9 @@ namespace SpringJam.Dialogue
 
         private void Update()
         {
+            TrySubscribeDayLoop();
+            RefreshTaskJournalTime();
+
             if (!session.IsOpen)
             {
                 return;
@@ -236,7 +271,71 @@ namespace SpringJam.Dialogue
             bodyLabel = root.Q<Label>("body-label");
             footerLabel = root.Q<Label>("footer-label");
 
+            BuildTaskJournal(root);
             ApplyRuntimeTextDefaults(root);
+        }
+
+        private void BuildTaskJournal(VisualElement root)
+        {
+            journalShell = new VisualElement { name = "journal-shell" };
+            journalShell.AddToClassList("journal-shell");
+            root.Add(journalShell);
+
+            journalTitleLabel = new Label("Spring Weave");
+            journalTitleLabel.name = "journal-title";
+            journalTitleLabel.AddToClassList("journal-title");
+            journalShell.Add(journalTitleLabel);
+
+            VisualElement timeShell = new VisualElement { name = "time-shell" };
+            timeShell.AddToClassList("time-shell");
+            journalShell.Add(timeShell);
+
+            skyBand = new VisualElement { name = "sky-band" };
+            skyBand.AddToClassList("sky-band");
+            skyBand.AddToClassList("time-band--dawn");
+            timeShell.Add(skyBand);
+
+            sunTrack = new VisualElement { name = "sun-track" };
+            sunTrack.AddToClassList("sun-track");
+            skyBand.Add(sunTrack);
+
+            sunDisc = new VisualElement { name = "sun-disc" };
+            sunDisc.AddToClassList("sun-disc");
+            sunTrack.Add(sunDisc);
+
+            petalStrip = new VisualElement { name = "petal-strip" };
+            petalStrip.AddToClassList("petal-strip");
+            timeShell.Add(petalStrip);
+
+            timeHintLabel = new Label("Dawn hush");
+            timeHintLabel.name = "time-hint-label";
+            timeHintLabel.AddToClassList("time-hint-label");
+            timeShell.Add(timeHintLabel);
+
+            taskList = new VisualElement { name = "task-list" };
+            taskList.AddToClassList("task-list");
+            journalShell.Add(taskList);
+
+            BuildPetals();
+        }
+
+        private void BuildPetals()
+        {
+            petalElements.Clear();
+            petalStrip?.Clear();
+
+            if (petalStrip == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < PetalCount; i++)
+            {
+                VisualElement petal = new VisualElement();
+                petal.AddToClassList("time-petal");
+                petalStrip.Add(petal);
+                petalElements.Add(petal);
+            }
         }
 
         private void RefreshUi()
@@ -259,6 +358,8 @@ namespace SpringJam.Dialogue
             {
                 promptLabel.text = $"E  {worldPromptText}";
             }
+
+            RefreshTaskJournal();
         }
 
         private string BuildFooterText()
@@ -281,6 +382,8 @@ namespace SpringJam.Dialogue
             ApplyFontToLabel(speakerLabel, fontDefinition);
             ApplyFontToLabel(bodyLabel, fontDefinition);
             ApplyFontToLabel(footerLabel, fontDefinition);
+            ApplyFontToLabel(journalTitleLabel, fontDefinition);
+            ApplyFontToLabel(timeHintLabel, fontDefinition);
         }
 
         private static void ApplyFontToLabel(Label label, StyleFontDefinition fontDefinition)
@@ -292,6 +395,251 @@ namespace SpringJam.Dialogue
 
             label.style.unityFontDefinition = fontDefinition;
             label.enableRichText = false;
+        }
+
+        private void TrySubscribeDayLoop()
+        {
+            DayLoopRuntime runtime = DayLoopRuntime.Instance;
+            if (runtime == null)
+            {
+                runtime = FindFirstObjectByType<DayLoopRuntime>();
+            }
+
+            if (runtime == subscribedDayLoop)
+            {
+                return;
+            }
+
+            UnsubscribeDayLoop();
+            subscribedDayLoop = runtime;
+
+            if (subscribedDayLoop == null)
+            {
+                currentDayLoopSnapshot = null;
+                RefreshTaskJournal();
+                return;
+            }
+
+            subscribedDayLoop.LoopStarted += HandleLoopSnapshotChanged;
+            subscribedDayLoop.PhaseChanged += HandleLoopSnapshotChanged;
+            subscribedDayLoop.TaskChanged += HandleDayLoopTaskChanged;
+
+            currentDayLoopSnapshot = subscribedDayLoop.CurrentSnapshot;
+            RefreshTaskJournal();
+        }
+
+        private void UnsubscribeDayLoop()
+        {
+            if (subscribedDayLoop == null)
+            {
+                return;
+            }
+
+            subscribedDayLoop.LoopStarted -= HandleLoopSnapshotChanged;
+            subscribedDayLoop.PhaseChanged -= HandleLoopSnapshotChanged;
+            subscribedDayLoop.TaskChanged -= HandleDayLoopTaskChanged;
+            subscribedDayLoop = null;
+        }
+
+        private void HandleLoopSnapshotChanged(DayLoopSnapshot snapshot)
+        {
+            currentDayLoopSnapshot = snapshot;
+            RefreshTaskJournal();
+        }
+
+        private void HandleDayLoopTaskChanged(DayLoopTaskSnapshot task)
+        {
+            if (task == null)
+            {
+                return;
+            }
+
+            currentDayLoopSnapshot = subscribedDayLoop != null ? subscribedDayLoop.CurrentSnapshot : currentDayLoopSnapshot;
+
+            if (taskRows.TryGetValue(task.TaskId, out TaskRowBinding row))
+            {
+                ApplyTaskState(row, task);
+            }
+            else
+            {
+                RefreshTaskJournal();
+            }
+        }
+
+        private void RefreshTaskJournal()
+        {
+            bool hasSnapshot = currentDayLoopSnapshot != null;
+            SetVisibility(journalShell, hasSnapshot);
+            if (!hasSnapshot)
+            {
+                return;
+            }
+
+            if (RequiresTaskRowRebuild(currentDayLoopSnapshot.Tasks))
+            {
+                RebuildTaskRows(currentDayLoopSnapshot.Tasks);
+            }
+
+            foreach (DayLoopTaskSnapshot task in currentDayLoopSnapshot.Tasks)
+            {
+                if (task != null && taskRows.TryGetValue(task.TaskId, out TaskRowBinding row))
+                {
+                    ApplyTaskState(row, task);
+                }
+            }
+
+            RefreshTaskJournalTime();
+        }
+
+        private void RefreshTaskJournalTime()
+        {
+            if (subscribedDayLoop == null || journalShell == null || journalShell.resolvedStyle.display == DisplayStyle.None)
+            {
+                return;
+            }
+
+            TaskJournalTimeBand timeBand = TaskJournalPresenter.GetTimeBand(
+                subscribedDayLoop.CurrentPhase,
+                subscribedDayLoop.ElapsedSeconds,
+                subscribedDayLoop.DayDurationSeconds);
+            ApplyTimeBandClass(timeBand);
+
+            if (timeHintLabel != null)
+            {
+                timeHintLabel.text = TaskJournalPresenter.GetTimeLabel(
+                    subscribedDayLoop.CurrentPhase,
+                    subscribedDayLoop.ElapsedSeconds,
+                    subscribedDayLoop.DayDurationSeconds);
+            }
+
+            int closedPetals = TaskJournalPresenter.GetClosedPetalCount(
+                subscribedDayLoop.CurrentPhase,
+                subscribedDayLoop.ElapsedSeconds,
+                subscribedDayLoop.DayDurationSeconds,
+                petalElements.Count);
+            for (int i = 0; i < petalElements.Count; i++)
+            {
+                petalElements[i].EnableInClassList("is-closed", i < closedPetals);
+            }
+
+            if (sunDisc == null || sunTrack == null)
+            {
+                return;
+            }
+
+            float progress = TaskJournalPresenter.GetSunProgress(
+                subscribedDayLoop.CurrentPhase,
+                subscribedDayLoop.ElapsedSeconds,
+                subscribedDayLoop.DayDurationSeconds);
+            float trackWidth = sunTrack.resolvedStyle.width;
+            float discWidth = sunDisc.resolvedStyle.width;
+            if (trackWidth <= 0f || discWidth <= 0f)
+            {
+                return;
+            }
+
+            float maxTravel = Mathf.Max(0f, trackWidth - discWidth);
+            sunDisc.style.left = maxTravel * progress;
+            sunDisc.style.top = 18f - (Mathf.Sin(progress * Mathf.PI) * 12f);
+        }
+
+        private bool RequiresTaskRowRebuild(IReadOnlyList<DayLoopTaskSnapshot> tasks)
+        {
+            if (tasks == null)
+            {
+                return taskRows.Count > 0;
+            }
+
+            if (taskRows.Count != tasks.Count)
+            {
+                return true;
+            }
+
+            foreach (DayLoopTaskSnapshot task in tasks)
+            {
+                if (task == null || !taskRows.ContainsKey(task.TaskId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void RebuildTaskRows(IReadOnlyList<DayLoopTaskSnapshot> tasks)
+        {
+            taskRows.Clear();
+            taskList?.Clear();
+            if (taskList == null || tasks == null)
+            {
+                return;
+            }
+
+            foreach (DayLoopTaskSnapshot task in tasks)
+            {
+                if (task == null)
+                {
+                    continue;
+                }
+
+                TaskDescriptor descriptor = ResolveDescriptor(task.TaskId);
+                VisualElement row = new VisualElement();
+                row.AddToClassList("task-card");
+                row.AddToClassList(descriptor.ThemeClass);
+
+                Label markLabel = new Label(descriptor.BadgeText);
+                markLabel.AddToClassList("task-mark");
+                row.Add(markLabel);
+
+                VisualElement copy = new VisualElement();
+                copy.AddToClassList("task-copy");
+
+                Label titleLabel = new Label(task.DisplayName);
+                titleLabel.AddToClassList("task-title");
+                copy.Add(titleLabel);
+
+                Label stateLabel = new Label();
+                stateLabel.AddToClassList("task-state");
+                copy.Add(stateLabel);
+
+                row.Add(copy);
+                taskList.Add(row);
+                taskRows[task.TaskId] = new TaskRowBinding(row, titleLabel, stateLabel);
+            }
+        }
+
+        private void ApplyTaskState(TaskRowBinding row, DayLoopTaskSnapshot task)
+        {
+            TaskJournalTaskState state = TaskJournalPresenter.GetTaskState(task);
+            row.TitleLabel.text = task.DisplayName;
+            row.StateLabel.text = TaskJournalPresenter.GetTaskStateText(task);
+            row.Root.EnableInClassList("is-locked", state == TaskJournalTaskState.Locked);
+            row.Root.EnableInClassList("is-ready", state == TaskJournalTaskState.Ready);
+            row.Root.EnableInClassList("is-complete", state == TaskJournalTaskState.Complete);
+        }
+
+        private void ApplyTimeBandClass(TaskJournalTimeBand timeBand)
+        {
+            if (skyBand == null)
+            {
+                return;
+            }
+
+            skyBand.EnableInClassList("time-band--dawn", timeBand == TaskJournalTimeBand.Dawn);
+            skyBand.EnableInClassList("time-band--morning", timeBand == TaskJournalTimeBand.Morning);
+            skyBand.EnableInClassList("time-band--high-sun", timeBand == TaskJournalTimeBand.HighSun);
+            skyBand.EnableInClassList("time-band--long-light", timeBand == TaskJournalTimeBand.LongLight);
+            skyBand.EnableInClassList("time-band--dusk", timeBand == TaskJournalTimeBand.Dusk);
+        }
+
+        private static TaskDescriptor ResolveDescriptor(string taskId)
+        {
+            if (string.IsNullOrWhiteSpace(taskId))
+            {
+                return DefaultTaskDescriptor;
+            }
+
+            return TaskDescriptors.TryGetValue(taskId.Trim(), out TaskDescriptor descriptor) ? descriptor : DefaultTaskDescriptor;
         }
 
         private PanelTextSettings EnsurePanelTextSettings(PanelSettings settings)
@@ -400,7 +748,7 @@ namespace SpringJam.Dialogue
             element.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        private static void DestroyOwnedObject(Object target)
+        private static void DestroyOwnedObject(UnityEngine.Object target)
         {
             if (target == null)
             {
@@ -437,5 +785,32 @@ namespace SpringJam.Dialogue
             GameObject runtimeObject = new GameObject("DialogueRuntimeController");
             return runtimeObject.AddComponent<DialogueRuntimeController>();
         }
+
+        private sealed class TaskDescriptor
+        {
+            public TaskDescriptor(string badgeText, string themeClass)
+            {
+                BadgeText = badgeText;
+                ThemeClass = themeClass;
+            }
+
+            public string BadgeText { get; }
+            public string ThemeClass { get; }
+        }
+
+        private sealed class TaskRowBinding
+        {
+            public TaskRowBinding(VisualElement root, Label titleLabel, Label stateLabel)
+            {
+                Root = root;
+                TitleLabel = titleLabel;
+                StateLabel = stateLabel;
+            }
+
+            public VisualElement Root { get; }
+            public Label TitleLabel { get; }
+            public Label StateLabel { get; }
+        }
     }
 }
+

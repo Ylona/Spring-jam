@@ -307,36 +307,8 @@ namespace SpringJam.Dialogue
 
         public void ApplyProgressionEffects(DayLoopRuntime runtime)
         {
-            if (runtime != null)
-            {
-                foreach (string knowledgeId in EnumerateIds(knowledgeIdsToLearn))
-                {
-                    runtime.TryLearnKnowledge(knowledgeId);
-                }
-
-                foreach (string taskId in EnumerateIds(taskIdsToComplete))
-                {
-                    runtime.TryCompleteTask(taskId);
-                }
-            }
-
+            DayLoopProgressionApplier.Apply(runtime, knowledgeIdsToLearn, taskIdsToComplete);
             onSequenceCompleted?.Invoke();
-        }
-
-        private static IEnumerable<string> EnumerateIds(IEnumerable<string> ids)
-        {
-            if (ids == null)
-            {
-                yield break;
-            }
-
-            foreach (string id in ids)
-            {
-                if (!string.IsNullOrWhiteSpace(id))
-                {
-                    yield return id.Trim();
-                }
-            }
         }
     }
 
@@ -356,4 +328,6 @@ namespace SpringJam.Dialogue
         }
     }
 }
+
+
 

@@ -75,6 +75,7 @@ public class ItemInteractable : BaseInteractable
 
         if (interactor.TryPickUpItem(this))
         {
+            ApplyInteractionProgression();
             onPickedUp?.Invoke();
             return;
         }

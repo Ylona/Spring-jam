@@ -11,6 +11,7 @@ public class DoorInteractable : BaseInteractable
     {
         Debug.Log("This door would definitely open, if I actually made that...", this);
         onDoorUsed?.Invoke();
+        ApplyInteractionProgression();
     }
 
     public override string GetInteractionText(PlayerInteractor interactor)
