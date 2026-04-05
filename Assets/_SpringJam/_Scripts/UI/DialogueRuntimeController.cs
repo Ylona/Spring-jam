@@ -164,7 +164,13 @@ namespace SpringJam.Dialogue
 
         private void SetInteractionPromptInternal(string promptTextValue)
         {
-            worldPromptText = string.IsNullOrWhiteSpace(promptTextValue) ? string.Empty : promptTextValue.Trim();
+            string nextPromptText = string.IsNullOrWhiteSpace(promptTextValue) ? string.Empty : promptTextValue.Trim();
+            if (worldPromptText == nextPromptText)
+            {
+                return;
+            }
+
+            worldPromptText = nextPromptText;
 
             if (!session.IsOpen)
             {
