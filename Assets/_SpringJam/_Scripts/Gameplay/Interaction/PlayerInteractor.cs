@@ -1,5 +1,4 @@
 using SpringJam.Dialogue;
-using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
 public class PlayerInteractor : MonoBehaviour
@@ -42,7 +41,7 @@ public class PlayerInteractor : MonoBehaviour
 
     private void TryInteract()
     {
-        if (!CanInteract() || DialogueRuntimeController.ConsumedInputThisFrame)
+        if (!IsInteractionEnabled() || DialogueRuntimeController.ConsumedInputThisFrame)
         {
             return;
         }
@@ -82,17 +81,15 @@ public class PlayerInteractor : MonoBehaviour
 
     private void UpdatePrompt()
     {
-        string promptText = CanInteract() && currentInteractable != null
+        string promptText = IsInteractionEnabled() && currentInteractable != null
             ? currentInteractable.GetInteractionText()
             : string.Empty;
         DialogueRuntimeController.SetInteractionPrompt(promptText);
     }
 
-    private static bool CanInteract()
+    private bool IsInteractionEnabled()
     {
-        DayLoopRuntime runtime = DayLoopRuntime.Instance;
-        bool dayAllowsInteraction = runtime == null || runtime.CurrentPhase == DayLoopPhase.ActiveDay;
-        return dayAllowsInteraction && !DialogueRuntimeController.IsDialogueOpen;
+        return input != null && input.IsGameplayInputEnabled;
     }
 
     public IInteractable GetCurrentInteractable()

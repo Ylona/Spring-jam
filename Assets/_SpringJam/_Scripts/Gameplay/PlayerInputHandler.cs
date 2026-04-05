@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerInputHandler : MonoBehaviour
 {
     public Vector2 MoveInput { get; private set; }
+    public bool IsGameplayInputEnabled => CanProcessGameplayInput();
     public event Action OnInteract;
 
     private InputSystem_Actions controls;
@@ -28,7 +29,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Update()
     {
-        if (!CanProcessGameplayInput())
+        if (!IsGameplayInputEnabled)
         {
             MoveInput = Vector2.zero;
             return;
