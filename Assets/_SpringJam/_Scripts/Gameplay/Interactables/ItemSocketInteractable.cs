@@ -10,14 +10,22 @@ public class ItemSocketInteractable : BaseInteractable
     [SerializeField] private List<string> acceptedItemIds = new List<string>();
     [SerializeField] private string placementPrompt = "Place Item";
     [SerializeField] private string taskIdOnPlacement = string.Empty;
+    [SerializeField] private ItemInteractable startingItem;
 
     [Header("Events")]
     [SerializeField] private UnityEvent onItemPlaced;
 
     private DayLoopRuntime subscribedRuntime;
     private ItemInteractable placedItem;
+    private ItemInteractable loopStartItem;
 
     public bool HasPlacedItem => placedItem != null;
+    public Transform SocketAnchor => socketAnchor != null ? socketAnchor : transform;
+
+    private void Awake()
+    {
+        loopStartItem = startingItem;
+    }
 
     private void OnEnable()
     {
@@ -27,6 +35,7 @@ public class ItemSocketInteractable : BaseInteractable
     private void Start()
     {
         TrySubscribe();
+        ApplyStartingItemPlacement();
     }
 
     private void OnDisable()
@@ -112,13 +121,44 @@ public class ItemSocketInteractable : BaseInteractable
         }
 
         placedItem = item;
-        item.PlaceIntoSocket(socketAnchor != null ? socketAnchor : transform);
+        placedItem.PlaceIntoSocket(this, SocketAnchor, false, true);
         onItemPlaced?.Invoke();
+    }
+
+    public void ClearPlacedItem(ItemInteractable item)
+    {
+        if (placedItem != item)
+        {
+            return;
+        }
+
+        placedItem = null;
+
+        // Keep the serialized field aligned with live scene occupancy during play.
+        if (startingItem == item)
+        {
+            startingItem = null;
+        }
+    }
+
+    private void ApplyStartingItemPlacement()
+    {
+        if (loopStartItem == null)
+        {
+            startingItem = null;
+            return;
+        }
+
+        placedItem = loopStartItem;
+        startingItem = loopStartItem;
+        loopStartItem.PlaceIntoSocket(this, SocketAnchor, true, false);
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)
     {
         placedItem = null;
+        startingItem = loopStartItem;
+        ApplyStartingItemPlacement();
     }
 
     private void TrySubscribe()

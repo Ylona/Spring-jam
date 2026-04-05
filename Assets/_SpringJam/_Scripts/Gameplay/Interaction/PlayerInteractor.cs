@@ -86,8 +86,9 @@ public class PlayerInteractor : MonoBehaviour, ILoopResetListener
             return;
         }
 
-        Collider[] hits = Physics.OverlapSphere(interactPoint.position, interactRange, interactableLayer);
+        int bestPriority = int.MinValue;
         float closestDistance = float.MaxValue;
+        Collider[] hits = Physics.OverlapSphere(interactPoint.position, interactRange, interactableLayer);
 
         foreach (Collider hit in hits)
         {
@@ -97,15 +98,32 @@ public class PlayerInteractor : MonoBehaviour, ILoopResetListener
                 continue;
             }
 
+            int priority = GetInteractionPriority(interactable);
             float distance = Vector3.Distance(interactPoint.position, hit.transform.position);
-            if (distance >= closestDistance)
+            if (priority < bestPriority || (priority == bestPriority && distance >= closestDistance))
             {
                 continue;
             }
 
+            bestPriority = priority;
             closestDistance = distance;
             currentInteractable = interactable;
         }
+    }
+
+    private int GetInteractionPriority(IInteractable interactable)
+    {
+        if (interactable is ItemInteractable)
+        {
+            return 2;
+        }
+
+        if (HasHeldItem && interactable is ItemSocketInteractable)
+        {
+            return 1;
+        }
+
+        return 0;
     }
 
     private void UpdatePrompt()

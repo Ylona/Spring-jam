@@ -8,6 +8,8 @@ public class ItemInteractable : BaseInteractable
     [SerializeField] private string itemId = "item";
     [SerializeField] private string displayName = "Item";
     [SerializeField] private string pickupPrompt = "Pick Up";
+    [SerializeField] private bool looseUseGravity = true;
+    [SerializeField] private bool looseIsKinematic;
 
     [Header("Events")]
     [SerializeField] private UnityEvent onPickedUp;
@@ -22,9 +24,10 @@ public class ItemInteractable : BaseInteractable
     private Rigidbody attachedRigidbody;
     private Collider[] colliders;
     private bool[] colliderEnabledStates;
-    private bool cachedUseGravity;
-    private bool cachedIsKinematic;
     private PlayerInteractor currentHolder;
+    private ItemSocketInteractable currentSocket;
+    private ItemSocketInteractable loopStartSocket;
+    private Transform loopStartSocketAnchor;
     private bool isPlaced;
 
     public string ItemId => NormalizeId(itemId);
@@ -40,12 +43,6 @@ public class ItemInteractable : BaseInteractable
         startingLocalScale = transform.localScale;
 
         attachedRigidbody = GetComponent<Rigidbody>();
-        if (attachedRigidbody != null)
-        {
-            cachedUseGravity = attachedRigidbody.useGravity;
-            cachedIsKinematic = attachedRigidbody.isKinematic;
-        }
-
         colliders = GetComponentsInChildren<Collider>(true);
         colliderEnabledStates = new bool[colliders.Length];
         for (int i = 0; i < colliders.Length; i++)
@@ -111,82 +108,147 @@ public class ItemInteractable : BaseInteractable
         Vector3 localPosition,
         Quaternion localRotation)
     {
+        RefreshSocketReferenceFromHierarchy();
+        ReleaseFromSocket();
+
         currentHolder = holder;
         isPlaced = false;
-        AttachToTarget(anchor, localPosition, localRotation);
+
+        Transform target = anchor != null ? anchor : transform;
+        transform.SetParent(target, false);
+        transform.localPosition = localPosition;
+        transform.localRotation = localRotation;
+        transform.localScale = startingLocalScale;
+
+        ApplyHeldState();
     }
 
-    public void PlaceIntoSocket(Transform anchor)
+    public void PlaceIntoSocket(
+        ItemSocketInteractable socket,
+        Transform anchor,
+        bool markAsLoopStartPlacement,
+        bool invokePlacedEvent)
     {
         ReleaseFromHolder();
+        RefreshSocketReferenceFromHierarchy();
+        ReleaseFromSocket();
+
+        currentSocket = socket;
         isPlaced = true;
-        AttachToTarget(anchor, Vector3.zero, Quaternion.identity);
-        onPlaced?.Invoke();
+
+        Transform target = anchor != null ? anchor : transform;
+        transform.SetParent(target, false);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+        transform.localScale = startingLocalScale;
+
+        ApplySocketState();
+
+        if (markAsLoopStartPlacement)
+        {
+            loopStartSocket = socket;
+            loopStartSocketAnchor = target;
+        }
+
+        if (invokePlacedEvent)
+        {
+            onPlaced?.Invoke();
+        }
     }
 
     public void DropToWorld(Vector3 worldPosition)
     {
         ReleaseFromHolder();
+        RefreshSocketReferenceFromHierarchy();
+        ReleaseFromSocket();
         isPlaced = false;
 
-        transform.SetParent(startingParent, true);
+        transform.SetParent(loopStartSocket != null ? null : startingParent, true);
         transform.position = worldPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingLocalScale;
 
-        RestorePhysicsState();
+        ApplyLooseState();
         onDropped?.Invoke();
     }
 
     private void RestoreLoopStartState()
     {
-        ReleaseFromHolder();
+        if (currentHolder != null)
+        {
+            PlayerInteractor holder = currentHolder;
+            currentHolder = null;
+            holder.ClearHeldItem(this);
+        }
+
+        currentSocket = null;
         isPlaced = false;
+
+        if (loopStartSocket != null)
+        {
+            PlaceIntoSocket(loopStartSocket, loopStartSocketAnchor, false, false);
+            return;
+        }
 
         transform.SetParent(startingParent, true);
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingLocalScale;
-
-        RestorePhysicsState();
-
-        if (attachedRigidbody != null)
-        {
-            attachedRigidbody.position = startingPosition;
-            attachedRigidbody.rotation = startingRotation;
-            attachedRigidbody.linearVelocity = Vector3.zero;
-            attachedRigidbody.angularVelocity = Vector3.zero;
-            attachedRigidbody.Sleep();
-        }
+        ApplyLooseState();
     }
 
-    private void AttachToTarget(Transform anchor, Vector3 localPosition, Quaternion localRotation)
+    private void ApplyHeldState()
     {
-        transform.SetParent(anchor, false);
-        transform.localPosition = localPosition;
-        transform.localRotation = localRotation;
-
         if (attachedRigidbody != null)
         {
             attachedRigidbody.useGravity = false;
             attachedRigidbody.isKinematic = true;
             attachedRigidbody.linearVelocity = Vector3.zero;
             attachedRigidbody.angularVelocity = Vector3.zero;
+            attachedRigidbody.Sleep();
         }
 
         SetCollidersEnabled(false);
     }
 
-    private void RestorePhysicsState()
+    private void ApplySocketState()
     {
         if (attachedRigidbody != null)
         {
-            attachedRigidbody.useGravity = cachedUseGravity;
-            attachedRigidbody.isKinematic = cachedIsKinematic;
+            attachedRigidbody.useGravity = false;
+            attachedRigidbody.isKinematic = true;
             attachedRigidbody.linearVelocity = Vector3.zero;
             attachedRigidbody.angularVelocity = Vector3.zero;
+            attachedRigidbody.Sleep();
         }
 
+        RestoreColliderStates();
+    }
+
+    private void ApplyLooseState()
+    {
+        if (attachedRigidbody != null)
+        {
+            attachedRigidbody.useGravity = looseUseGravity;
+            attachedRigidbody.isKinematic = looseIsKinematic;
+            attachedRigidbody.linearVelocity = Vector3.zero;
+            attachedRigidbody.angularVelocity = Vector3.zero;
+
+            if (looseIsKinematic)
+            {
+                attachedRigidbody.Sleep();
+            }
+            else
+            {
+                attachedRigidbody.WakeUp();
+            }
+        }
+
+        RestoreColliderStates();
+    }
+
+    private void RestoreColliderStates()
+    {
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i] != null)
@@ -217,6 +279,28 @@ public class ItemInteractable : BaseInteractable
         PlayerInteractor holder = currentHolder;
         currentHolder = null;
         holder.ClearHeldItem(this);
+    }
+
+    private void ReleaseFromSocket()
+    {
+        if (currentSocket == null)
+        {
+            return;
+        }
+
+        ItemSocketInteractable socket = currentSocket;
+        currentSocket = null;
+        socket.ClearPlacedItem(this);
+    }
+
+    private void RefreshSocketReferenceFromHierarchy()
+    {
+        if (currentSocket != null)
+        {
+            return;
+        }
+
+        currentSocket = GetComponentInParent<ItemSocketInteractable>();
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)
