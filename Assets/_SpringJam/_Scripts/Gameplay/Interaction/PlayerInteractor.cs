@@ -1,5 +1,5 @@
+using SpringJam.Dialogue;
 using UnityEngine;
-using SpringJam.Systems.DayLoop;
 
 public class PlayerInteractor : MonoBehaviour
 {
@@ -14,47 +14,82 @@ public class PlayerInteractor : MonoBehaviour
     private void Awake()
     {
         input = GetComponent<PlayerInputHandler>();
-        input.OnInteract += TryInteract;
+        if (input != null)
+        {
+            input.OnInteract += TryInteract;
+        }
+    }
 
+    private void OnDisable()
+    {
+        DialogueRuntimeController.SetInteractionPrompt(string.Empty);
     }
 
     private void OnDestroy()
     {
-        input.OnInteract -= TryInteract;
+        if (input != null)
+        {
+            input.OnInteract -= TryInteract;
+        }
     }
 
     private void Update()
     {
         FindInteractable();
-
+        UpdatePrompt();
     }
 
     private void TryInteract()
     {
+        if (!IsInteractionEnabled() || DialogueRuntimeController.ConsumedInputThisFrame)
+        {
+            return;
+        }
+
         currentInteractable?.Interact();
     }
 
     private void FindInteractable()
     {
         currentInteractable = null;
+        if (interactPoint == null)
+        {
+            return;
+        }
 
         Collider[] hits = Physics.OverlapSphere(interactPoint.position, interactRange, interactableLayer);
-
         float closestDistance = float.MaxValue;
 
         foreach (Collider hit in hits)
         {
-            IInteractable interactable = hit.GetComponent<IInteractable>();
-            if (interactable == null) continue;
+            IInteractable interactable = hit.GetComponentInParent<IInteractable>();
+            if (interactable == null)
+            {
+                continue;
+            }
 
             float distance = Vector3.Distance(interactPoint.position, hit.transform.position);
-
-            if (distance < closestDistance)
+            if (distance >= closestDistance)
             {
-                closestDistance = distance;
-                currentInteractable = interactable;
+                continue;
             }
+
+            closestDistance = distance;
+            currentInteractable = interactable;
         }
+    }
+
+    private void UpdatePrompt()
+    {
+        string promptText = IsInteractionEnabled() && currentInteractable != null
+            ? currentInteractable.GetInteractionText()
+            : string.Empty;
+        DialogueRuntimeController.SetInteractionPrompt(promptText);
+    }
+
+    private bool IsInteractionEnabled()
+    {
+        return input != null && input.IsGameplayInputEnabled;
     }
 
     public IInteractable GetCurrentInteractable()
@@ -64,11 +99,12 @@ public class PlayerInteractor : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (interactPoint == null) return;
+        if (interactPoint == null)
+        {
+            return;
+        }
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(interactPoint.position, interactRange);
     }
-
-
 }

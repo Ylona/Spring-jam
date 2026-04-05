@@ -3,12 +3,18 @@ using UnityEngine.Events;
 
 public class DoorInteractable : BaseInteractable
 {
-    [Header("Door Event")]
+    [Header("Door")]
+    [SerializeField] private string doorPromptText = "Open";
     [SerializeField] private UnityEvent onDoorUsed;
 
     public override void Interact()
     {
-        Debug.Log("This door would definitly open, if I actually made that... ");
+        Debug.Log("This door would definitely open, if I actually made that...", this);
         onDoorUsed?.Invoke();
+    }
+
+    public override string GetInteractionText()
+    {
+        return string.IsNullOrWhiteSpace(doorPromptText) ? base.GetInteractionText() : doorPromptText.Trim();
     }
 }
