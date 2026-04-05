@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="journal-overlay" class="journal-overlay">
+        <ui:VisualElement name="toggle-shell" class="toggle-shell">
+            <ui:Label name="toggle-label" class="toggle-label" text="" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="journal-scrim" class="journal-scrim" />
+
+        <ui:VisualElement name="journal-shell" class="journal-shell">
+            <ui:VisualElement class="journal-header">
+                <ui:Label class="journal-eyebrow" text="Memory Journal" />
+                <ui:Label name="phase-label" class="journal-phase" text="" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="journal-body">
+                <ui:VisualElement class="journal-column">
+                    <ui:Label class="journal-section-title" text="This Loop" />
+                    <ui:Label name="tasks-empty-label" class="journal-empty-label" text="" />
+                    <ui:ScrollView name="tasks-list" class="journal-list" mode="Vertical" />
+                </ui:VisualElement>
+
+                <ui:VisualElement class="journal-column">
+                    <ui:Label class="journal-section-title" text="Remembered Clues" />
+                    <ui:Label name="clues-empty-label" class="journal-empty-label" text="" />
+                    <ui:ScrollView name="clues-list" class="journal-list" mode="Vertical" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:Label name="footer-label" class="journal-footer" text="" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

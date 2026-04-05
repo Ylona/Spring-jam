@@ -1,5 +1,6 @@
 using System;
 using SpringJam.Dialogue;
+using SpringJam.Journal;
 using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
@@ -47,6 +48,8 @@ public class PlayerInputHandler : MonoBehaviour
     {
         DayLoopRuntime runtime = DayLoopRuntime.Instance;
         bool dayAllowsInput = runtime == null || runtime.CurrentPhase == DayLoopPhase.ActiveDay;
-        return dayAllowsInput && !DialogueRuntimeController.IsDialogueOpen;
+        return dayAllowsInput
+            && !DialogueRuntimeController.IsDialogueOpen
+            && !MemoryJournalRuntimeController.IsJournalOpen;
     }
 }

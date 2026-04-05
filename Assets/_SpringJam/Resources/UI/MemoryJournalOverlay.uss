@@ -1,0 +1,241 @@
+.journal-overlay {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    padding-top: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+}
+
+.toggle-shell {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    max-width: 220px;
+    min-height: 44px;
+    padding-top: 8px;
+    padding-right: 14px;
+    padding-bottom: 8px;
+    padding-left: 14px;
+    background-color: rgba(31, 48, 69, 0.84);
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(230, 214, 176, 0.26);
+    border-right-color: rgba(230, 214, 176, 0.26);
+    border-bottom-color: rgba(230, 214, 176, 0.26);
+    border-left-color: rgba(230, 214, 176, 0.26);
+}
+
+.toggle-label {
+    color: rgb(255, 234, 203);
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.journal-scrim {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 18, 29, 0.58);
+}
+
+.journal-shell {
+    align-self: center;
+    width: 92%;
+    max-width: 1280px;
+    min-height: 720px;
+    margin-top: 34px;
+    padding-top: 26px;
+    padding-right: 26px;
+    padding-bottom: 20px;
+    padding-left: 26px;
+    background-color: rgba(244, 235, 214, 0.98);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 28px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-top-color: rgba(117, 74, 52, 0.2);
+    border-right-color: rgba(117, 74, 52, 0.2);
+    border-bottom-color: rgba(117, 74, 52, 0.2);
+    border-left-color: rgba(117, 74, 52, 0.2);
+}
+
+.journal-header {
+    margin-bottom: 18px;
+}
+
+.journal-eyebrow {
+    margin-bottom: 8px;
+    color: rgb(115, 79, 59);
+    font-size: 34px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.journal-phase {
+    color: rgb(92, 81, 70);
+    font-size: 20px;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.journal-body {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.journal-column {
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: 12px;
+    padding-top: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+    background-color: rgba(255, 250, 241, 0.88);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(117, 74, 52, 0.12);
+    border-right-color: rgba(117, 74, 52, 0.12);
+    border-bottom-color: rgba(117, 74, 52, 0.12);
+    border-left-color: rgba(117, 74, 52, 0.12);
+}
+
+.journal-section-title {
+    margin-bottom: 10px;
+    color: rgb(115, 79, 59);
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.journal-empty-label {
+    color: rgb(128, 113, 95);
+    font-size: 18px;
+    white-space: normal;
+}
+
+.journal-list {
+    flex-grow: 1;
+    min-height: 0;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.unity-scroll-view__content-container {
+    padding-bottom: 2px;
+}
+
+.journal-card {
+    margin-bottom: 12px;
+    padding-top: 14px;
+    padding-right: 14px;
+    padding-bottom: 14px;
+    padding-left: 14px;
+    background-color: rgba(248, 244, 236, 0.94);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(117, 74, 52, 0.14);
+    border-right-color: rgba(117, 74, 52, 0.14);
+    border-bottom-color: rgba(117, 74, 52, 0.14);
+    border-left-color: rgba(117, 74, 52, 0.14);
+}
+
+.journal-card-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.journal-card-title {
+    flex-grow: 1;
+    color: rgb(61, 49, 41);
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.journal-card-body {
+    color: rgb(83, 73, 64);
+    font-size: 18px;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.task-badge {
+    margin-left: 12px;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    border-bottom-left-radius: 999px;
+    font-size: 15px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}
+
+.task-badge-sleeping {
+    color: rgb(95, 92, 108);
+    background-color: rgba(196, 196, 210, 0.52);
+}
+
+.task-badge-ready {
+    color: rgb(103, 74, 34);
+    background-color: rgba(242, 214, 153, 0.68);
+}
+
+.task-badge-complete {
+    color: rgb(39, 91, 60);
+    background-color: rgba(170, 220, 181, 0.7);
+}
+
+.clue-category {
+    margin-bottom: 8px;
+    color: rgb(141, 105, 78);
+    font-size: 15px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+    white-space: normal;
+}
+
+.journal-footer {
+    margin-top: 18px;
+    color: rgb(115, 79, 59);
+    font-size: 18px;
+    -unity-text-align: lower-right;
+    white-space: normal;
+}
