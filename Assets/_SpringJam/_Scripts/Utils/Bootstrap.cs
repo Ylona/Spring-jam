@@ -26,17 +26,21 @@ namespace SpringJam2026.Utils
                 .OrderBy(s => s.Priority)
                 .ToList();
             
-            // First we will initialize these
+            // Register the services first before initializing in case there are dependency
+            foreach (var service in services)
+            {
+                ServiceLocator.Register(service);
+            }
+            
+            // Seconds we initialize
             foreach (var service in services)
             {
                 service.Initialize();
 
-                ServiceLocator.Register(service);
-
                 Debug.Log($"[Bootstrap] Initialized: {service.GetType().Name} (Priority: {service.Priority})");
             }
             
-            // Second we will subscribe to events
+            // Lastly we can subscribe to events
             foreach (var service in services)
             {
                 service.Bind();
