@@ -1,0 +1,84 @@
+.root {
+    padding: 10px;
+}
+
+.header {
+    flex-direction: row;
+    margin-bottom: 6px;
+}
+
+.title {
+    -unity-font-style: bold;
+    flex-grow: 1;
+    font-size: 14px;
+}
+
+.filter-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.filter-row Label {
+    margin-right: 6px;
+}
+
+.filter-row TextField {
+    flex-grow: 1;
+}
+
+.event-list {
+    flex-grow: 1;
+}
+
+.event-card {
+    border-width: 1px;
+    border-color: #3a3a3a;
+    border-radius: 4px;
+
+    background-color: #2a2a2a;
+
+    margin-bottom: 8px;
+    padding: 6px;
+}
+
+.event-header {
+    flex-direction: row;
+    align-items: center;
+
+    background-color: #383838;
+
+    padding: 4px;
+    margin-bottom: 4px;
+
+    border-radius: 3px;
+}
+
+.event-name {
+    flex-grow: 1;
+    -unity-font-style: bold;
+    color: #ffffff;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+
+    margin-right: 6px;
+
+    border-radius: 5px;
+}
+
+.log-container {
+    height: 100px;
+
+    background-color: #1f1f1f;
+    border-radius: 3px;
+
+    padding: 4px;
+}
+
+.log-container Label {
+    font-size: 11px;
+    color: #cccccc;
+}
