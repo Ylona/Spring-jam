@@ -163,7 +163,7 @@ namespace SpringJam2026.Editor
             // BROADCAST
             bool canBroadcast = AreAllParametersSupported(evt.Parameters);
             
-            if (evt.Parameters.Length > 0)
+            if (canBroadcast && evt.Parameters.Length > 0)
             {
                 var inputContainer = new VisualElement();
                 inputContainer.AddToClassList("input-container");
