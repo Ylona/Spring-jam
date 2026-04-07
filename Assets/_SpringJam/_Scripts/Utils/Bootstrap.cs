@@ -29,7 +29,7 @@ namespace SpringJam2026.Utils
             // Register the services first before initializing in case there are dependency
             foreach (var service in services)
             {
-                ServiceLocator.Register(service);
+                ServiceLocator.Register(service.GetType(), service);
             }
             
             // Seconds we initialize
@@ -52,6 +52,8 @@ namespace SpringJam2026.Utils
         private void InitializeSystems()
         {
             Debug.Log("Game Initialized");
+
+            ServiceLocator.DebugDumpServices();
         }
     }
 }
