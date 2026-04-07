@@ -33,6 +33,21 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
+        public void GetTaskPresentation_ReturnsSharedBadgeThemeAndFallback()
+        {
+            TaskJournalTaskPresentation bees = TaskJournalPresenter.GetTaskPresentation("guide-bees");
+            TaskJournalTaskPresentation unknown = TaskJournalPresenter.GetTaskPresentation("unknown-task");
+
+            Assert.That(bees.BadgeText, Is.EqualTo("HIVE"));
+            Assert.That(bees.ThemeClass, Is.EqualTo("task-card--bees"));
+            Assert.That(bees.GetStateText(TaskJournalTaskState.Ready), Is.EqualTo("Call the swarm"));
+
+            Assert.That(unknown.BadgeText, Is.EqualTo("TASK"));
+            Assert.That(unknown.ThemeClass, Is.EqualTo("task-card--default"));
+            Assert.That(unknown.GetStateText(TaskJournalTaskState.Complete), Is.EqualTo("Complete"));
+        }
+
+        [Test]
         public void GetTimeBand_UsesSymbolicDayStagesInsteadOfNumbers()
         {
             Assert.That(TaskJournalPresenter.GetTimeBand(DayLoopPhase.StartDay, 0f, 120f), Is.EqualTo(TaskJournalTimeBand.Dawn));

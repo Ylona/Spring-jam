@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
@@ -19,8 +21,101 @@ namespace SpringJam.UI
         Dusk,
     }
 
+    public readonly struct TaskJournalTaskPresentation
+    {
+        public TaskJournalTaskPresentation(
+            string badgeText,
+            string themeClass,
+            string lockedText,
+            string readyText,
+            string completeText)
+        {
+            BadgeText = string.IsNullOrWhiteSpace(badgeText) ? "TASK" : badgeText.Trim();
+            ThemeClass = string.IsNullOrWhiteSpace(themeClass) ? "task-card--default" : themeClass.Trim();
+            LockedText = string.IsNullOrWhiteSpace(lockedText) ? "Waiting" : lockedText.Trim();
+            ReadyText = string.IsNullOrWhiteSpace(readyText) ? "Ready" : readyText.Trim();
+            CompleteText = string.IsNullOrWhiteSpace(completeText) ? "Complete" : completeText.Trim();
+        }
+
+        public string BadgeText { get; }
+        public string ThemeClass { get; }
+        public string LockedText { get; }
+        public string ReadyText { get; }
+        public string CompleteText { get; }
+
+        public string GetStateText(TaskJournalTaskState state)
+        {
+            return state switch
+            {
+                TaskJournalTaskState.Locked => LockedText,
+                TaskJournalTaskState.Ready => ReadyText,
+                _ => CompleteText,
+            };
+        }
+    }
+
     public static class TaskJournalPresenter
     {
+        private static readonly TaskJournalTaskPresentation DefaultPresentation = new TaskJournalTaskPresentation(
+            "TASK",
+            "task-card--default",
+            "Waiting",
+            "Ready",
+            "Complete");
+
+        private static readonly Dictionary<string, TaskJournalTaskPresentation> TaskPresentations =
+            new Dictionary<string, TaskJournalTaskPresentation>(StringComparer.Ordinal)
+            {
+                {
+                    "bloom-flowers",
+                    new TaskJournalTaskPresentation(
+                        "BUD",
+                        "task-card--flowers",
+                        "Still sleeping",
+                        "Ready to bloom",
+                        "Blooming")
+                },
+                {
+                    "guide-bees",
+                    new TaskJournalTaskPresentation(
+                        "HIVE",
+                        "task-card--bees",
+                        "Hive still quiet",
+                        "Call the swarm",
+                        "Pollen carried")
+                },
+                {
+                    "learn-routines",
+                    new TaskJournalTaskPresentation(
+                        "PATH",
+                        "task-card--routines",
+                        "Listening for a clue",
+                        "Watch the valley",
+                        "Patterns learned")
+                },
+                {
+                    "cook-spring-meal",
+                    new TaskJournalTaskPresentation(
+                        "FEAST",
+                        "task-card--meal",
+                        "Awaiting the valley",
+                        "Ready for the table",
+                        "Spring served")
+                },
+            };
+
+        public static TaskJournalTaskPresentation GetTaskPresentation(string taskId)
+        {
+            if (string.IsNullOrWhiteSpace(taskId))
+            {
+                return DefaultPresentation;
+            }
+
+            return TaskPresentations.TryGetValue(taskId.Trim(), out TaskJournalTaskPresentation presentation)
+                ? presentation
+                : DefaultPresentation;
+        }
+
         public static TaskJournalTaskState GetTaskState(DayLoopTaskSnapshot task)
         {
             if (task == null || !task.IsUnlocked)
@@ -35,45 +130,7 @@ namespace SpringJam.UI
         {
             TaskJournalTaskState state = GetTaskState(task);
             string taskId = task != null ? task.TaskId : string.Empty;
-
-            switch (taskId)
-            {
-                case "bloom-flowers":
-                    return state switch
-                    {
-                        TaskJournalTaskState.Locked => "Still sleeping",
-                        TaskJournalTaskState.Ready => "Ready to bloom",
-                        _ => "Blooming",
-                    };
-                case "guide-bees":
-                    return state switch
-                    {
-                        TaskJournalTaskState.Locked => "Hive still quiet",
-                        TaskJournalTaskState.Ready => "Call the swarm",
-                        _ => "Pollen carried",
-                    };
-                case "learn-routines":
-                    return state switch
-                    {
-                        TaskJournalTaskState.Locked => "Listening for a clue",
-                        TaskJournalTaskState.Ready => "Watch the valley",
-                        _ => "Patterns learned",
-                    };
-                case "cook-spring-meal":
-                    return state switch
-                    {
-                        TaskJournalTaskState.Locked => "Awaiting the valley",
-                        TaskJournalTaskState.Ready => "Ready for the table",
-                        _ => "Spring served",
-                    };
-                default:
-                    return state switch
-                    {
-                        TaskJournalTaskState.Locked => "Waiting",
-                        TaskJournalTaskState.Ready => "Ready",
-                        _ => "Complete",
-                    };
-            }
+            return GetTaskPresentation(taskId).GetStateText(state);
         }
 
         public static TaskJournalTimeBand GetTimeBand(DayLoopSnapshot snapshot)

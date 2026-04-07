@@ -15,15 +15,6 @@ namespace SpringJam.Dialogue
         private const string PanelSettingsResourcePath = "UI/DialoguePanelSettings";
         private const int PetalCount = 5;
 
-        private static readonly TaskDescriptor DefaultTaskDescriptor = new TaskDescriptor("TASK", "task-card--default");
-        private static readonly Dictionary<string, TaskDescriptor> TaskDescriptors = new Dictionary<string, TaskDescriptor>(StringComparer.Ordinal)
-        {
-            { "bloom-flowers", new TaskDescriptor("BUD", "task-card--flowers") },
-            { "guide-bees", new TaskDescriptor("HIVE", "task-card--bees") },
-            { "learn-routines", new TaskDescriptor("PATH", "task-card--routines") },
-            { "cook-spring-meal", new TaskDescriptor("FEAST", "task-card--meal") },
-        };
-
         private static DialogueRuntimeController instance;
         private static bool isShuttingDown;
 
@@ -582,12 +573,12 @@ namespace SpringJam.Dialogue
                     continue;
                 }
 
-                TaskDescriptor descriptor = ResolveDescriptor(task.TaskId);
+                TaskJournalTaskPresentation presentation = TaskJournalPresenter.GetTaskPresentation(task.TaskId);
                 VisualElement row = new VisualElement();
                 row.AddToClassList("task-card");
-                row.AddToClassList(descriptor.ThemeClass);
+                row.AddToClassList(presentation.ThemeClass);
 
-                Label markLabel = new Label(descriptor.BadgeText);
+                Label markLabel = new Label(presentation.BadgeText);
                 markLabel.AddToClassList("task-mark");
                 row.Add(markLabel);
 
@@ -630,16 +621,6 @@ namespace SpringJam.Dialogue
             skyBand.EnableInClassList("time-band--high-sun", timeBand == TaskJournalTimeBand.HighSun);
             skyBand.EnableInClassList("time-band--long-light", timeBand == TaskJournalTimeBand.LongLight);
             skyBand.EnableInClassList("time-band--dusk", timeBand == TaskJournalTimeBand.Dusk);
-        }
-
-        private static TaskDescriptor ResolveDescriptor(string taskId)
-        {
-            if (string.IsNullOrWhiteSpace(taskId))
-            {
-                return DefaultTaskDescriptor;
-            }
-
-            return TaskDescriptors.TryGetValue(taskId.Trim(), out TaskDescriptor descriptor) ? descriptor : DefaultTaskDescriptor;
         }
 
         private PanelTextSettings EnsurePanelTextSettings(PanelSettings settings)
@@ -786,18 +767,6 @@ namespace SpringJam.Dialogue
             return runtimeObject.AddComponent<DialogueRuntimeController>();
         }
 
-        private sealed class TaskDescriptor
-        {
-            public TaskDescriptor(string badgeText, string themeClass)
-            {
-                BadgeText = badgeText;
-                ThemeClass = themeClass;
-            }
-
-            public string BadgeText { get; }
-            public string ThemeClass { get; }
-        }
-
         private sealed class TaskRowBinding
         {
             public TaskRowBinding(VisualElement root, Label titleLabel, Label stateLabel)
@@ -813,4 +782,3 @@ namespace SpringJam.Dialogue
         }
     }
 }
-
