@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
-using SpringJam2026.Events;
+using SpringJam2026.Audio;
 using UnityEngine;
 
 namespace SpringJam2026.Utils
@@ -19,12 +20,18 @@ namespace SpringJam2026.Utils
 
         private void InitializeServices()
         {
+            var services = new List<IGameService>();
+            
             // Scan the scene for any GOs that implements IGameService
-            // Order them by the priority (added in the skript)
-            var services = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
-                .OfType<IGameService>()
-                .OrderBy(s => s.Priority)
-                .ToList();
+            var sceneServices = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .OfType<IGameService>();
+            
+            services.AddRange(sceneServices);
+            
+            // Manual addition of C# scripts that extend IGameService (no mono)
+            services.Add(new AudioService());
+            
+            services = services.OrderBy(s => s.Priority).ToList();
             
             // Register the services first before initializing in case there are dependency
             foreach (var service in services)
@@ -54,6 +61,11 @@ namespace SpringJam2026.Utils
             Debug.Log("Game Initialized");
 
             ServiceLocator.DebugDumpServices();
+            
+            // Not the best place to put this but just for testing
+            var audio = ServiceLocator.Get<AudioController>();
+            audio.PlayLoop("musicFieldTheme", audio.library.musicFieldTheme);
+
         }
     }
 }
