@@ -161,16 +161,46 @@ namespace SpringJam2026.Editor
             card.Add(header);
 
             // BROADCAST
-            var broadcastBtn = new Button(() =>
+            bool canBroadcast = AreAllParametersSupported(evt.Parameters);
+            
+            if (evt.Parameters.Length > 0)
             {
-                evt.BroadcastMethod.Invoke(null,
-                    evt.Parameters.Length == 0 ? null : state.inputValues);
-            })
-            {
-                text = "Broadcast"
-            };
+                var inputContainer = new VisualElement();
+                inputContainer.AddToClassList("input-container");
 
-            card.Add(broadcastBtn);
+                for (int i = 0; i < evt.Parameters.Length; i++)
+                {
+                    int index = i;
+                    var paramType = evt.Parameters[i];
+
+                    VisualElement field = CreateFieldForType(paramType, state, index);
+                    inputContainer.Add(field);
+                }
+
+                card.Add(inputContainer);
+            }
+            
+            if (canBroadcast)
+            {
+                var broadcastBtn = new Button(() =>
+                {
+                    evt.BroadcastMethod.Invoke(null,
+                        evt.Parameters.Length == 0 ? null : state.inputValues);
+                })
+                {
+                    text = "Broadcast"
+                };
+
+                card.Add(broadcastBtn);
+            }
+            else
+            {
+                var label = new Label("Broadcast unavailable (unsupported parameters)");
+                label.style.color = Color.yellow;
+                label.style.unityFontStyleAndWeight = FontStyle.Italic;
+
+                card.Add(label);
+            }
 
             // LOGS
             var logScroll = new ScrollView();
@@ -184,6 +214,66 @@ namespace SpringJam2026.Editor
             card.Add(logScroll);
 
             return card;
+        }
+        
+        /**
+         * If we plan to support complex types we need to add it here (2)
+         */
+        private VisualElement CreateFieldForType(Type type, EventState state, int index)
+        {
+            if (type == typeof(bool))
+            {
+                var toggle = new Toggle(type.Name);
+                toggle.value = state.inputValues[index] as bool? ?? false;
+
+                toggle.RegisterValueChangedCallback(evt =>
+                {
+                    state.inputValues[index] = evt.newValue;
+                });
+
+                return toggle;
+            }
+
+            if (type == typeof(int))
+            {
+                var field = new IntegerField(type.Name);
+                field.value = state.inputValues[index] as int? ?? 0;
+
+                field.RegisterValueChangedCallback(evt =>
+                {
+                    state.inputValues[index] = evt.newValue;
+                });
+
+                return field;
+            }
+
+            if (type == typeof(float))
+            {
+                var field = new FloatField(type.Name);
+                field.value = state.inputValues[index] as float? ?? 0f;
+
+                field.RegisterValueChangedCallback(evt =>
+                {
+                    state.inputValues[index] = evt.newValue;
+                });
+
+                return field;
+            }
+
+            if (type == typeof(string))
+            {
+                var field = new TextField(type.Name);
+                field.value = state.inputValues[index] as string ?? "";
+
+                field.RegisterValueChangedCallback(evt =>
+                {
+                    state.inputValues[index] = evt.newValue;
+                });
+
+                return field;
+            }
+
+            return null;
         }
 
         private void ToggleListening(EventInfoData evt, EventState state)
@@ -285,6 +375,29 @@ namespace SpringJam2026.Editor
             catch { }
 
             return "Unknown";
+        }
+        
+        private bool AreAllParametersSupported(Type[] parameters)
+        {
+            foreach (var type in parameters)
+            {
+                if (!IsTypeSupported(type))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * If we plan to support complex types we should add them here (1) and then
+         * add it to the CreateFieldForType() function as well.
+         */
+        private bool IsTypeSupported(Type type)
+        {
+            return type == typeof(bool)
+                   || type == typeof(int)
+                   || type == typeof(float)
+                   || type == typeof(string);
         }
     }
 }
