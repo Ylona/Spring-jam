@@ -47,6 +47,7 @@ public class NpcInteractable : BaseInteractable
     private void CompleteSequence(DialogueSequenceDefinition sequence)
     {
         sequence.ApplyProgressionEffects(DayLoopRuntime.Instance);
+        ApplyInteractionProgression();
         onNpcTalkedTo?.Invoke();
     }
 
