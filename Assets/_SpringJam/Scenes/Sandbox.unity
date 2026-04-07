@@ -276,13 +276,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a09ff9f22754a5a45b3abe711de55082, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
   interactionText: Interact
-  canBePickedUp: 0
   knowledgeIdsToLearn: []
-  taskIdsToComplete:
-  - cook-spring-meal
+  taskIdsToComplete: []
+  canBePickedUp: 1
   itemId: spring-pot
   displayName: Spring Pot
   pickupPrompt: Cook meal
@@ -418,9 +417,9 @@ GameObject:
   m_Component:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
-  - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -428,14 +427,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &330585544
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -578,6 +569,20 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,8 +759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DoorInteractable
   interactionText: Interact
   knowledgeIdsToLearn: []
-  taskIdsToComplete:
-  - bloom-flowers
+  taskIdsToComplete: []
   doorPromptText: Bloom flowers
   onDoorUsed:
     m_PersistentCalls:
@@ -902,7 +906,7 @@ SpriteRenderer:
   m_Size: {x: 0.21, y: 0.21}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &832575517
 GameObject:
@@ -1099,13 +1103,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a09ff9f22754a5a45b3abe711de55082, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
   interactionText: Interact
-  canBePickedUp: 1
   knowledgeIdsToLearn: []
-  taskIdsToComplete:
-  - guide-bees
+  taskIdsToComplete: []
+  canBePickedUp: 1
   itemId: cherry
   displayName: Cherry
   pickupPrompt: Guide bees
@@ -1282,8 +1285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NpcInteractable
   interactionText: Talk
   knowledgeIdsToLearn: []
-  taskIdsToComplete:
-  - learn-routines
+  taskIdsToComplete: []
   fallbackInteractionText: Learn routines
   dialogueVariants:
   - conditions:
@@ -1582,7 +1584,7 @@ SpriteRenderer:
   m_Size: {x: 0.21, y: 0.21}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &1728063065
 GameObject:
@@ -1815,7 +1817,7 @@ SpriteRenderer:
   m_Size: {x: 0.21, y: 0.21}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
 --- !u!1 &2048011937
 GameObject:
