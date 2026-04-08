@@ -4,6 +4,14 @@ using SpringJam.Systems.DayLoop;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum FlowerBloomPuzzleFeedbackState
+{
+    Idle,
+    InProgress,
+    Failed,
+    Completed,
+}
+
 [DisallowMultipleComponent]
 public sealed class FlowerBloomPuzzleController : MonoBehaviour
 {
@@ -13,6 +21,7 @@ public sealed class FlowerBloomPuzzleController : MonoBehaviour
 
     [Header("Events")]
     [SerializeField] private UnityEvent onPuzzleProgressed;
+    [SerializeField] private UnityEvent onPuzzleFailed;
     [SerializeField] private UnityEvent onPuzzleReset;
     [SerializeField] private UnityEvent onPuzzleCompleted;
 
@@ -21,11 +30,14 @@ public sealed class FlowerBloomPuzzleController : MonoBehaviour
     private DayLoopRuntime subscribedRuntime;
     private FlowerBloomPuzzleStateMachine stateMachine;
     private bool hasInitialized;
+    private bool isShowingFailureFeedback;
 
     public bool IsCompleted => stateMachine != null && stateMachine.IsCompleted;
     public int CurrentStepIndex => stateMachine != null ? stateMachine.CurrentStepIndex : 0;
     public string ExpectedFlowerId => stateMachine != null ? stateMachine.ExpectedFlowerId : string.Empty;
     public int StepCount => stateMachine != null ? stateMachine.StepCount : 0;
+    public bool IsShowingFailureFeedback => isShowingFailureFeedback;
+    public FlowerBloomPuzzleFeedbackState CurrentFeedbackState { get; private set; }
 
     private void Awake()
     {
@@ -75,21 +87,27 @@ public sealed class FlowerBloomPuzzleController : MonoBehaviour
             return FlowerBedActivationResult.Ignored;
         }
 
+        if (isShowingFailureFeedback)
+        {
+            ClearFailureFeedback();
+        }
+
         FlowerBedActivationResult result = stateMachine.TryActivate(flowerBed.FlowerId);
         switch (result)
         {
             case FlowerBedActivationResult.Progressed:
                 flowerBed.NotifyActivated();
+                CurrentFeedbackState = FlowerBloomPuzzleFeedbackState.InProgress;
                 onPuzzleProgressed?.Invoke();
                 break;
             case FlowerBedActivationResult.Completed:
-                flowerBed.NotifyActivated();
+                ApplyCompletedFeedback();
                 DayLoopRuntime.Instance?.TryCompleteTask(taskId);
                 onPuzzleCompleted?.Invoke();
                 break;
             case FlowerBedActivationResult.Rejected:
-                flowerBed.NotifyRejectedInteraction();
-                ApplyResetState(true, true);
+                ApplyFailedFeedback();
+                onPuzzleFailed?.Invoke();
                 break;
         }
 
@@ -101,6 +119,39 @@ public sealed class FlowerBloomPuzzleController : MonoBehaviour
         ApplyResetState(true, true);
     }
 
+    private void ApplyFailedFeedback()
+    {
+        isShowingFailureFeedback = true;
+        CurrentFeedbackState = FlowerBloomPuzzleFeedbackState.Failed;
+
+        foreach (FlowerBedInteractable flowerBed in orderedFlowerBeds)
+        {
+            flowerBed?.NotifyFailed();
+        }
+    }
+
+    private void ClearFailureFeedback()
+    {
+        isShowingFailureFeedback = false;
+        CurrentFeedbackState = FlowerBloomPuzzleFeedbackState.Idle;
+
+        foreach (FlowerBedInteractable flowerBed in orderedFlowerBeds)
+        {
+            flowerBed?.ResetState(false);
+        }
+    }
+
+    private void ApplyCompletedFeedback()
+    {
+        isShowingFailureFeedback = false;
+        CurrentFeedbackState = FlowerBloomPuzzleFeedbackState.Completed;
+
+        foreach (FlowerBedInteractable flowerBed in orderedFlowerBeds)
+        {
+            flowerBed?.NotifyCompleted();
+        }
+    }
+
     private void ApplyResetState(bool invokePuzzleResetEvent, bool invokeBedResetEvents)
     {
         if (!EnsureInitialized())
@@ -108,7 +159,10 @@ public sealed class FlowerBloomPuzzleController : MonoBehaviour
             return;
         }
 
+        isShowingFailureFeedback = false;
+        CurrentFeedbackState = FlowerBloomPuzzleFeedbackState.Idle;
         stateMachine.Reset();
+
         foreach (FlowerBedInteractable flowerBed in orderedFlowerBeds)
         {
             flowerBed?.ResetState(invokeBedResetEvents);
