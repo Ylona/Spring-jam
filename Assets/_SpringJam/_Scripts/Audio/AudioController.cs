@@ -125,14 +125,20 @@ namespace SpringJam2026.Audio
 
         public void MuteMaster(bool mute)
         {
-            if (mute && !isMasterMuted)
+            if (mute)
             {
+                if (isMasterMuted)
+                    return;
+
                 masterBus.getVolume(out lastVolumeBeforeMute);
                 masterBus.setVolume(0f);
                 isMasterMuted = true;
             }
-            else if (isMasterMuted)
+            else
             {
+                if (!isMasterMuted)
+                    return;
+
                 masterBus.setVolume(lastVolumeBeforeMute);
                 isMasterMuted = false;
             }
