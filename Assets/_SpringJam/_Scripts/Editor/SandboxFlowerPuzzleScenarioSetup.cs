@@ -51,6 +51,8 @@ namespace SpringJam.EditorTools
 
             controllerObject.ApplyModifiedPropertiesWithoutUndo();
 
+            CreateBlossomPetalPickup(puzzleRoot.transform, new Vector3(0f, 0.35f, -0.9f));
+
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             AssetDatabase.SaveAssets();
@@ -116,6 +118,50 @@ namespace SpringJam.EditorTools
 
             CreateStemAndBloom(bed.transform, blossomScale);
             return interactable;
+        }
+
+        private static void CreateBlossomPetalPickup(Transform parent, Vector3 localPosition)
+        {
+            GameObject petals = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            petals.name = "Blossom Petals";
+            petals.transform.SetParent(parent, false);
+            petals.transform.localPosition = localPosition;
+            petals.transform.localRotation = Quaternion.identity;
+            petals.transform.localScale = new Vector3(0.42f, 0.2f, 0.42f);
+
+            ItemInteractable interactable = petals.AddComponent<ItemInteractable>();
+            SerializedObject itemObject = new SerializedObject(interactable);
+            itemObject.FindProperty("interactionText").stringValue = "Collect Blossom Petals";
+            itemObject.FindProperty("itemId").stringValue = "blossom-petals";
+            itemObject.FindProperty("displayName").stringValue = "Blossom Petals";
+            itemObject.FindProperty("pickupPrompt").stringValue = "Collect Blossom Petals";
+            itemObject.FindProperty("lockedPickupPrompt").stringValue = "Bloom Meadow First";
+            itemObject.FindProperty("lockedPickupMessage").stringValue = "The petals are not ready to gather yet.";
+
+            SerializedProperty requiredTasksProperty = itemObject.FindProperty("requiredCompletedTaskIds");
+            requiredTasksProperty.arraySize = 1;
+            requiredTasksProperty.GetArrayElementAtIndex(0).stringValue = "bloom-flowers";
+            itemObject.ApplyModifiedPropertiesWithoutUndo();
+
+            CreatePetalCluster(petals.transform);
+        }
+
+        private static void CreatePetalCluster(Transform parent)
+        {
+            CreatePetal(parent, new Vector3(-0.18f, 0.08f, 0f), new Vector3(0.24f, 0.12f, 0.18f));
+            CreatePetal(parent, new Vector3(0.18f, 0.08f, 0f), new Vector3(0.24f, 0.12f, 0.18f));
+            CreatePetal(parent, new Vector3(0f, 0.12f, 0.14f), new Vector3(0.22f, 0.1f, 0.16f));
+        }
+
+        private static void CreatePetal(Transform parent, Vector3 localPosition, Vector3 localScale)
+        {
+            GameObject petal = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            petal.name = "petal";
+            petal.transform.SetParent(parent, false);
+            petal.transform.localPosition = localPosition;
+            petal.transform.localRotation = Quaternion.identity;
+            petal.transform.localScale = localScale;
+            RemoveCollider(petal);
         }
 
         private static void CreateStemAndBloom(Transform parent, float blossomScale)
