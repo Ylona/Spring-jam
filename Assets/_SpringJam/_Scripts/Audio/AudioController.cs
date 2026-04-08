@@ -22,6 +22,7 @@ namespace SpringJam2026.Audio
         private Bus masterBus;
         private bool masterBusInitialized;
         private float lastVolumeBeforeMute = 1f;
+        private bool isMasterMuted;
         
         #region IGameService
 
@@ -124,14 +125,16 @@ namespace SpringJam2026.Audio
 
         public void MuteMaster(bool mute)
         {
-            if (mute)
+            if (mute && !isMasterMuted)
             {
                 masterBus.getVolume(out lastVolumeBeforeMute);
                 masterBus.setVolume(0f);
+                isMasterMuted = true;
             }
-            else
+            else if (isMasterMuted)
             {
                 masterBus.setVolume(lastVolumeBeforeMute);
+                isMasterMuted = false;
             }
         }
         
