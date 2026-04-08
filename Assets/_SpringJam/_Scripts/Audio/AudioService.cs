@@ -26,22 +26,28 @@ namespace SpringJam2026.Audio
 
         #region Gameplay Audio
         
-        /**
-         * This is in case we want to play something directly, im still torn between calling "PlayPickup" sound vs.
-         * "Play(pickupSound)" since both cases require us to either access library in the script or a new func
-         * is needed here
-         */
-        public void Play(EventReference sound, Vector3? pos = null)
+        public void PlayFlowerBloom(Vector3? position = null)
         {
-            if (pos.HasValue)
-                controller.PlayOneShot(sound, pos.Value);
+            if (position.HasValue)
+            {
+                controller.PlayOneShot(library.flowerBloom, position.Value);
+            }
             else
-                controller.PlayOneShot(sound);
+            {
+                controller.PlayOneShot(library.flowerBloom);
+            }
         }
 
-        public void PlayPickup(Vector3 position)
+        public void PlayPickupForage(Vector3? position = null)
         {
-            controller.PlayOneShot(library.pickupForage, position);
+            if (position.HasValue)
+            {
+                controller.PlayOneShot(library.pickupForage, position.Value);
+            }
+            else
+            {
+                controller.PlayOneShot(library.pickupForage);
+            }
         }
 
         public void PlayMusic()

@@ -86,7 +86,7 @@ public class ItemInteractable : BaseInteractable
         {
             ApplyInteractionProgression();
             
-            ServiceLocator.Get<AudioService>().PlayPickup(interactor.transform.position);
+            ServiceLocator.Get<AudioService>().PlayPickupForage(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
         }

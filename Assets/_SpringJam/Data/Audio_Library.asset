@@ -12,38 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44c2ccff8a334544ab4f815cb81e143, type: 3}
   m_Name: Audio_Library
   m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.Data.AudioLibrary
-  uiClick:
+  pickupForage:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  explosion:
+      Data1: 582906321
+      Data2: 1291339181
+      Data3: -1598756719
+      Data4: 35308765
+    Path: event:/Player/Player_Pickup_Forage
+  flowerBloom:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  footstep:
+      Data1: 154393781
+      Data2: 1136965672
+      Data3: 263424391
+      Data4: -2144925281
+    Path: event:/Task/Flower Bloom
+  musicFieldTheme:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  musicMain:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  musicCombat:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 490079644
+      Data2: 1093868972
+      Data3: 445771920
+      Data4: -2012645421
+    Path: event:/Music/Field Theme
