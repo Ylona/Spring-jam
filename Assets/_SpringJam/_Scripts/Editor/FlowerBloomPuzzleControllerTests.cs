@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
+using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
 namespace SpringJam.Tests.EditMode
@@ -67,6 +68,39 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void TryActivateBed_CompletionCompletesBloomFlowersTaskWhenRuntimeIsPlayable()
+        {
+            GameObject runtimeRoot = new GameObject("DayLoopRuntime");
+            DayLoopRuntime runtime = runtimeRoot.AddComponent<DayLoopRuntime>();
+            InitializeRuntime(runtime);
+            Assert.That(runtime.StartActiveDay(), Is.True);
+
+            DayLoopTaskSnapshot changedTask = null;
+            runtime.TaskChanged += snapshot =>
+            {
+                if (snapshot.TaskId == "bloom-flowers")
+                {
+                    changedTask = snapshot;
+                }
+            };
+
+            TestScenario scenario = CreateScenario();
+
+            scenario.Controller.TryActivateBed(scenario.Beds[0]);
+            scenario.Controller.TryActivateBed(scenario.Beds[1]);
+            FlowerBedActivationResult result = scenario.Controller.TryActivateBed(scenario.Beds[2]);
+
+            Assert.That(result, Is.EqualTo(FlowerBedActivationResult.Completed));
+            Assert.That(runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.True);
+            Assert.That(changedTask, Is.Not.Null);
+            Assert.That(changedTask.IsCompleted, Is.True);
+
+            DestroyScenario(scenario);
+            Object.DestroyImmediate(runtimeRoot);
+        }
+
         private static TestScenario CreateScenario()
         {
             GameObject root = new GameObject("FlowerPuzzle");
@@ -94,11 +128,29 @@ namespace SpringJam.Tests.EditMode
             return bed;
         }
 
+        private static void InitializeRuntime(DayLoopRuntime runtime)
+        {
+            if (DayLoopRuntime.Instance != runtime)
+            {
+                InvokePrivateMethod(runtime, "Awake");
+            }
+
+            InvokePrivateMethod(runtime, "Start");
+            Assert.That(DayLoopRuntime.Instance, Is.SameAs(runtime));
+        }
+
         private static void SetPrivateField(object target, string fieldName, object value)
         {
             FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null, $"Missing field '{fieldName}' on {target.GetType().Name}.");
             field.SetValue(target, value);
+        }
+
+        private static void InvokePrivateMethod(object target, string methodName)
+        {
+            MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null, $"Missing method '{methodName}' on {target.GetType().Name}.");
+            method.Invoke(target, null);
         }
 
         private static void DestroyScenario(TestScenario scenario)
