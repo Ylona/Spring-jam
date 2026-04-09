@@ -1,4 +1,6 @@
 using SpringJam.Systems.DayLoop;
+using SpringJam2026.Audio;
+using SpringJam2026.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -83,6 +85,8 @@ public class ItemInteractable : BaseInteractable
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
+            
+            ServiceLocator.Get<AudioService>().PlayPickupForage(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
         }
