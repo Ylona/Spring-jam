@@ -71,9 +71,7 @@ namespace SpringJam.Tests.EditMode
         [Test]
         public void TryActivateBed_CompletionCompletesBloomFlowersTaskWhenRuntimeIsPlayable()
         {
-            GameObject runtimeRoot = new GameObject("DayLoopRuntime");
-            DayLoopRuntime runtime = runtimeRoot.AddComponent<DayLoopRuntime>();
-            InitializeRuntime(runtime);
+            DayLoopRuntime runtime = CreateRuntime();
             Assert.That(runtime.StartActiveDay(), Is.True);
 
             DayLoopTaskSnapshot changedTask = null;
@@ -98,7 +96,74 @@ namespace SpringJam.Tests.EditMode
             Assert.That(changedTask.IsCompleted, Is.True);
 
             DestroyScenario(scenario);
-            Object.DestroyImmediate(runtimeRoot);
+            Object.DestroyImmediate(runtime.gameObject);
+        }
+
+        [Test]
+        public void RestartLoop_AfterFailedAttempt_ResetsPuzzleState()
+        {
+            DayLoopRuntime runtime = CreateRuntime();
+            Assert.That(runtime.StartActiveDay(), Is.True);
+
+            TestScenario scenario = CreateScenario();
+            scenario.Controller.TryActivateBed(scenario.Beds[0]);
+            scenario.Controller.TryActivateBed(scenario.Beds[2]);
+
+            runtime.RestartLoop();
+
+            Assert.That(runtime.ActiveLoopIndex, Is.EqualTo(2));
+            Assert.That(runtime.CurrentPhase, Is.EqualTo(DayLoopPhase.StartDay));
+            Assert.That(scenario.Controller.IsCompleted, Is.False);
+            Assert.That(scenario.Controller.CurrentStepIndex, Is.EqualTo(0));
+            Assert.That(scenario.Controller.IsShowingFailureFeedback, Is.False);
+            Assert.That(scenario.Controller.CurrentFeedbackState, Is.EqualTo(FlowerBloomPuzzleFeedbackState.Idle));
+            Assert.That(scenario.Beds[0].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+            Assert.That(scenario.Beds[1].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+            Assert.That(scenario.Beds[2].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+
+            DestroyScenario(scenario);
+            Object.DestroyImmediate(runtime.gameObject);
+        }
+
+        [Test]
+        public void RestartLoop_AfterCompletion_ClearsCompletedPuzzleAndTaskState()
+        {
+            DayLoopRuntime runtime = CreateRuntime();
+            Assert.That(runtime.StartActiveDay(), Is.True);
+
+            TestScenario scenario = CreateScenario();
+            scenario.Controller.TryActivateBed(scenario.Beds[0]);
+            scenario.Controller.TryActivateBed(scenario.Beds[1]);
+            scenario.Controller.TryActivateBed(scenario.Beds[2]);
+            Assert.That(runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot completedTask), Is.True);
+            Assert.That(completedTask.IsCompleted, Is.True);
+
+            runtime.RestartLoop();
+
+            Assert.That(runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot resetTask), Is.True);
+            Assert.That(resetTask.IsCompleted, Is.False);
+            Assert.That(scenario.Controller.IsCompleted, Is.False);
+            Assert.That(scenario.Controller.CurrentStepIndex, Is.EqualTo(0));
+            Assert.That(scenario.Controller.CurrentFeedbackState, Is.EqualTo(FlowerBloomPuzzleFeedbackState.Idle));
+            Assert.That(scenario.Beds[0].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+            Assert.That(scenario.Beds[1].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+            Assert.That(scenario.Beds[2].CurrentFeedbackState, Is.EqualTo(FlowerBedFeedbackState.Dormant));
+
+            DestroyScenario(scenario);
+            Object.DestroyImmediate(runtime.gameObject);
+        }
+
+        private static DayLoopRuntime CreateRuntime()
+        {
+            if (DayLoopRuntime.Instance != null)
+            {
+                Object.DestroyImmediate(DayLoopRuntime.Instance.gameObject);
+            }
+
+            GameObject runtimeRoot = new GameObject("DayLoopRuntime");
+            DayLoopRuntime runtime = runtimeRoot.AddComponent<DayLoopRuntime>();
+            InitializeRuntime(runtime);
+            return runtime;
         }
 
         private static TestScenario CreateScenario()
@@ -113,6 +178,8 @@ namespace SpringJam.Tests.EditMode
             };
 
             SetPrivateField(controller, "orderedFlowerBeds", beds);
+            InvokePrivateMethod(controller, "Awake");
+            InvokePrivateMethod(controller, "OnEnable");
             return new TestScenario(root, controller, beds);
         }
 
@@ -130,11 +197,7 @@ namespace SpringJam.Tests.EditMode
 
         private static void InitializeRuntime(DayLoopRuntime runtime)
         {
-            if (DayLoopRuntime.Instance != runtime)
-            {
-                InvokePrivateMethod(runtime, "Awake");
-            }
-
+            InvokePrivateMethod(runtime, "Awake");
             InvokePrivateMethod(runtime, "Start");
             Assert.That(DayLoopRuntime.Instance, Is.SameAs(runtime));
         }
