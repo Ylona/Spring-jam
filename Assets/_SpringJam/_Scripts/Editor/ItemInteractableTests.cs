@@ -49,6 +49,27 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void RestartLoop_AfterPickup_RelocksPickupAndClearsHeldState()
+        {
+            TestScenario scenario = CreateScenario();
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+
+            scenario.Item.Interact(scenario.Interactor);
+            Assert.That(scenario.Item.IsHeld, Is.True);
+
+            scenario.Runtime.RestartLoop();
+
+            Assert.That(scenario.Runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(scenario.Item.GetInteractionText(scenario.Interactor), Is.EqualTo("Bloom Meadow First"));
+
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -66,13 +87,14 @@ namespace SpringJam.Tests.EditMode
             GameObject itemRoot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             itemRoot.name = "Blossom Petals";
             ItemInteractable item = itemRoot.AddComponent<ItemInteractable>();
-            InvokePrivateMethod(item, "Awake");
             SetPrivateField(item, "itemId", "blossom-petals");
             SetPrivateField(item, "displayName", "Blossom Petals");
             SetPrivateField(item, "pickupPrompt", "Collect Blossom Petals");
             SetPrivateField(item, "lockedPickupPrompt", "Bloom Meadow First");
             SetPrivateField(item, "lockedPickupMessage", "The petals are not ready to gather yet.");
             SetPrivateField(item, "requiredCompletedTaskIds", new List<string> { "bloom-flowers" });
+            InvokePrivateMethod(item, "Awake");
+            InvokePrivateMethod(item, "OnEnable");
 
             return new TestScenario(runtimeRoot, runtime, playerRoot, interactor, itemRoot, item);
         }
