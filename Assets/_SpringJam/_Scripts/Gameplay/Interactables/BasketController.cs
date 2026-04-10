@@ -45,7 +45,7 @@ public sealed class BasketController : MonoBehaviour
 
     private void Update()
     {
-        if (isHidden || basket == null)
+        if (isHidden || hasCollected || basket == null || basket.IsHeld)
         {
             return;
         }

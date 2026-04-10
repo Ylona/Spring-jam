@@ -20,14 +20,18 @@ public sealed class BasketInteractable : ItemInteractable
 
     public override void Interact(PlayerInteractor interactor)
     {
+        bool wasHeldBefore = IsHeld;
+
         base.Interact(interactor);
 
-        if (completeTaskOnPickup)
+        if (!wasHeldBefore && IsHeld)
         {
-            DayLoopRuntime.Instance?.TryCompleteTask(taskId);
-            controller?.NotifyBasketCollected();
-        }
+            if (completeTaskOnPickup)
+            {
+                controller?.NotifyBasketCollected();
+            }
 
-        onBasketPickedUp?.Invoke();
+            onBasketPickedUp?.Invoke();
+        }
     }
 }
