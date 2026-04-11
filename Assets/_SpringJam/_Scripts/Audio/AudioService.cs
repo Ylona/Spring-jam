@@ -26,38 +26,79 @@ namespace SpringJam2026.Audio
 
         #region Gameplay Audio
         
-        public void PlayFlowerBloom(Vector3? position = null)
+        public void PlayBeeMovement(Vector3? position = null)
         {
-            if (position.HasValue)
-            {
-                controller.PlayOneShot(library.flowerBloom, position.Value);
-            }
-            else
-            {
-                controller.PlayOneShot(library.flowerBloom);
-            }
+            PlayOneShot(library.beeMoving, position);
+        }
+        
+        public void PlayBeeSting(Vector3? position = null)
+        {
+            PlayOneShot(library.beeSting, position);
+        }
+        
+        public void StartBeeSwarmLoop()
+        {
+            controller.PlayLoop("beeSwarm", library.beeSwarmLoop);
         }
 
-        public void PlayPickupForage(Vector3? position = null)
+        public void StopBeeSwarmLoop()
         {
-            if (position.HasValue)
-            {
-                controller.PlayOneShot(library.pickupForage, position.Value);
-            }
-            else
-            {
-                controller.PlayOneShot(library.pickupForage);
-            }
+            controller.StopLoop("beeSwarm");
+        }
+        
+        public void PlayLurePotPlace(Vector3? position = null)
+        {
+            PlayOneShot(library.lurePotPlace, position);
+        }
+        
+        public void PlayMintBloom(Vector3? position = null)
+        {
+            PlayOneShot(library.mintBloom, position);
         }
 
-        public void PlayMusic()
+        public void PlayCookingSequence(Vector3? position = null)
         {
-            controller.PlayLoop("music", library.musicFieldTheme);
+            PlayOneShot(library.cookingSequence, position);
+        }
+        
+        public void PlayPrepTable(Vector3? position = null)
+        {
+            PlayOneShot(library.prepTablePlace, position);
+        }
+        
+        public void PlayerFlowerInteract(Vector3? position = null)
+        {
+            PlayOneShot(library.flowerInteract, position);
+        }
+        
+        public void PlayFlowerRight(Vector3? position = null)
+        {
+            PlayOneShot(library.flowerRight, position);
+        }
+        
+        public void PlayFlowerWrong(Vector3? position = null)
+        {
+            PlayOneShot(library.flowerWrong, position);
+        }
+
+        public void StartMusic()
+        {
+            controller.PlayLoop("music", library.fieldTheme);
         }
 
         public void StopMusic()
         {
             controller.StopLoop("music");
+        }
+        
+        public void PlayPlayerFootstepGrass(Vector3? position = null)
+        {
+            PlayOneShot(library.playerFootstepGrass, position);
+        }
+        
+        public void PlayPlayerPickupForage(Vector3? position = null)
+        {
+            PlayOneShot(library.playerPickupForage, position);
         }
 
         #endregion
@@ -77,6 +118,22 @@ namespace SpringJam2026.Audio
         public void MuteMasterVolume(bool mute)
         {
             controller.MuteMaster(mute);
+        }
+        
+        #endregion
+        
+        #region Helper
+        
+        private void PlayOneShot(EventReference clip, Vector3? position = null)
+        {
+            if (position.HasValue)
+            {
+                controller.PlayOneShot(clip, position.Value);
+            }
+            else
+            {
+                controller.PlayOneShot(clip);
+            }
         }
         
         #endregion
