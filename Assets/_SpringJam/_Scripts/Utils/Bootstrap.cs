@@ -63,9 +63,7 @@ namespace SpringJam2026.Utils
             ServiceLocator.DebugDumpServices();
             
             // Not the best place to put this but just for testing
-            var audio = ServiceLocator.Get<AudioController>();
-            audio.PlayLoop("musicFieldTheme", audio.library.musicFieldTheme);
-
+            ServiceLocator.Get<AudioService>()?.StartMusic();
         }
     }
 }
