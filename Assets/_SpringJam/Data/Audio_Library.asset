@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e44c2ccff8a334544ab4f815cb81e143, type: 3}
+  m_Name: Audio_Library
+  m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.Data.AudioLibrary
+  pickupForage:
+    Guid:
+      Data1: 582906321
+      Data2: 1291339181
+      Data3: -1598756719
+      Data4: 35308765
+    Path: event:/Player/Player_Pickup_Forage
+  flowerBloom:
+    Guid:
+      Data1: 154393781
+      Data2: 1136965672
+      Data3: 263424391
+      Data4: -2144925281
+    Path: event:/Task/Flower Bloom
+  musicFieldTheme:
+    Guid:
+      Data1: 490079644
+      Data2: 1093868972
+      Data3: 445771920
+      Data4: -2012645421
+    Path: event:/Music/Field Theme

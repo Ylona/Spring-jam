@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,8 +33,11 @@ namespace SpringJam.Systems.DayLoop
         public event Action<string> KnowledgeLearned;
 
         public DayLoopSnapshot CurrentSnapshot => stateMachine != null ? stateMachine.CurrentSnapshot : null;
+        public int ActiveLoopIndex => stateMachine != null ? stateMachine.ActiveLoopIndex : 0;
         public float DayDurationSeconds => dayDurationSeconds;
         public float StartDayDurationSeconds => startDayDurationSeconds;
+        public float ElapsedSeconds => stateMachine != null ? stateMachine.ElapsedSeconds : 0f;
+        public float PhaseElapsedSeconds => stateMachine != null ? stateMachine.PhaseElapsedSeconds : 0f;
         public DayLoopPhase CurrentPhase => stateMachine != null ? stateMachine.CurrentPhase : DayLoopPhase.StartDay;
 
         private void Awake()
@@ -166,3 +169,4 @@ namespace SpringJam.Systems.DayLoop
         }
     }
 }
+

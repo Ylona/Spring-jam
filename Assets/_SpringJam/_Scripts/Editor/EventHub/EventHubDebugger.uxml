@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:uie="UnityEditor.UIElements">
+
+    <ui:VisualElement class="root">
+
+        <!-- Header -->
+        <ui:VisualElement class="header">
+            <ui:Label text="EventHub Debugger" class="title"/>
+            <ui:Button name="refresh-button" text="Refresh"/>
+        </ui:VisualElement>
+
+        <!-- Filter -->
+        <ui:VisualElement class="filter-row">
+            <ui:Label text="Filter"/>
+            <ui:TextField name="filter-field"/>
+        </ui:VisualElement>
+
+        <!-- Event List -->
+        <ui:ScrollView name="event-list" class="event-list"/>
+
+    </ui:VisualElement>
+
+</ui:UXML>

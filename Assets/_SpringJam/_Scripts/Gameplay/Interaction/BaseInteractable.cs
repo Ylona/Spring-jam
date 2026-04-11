@@ -1,14 +1,27 @@
+using System.Collections.Generic;
+using SpringJam.Systems.DayLoop;
 using UnityEngine;
-using UnityEngine.Events;
+
 public abstract class BaseInteractable : MonoBehaviour, IInteractable
 {
-    public virtual void Interact()
+    [Header("Interaction")]
+    [SerializeField] private string interactionText = "Interact";
+    [Header("Progression")]
+    [SerializeField] private List<string> knowledgeIdsToLearn = new List<string>();
+    [SerializeField] private List<string> taskIdsToComplete = new List<string>();
+
+    public virtual void Interact(PlayerInteractor interactor)
     {
-        Debug.Log("Default interact");
+        Debug.Log("Default interact", this);
     }
 
-    public virtual string GetInteractionText()
+    public virtual string GetInteractionText(PlayerInteractor interactor)
     {
-        return "Interact";
+        return string.IsNullOrWhiteSpace(interactionText) ? "Interact" : interactionText.Trim();
+    }
+
+    protected void ApplyInteractionProgression()
+    {
+        DayLoopProgressionApplier.Apply(DayLoopRuntime.Instance, knowledgeIdsToLearn, taskIdsToComplete);
     }
 }
