@@ -155,6 +155,45 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void Interact_WhenRequiredSocketTaskComplete_MovesBeeSwarmToGreenhouseAnchor()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            meadowAnchorRoot.transform.position = new Vector3(1f, 0.5f, 2f);
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            greenhouseAnchorRoot.transform.position = new Vector3(4f, 0.5f, 5f);
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover);
+
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(greenhouseAnchorRoot.transform.position));
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -187,7 +226,8 @@ namespace SpringJam.Tests.EditMode
         private static SocketScenario CreateSocketScenario(
             string name,
             ItemInteractable startingItem,
-            List<string> requiredCompletedTaskIds = null)
+            List<string> requiredCompletedTaskIds = null,
+            BeeSwarmAnchorMover beeSwarmMoverOnPlacement = null)
         {
             GameObject socketRoot = new GameObject(name);
             Transform anchor = CreateAnchor(socketRoot.transform);
@@ -199,6 +239,8 @@ namespace SpringJam.Tests.EditMode
             SetPrivateField(socket, "requiredCompletedTaskIds", requiredCompletedTaskIds ?? new List<string>());
             SetPrivateField(socket, "lockedPlacementPrompt", "Bloom Meadow First");
             SetPrivateField(socket, "lockedPlacementMessage", "The lure pot needs the meadow in bloom first.");
+            SetPrivateField(socket, "moveBeeSwarmOnPlacement", beeSwarmMoverOnPlacement != null);
+            SetPrivateField(socket, "beeSwarmMoverOnPlacement", beeSwarmMoverOnPlacement);
             InvokePrivateMethod(socket, "Awake");
             InvokePrivateMethod(socket, "OnEnable");
             InvokePrivateMethod(socket, "Start");

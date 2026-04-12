@@ -24,6 +24,10 @@ public class ItemSocketInteractable : BaseInteractable
     [Header("Feedback")]
     [SerializeField] private bool playBeeMovementFeedbackOnPlacement;
 
+    [Header("Bee Swarm")]
+    [SerializeField] private bool moveBeeSwarmOnPlacement;
+    [SerializeField] private BeeSwarmAnchorMover beeSwarmMoverOnPlacement;
+
     [Header("Events")]
     [SerializeField] private UnityEvent onItemPlaced;
 
@@ -155,6 +159,7 @@ public class ItemSocketInteractable : BaseInteractable
         placedItem = item;
         placedItem.PlaceIntoSocket(this, SocketAnchor, false, true);
         onItemPlaced?.Invoke();
+        MoveBeeSwarm();
         PlayPlacementFeedback();
     }
 
@@ -218,7 +223,36 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
-        ServiceLocator.Get<AudioService>()?.PlayBeeMovement(SocketAnchor.position);
+        try
+        {
+            ServiceLocator.Get<AudioService>()?.PlayBeeMovement(SocketAnchor.position);
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogWarning($"Could not play bee movement feedback: {exception.Message}", this);
+        }
+    }
+
+    private void MoveBeeSwarm()
+    {
+        if (!moveBeeSwarmOnPlacement)
+        {
+            return;
+        }
+
+        BeeSwarmAnchorMover mover = beeSwarmMoverOnPlacement;
+        if (mover == null && Application.isPlaying)
+        {
+            mover = FindFirstObjectByType<BeeSwarmAnchorMover>();
+        }
+
+        if (mover == null)
+        {
+            Debug.LogWarning("No bee swarm mover is assigned for this placement socket.", this);
+            return;
+        }
+
+        mover.MoveToGreenhouseAnchor();
     }
 
     private void ApplyStartingItemPlacement()
