@@ -238,9 +238,9 @@ public class ItemInteractable : BaseInteractable
         currentSocket = null;
         isPlaced = false;
 
-        if (loopStartSocket != null)
+        if (loopStartSocket != null && PlaceIntoSocket(loopStartSocket, loopStartSocketAnchor, false, false))
         {
-            PlaceIntoSocket(loopStartSocket, loopStartSocketAnchor, false, false);
+            loopStartSocket.RestoreLoopStartItemReference(this);
             return;
         }
 

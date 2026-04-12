@@ -189,6 +189,17 @@ public class ItemSocketInteractable : BaseInteractable
         }
     }
 
+    internal void RestoreLoopStartItemReference(ItemInteractable item)
+    {
+        if (item == null || loopStartItem != item)
+        {
+            return;
+        }
+
+        placedItem = item;
+        startingItem = item;
+    }
+
     private bool IsPlacementUnlocked()
     {
         if (requiredCompletedTaskIds == null || requiredCompletedTaskIds.Count == 0)
@@ -279,9 +290,14 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
-        placedItem = loopStartItem;
-        startingItem = loopStartItem;
-        loopStartItem.PlaceIntoSocket(this, SocketAnchor, true, false);
+        if (loopStartItem.PlaceIntoSocket(this, SocketAnchor, true, false))
+        {
+            placedItem = loopStartItem;
+            startingItem = loopStartItem;
+            return;
+        }
+
+        placedItem = null;
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)
