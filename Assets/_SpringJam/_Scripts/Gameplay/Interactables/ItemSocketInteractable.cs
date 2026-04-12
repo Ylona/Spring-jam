@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
+using SpringJam2026.Audio;
+using SpringJam2026.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,6 +20,9 @@ public class ItemSocketInteractable : BaseInteractable
     [SerializeField]
     [TextArea(2, 3)]
     private string lockedPlacementMessage = "You cannot place this here yet.";
+
+    [Header("Feedback")]
+    [SerializeField] private bool playBeeMovementFeedbackOnPlacement;
 
     [Header("Events")]
     [SerializeField] private UnityEvent onItemPlaced;
@@ -150,6 +155,7 @@ public class ItemSocketInteractable : BaseInteractable
         placedItem = item;
         placedItem.PlaceIntoSocket(this, SocketAnchor, false, true);
         onItemPlaced?.Invoke();
+        PlayPlacementFeedback();
     }
 
     public void ClearPlacedItem(ItemInteractable item)
@@ -203,6 +209,16 @@ public class ItemSocketInteractable : BaseInteractable
         return string.IsNullOrWhiteSpace(lockedPlacementPrompt)
             ? "Unavailable"
             : lockedPlacementPrompt.Trim();
+    }
+
+    private void PlayPlacementFeedback()
+    {
+        if (!playBeeMovementFeedbackOnPlacement || !Application.isPlaying)
+        {
+            return;
+        }
+
+        ServiceLocator.Get<AudioService>()?.PlayBeeMovement(SocketAnchor.position);
     }
 
     private void ApplyStartingItemPlacement()

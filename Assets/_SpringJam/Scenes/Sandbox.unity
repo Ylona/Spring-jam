@@ -4142,6 +4142,7 @@ MonoBehaviour:
   - bloom-flowers
   lockedPlacementPrompt: Bloom Meadow First
   lockedPlacementMessage: The lure pot needs the meadow in bloom first.
+  playBeeMovementFeedbackOnPlacement: 1
   onItemPlaced:
     m_PersistentCalls:
       m_Calls: []
