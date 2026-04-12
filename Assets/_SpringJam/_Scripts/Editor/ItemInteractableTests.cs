@@ -70,6 +70,39 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void LoopStarted_AfterDestinationPlacement_RestoresLurePotToMeadowStand()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+
+            SocketScenario meadowStand = CreateSocketScenario("Meadow Lure Pot Stand", scenario.Item);
+            SocketScenario greenhouseStand = CreateSocketScenario("Greenhouse Lure Pot Stand", null);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
+
+            greenhouseStand.Socket.PlaceItem(scenario.Item);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(greenhouseStand.Anchor));
+
+            InvokePrivateMethod(meadowStand.Socket, "HandleLoopStarted", (object)null);
+            InvokePrivateMethod(scenario.Item, "HandleLoopStarted", (object)null);
+            InvokePrivateMethod(greenhouseStand.Socket, "HandleLoopStarted", (object)null);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
+
+            DestroySocketScenario(greenhouseStand);
+            DestroySocketScenario(meadowStand);
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -99,6 +132,32 @@ namespace SpringJam.Tests.EditMode
             return new TestScenario(runtimeRoot, runtime, playerRoot, interactor, itemRoot, item);
         }
 
+        private static SocketScenario CreateSocketScenario(string name, ItemInteractable startingItem)
+        {
+            GameObject socketRoot = new GameObject(name);
+            Transform anchor = CreateAnchor(socketRoot.transform);
+            ItemSocketInteractable socket = socketRoot.AddComponent<ItemSocketInteractable>();
+            SetPrivateField(socket, "socketAnchor", anchor);
+            SetPrivateField(socket, "acceptedItemIds", new List<string> { "lure-flower-pot" });
+            SetPrivateField(socket, "startingItem", startingItem);
+            InvokePrivateMethod(socket, "Awake");
+            InvokePrivateMethod(socket, "OnEnable");
+            InvokePrivateMethod(socket, "Start");
+            return new SocketScenario(socketRoot, socket, anchor);
+        }
+
+        private static Transform CreateAnchor(Transform parent)
+        {
+            GameObject anchor = new GameObject("Anchor");
+            anchor.transform.SetParent(parent, false);
+            return anchor.transform;
+        }
+
+        private static void DestroySocketScenario(SocketScenario scenario)
+        {
+            Object.DestroyImmediate(scenario.Root);
+        }
+
         private static void InitializeRuntime(DayLoopRuntime runtime)
         {
             InvokePrivateMethod(runtime, "Awake");
@@ -113,11 +172,11 @@ namespace SpringJam.Tests.EditMode
             field.SetValue(target, value);
         }
 
-        private static void InvokePrivateMethod(object target, string methodName)
+        private static void InvokePrivateMethod(object target, string methodName, params object[] arguments)
         {
             MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null, $"Missing method '{methodName}' on {target.GetType().Name}.");
-            method.Invoke(target, null);
+            method.Invoke(target, arguments.Length == 0 ? null : arguments);
         }
 
         private static void DestroyScenario(TestScenario scenario)
@@ -125,6 +184,20 @@ namespace SpringJam.Tests.EditMode
             Object.DestroyImmediate(scenario.ItemRoot);
             Object.DestroyImmediate(scenario.PlayerRoot);
             Object.DestroyImmediate(scenario.RuntimeRoot);
+        }
+
+        private readonly struct SocketScenario
+        {
+            public SocketScenario(GameObject root, ItemSocketInteractable socket, Transform anchor)
+            {
+                Root = root;
+                Socket = socket;
+                Anchor = anchor;
+            }
+
+            public GameObject Root { get; }
+            public ItemSocketInteractable Socket { get; }
+            public Transform Anchor { get; }
         }
 
         private readonly struct TestScenario

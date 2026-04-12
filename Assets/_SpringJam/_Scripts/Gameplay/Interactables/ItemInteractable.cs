@@ -103,8 +103,8 @@ public class ItemInteractable : BaseInteractable
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
-            
-            ServiceLocator.Get<AudioService>()?.PlayPlayerPickupForage(interactor.transform.position);
+
+            PlayPickupAudio(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
         }
@@ -180,7 +180,11 @@ public class ItemInteractable : BaseInteractable
 
         ReleaseFromHolder();
         RefreshSocketReferenceFromHierarchy();
-        ReleaseFromSocket();
+
+        if (currentSocket != null && currentSocket != socket)
+        {
+            ReleaseFromSocket();
+        }
 
         currentSocket = socket;
         isPlaced = true;
@@ -284,6 +288,16 @@ public class ItemInteractable : BaseInteractable
         }
 
         RestoreColliderStates();
+    }
+
+    private static void PlayPickupAudio(Vector3 position)
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        ServiceLocator.Get<AudioService>()?.PlayPlayerPickupForage(position);
     }
 
     private void ApplyKinematicState(bool useGravity)
