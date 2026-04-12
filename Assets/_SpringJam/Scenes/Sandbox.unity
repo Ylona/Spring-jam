@@ -2137,7 +2137,7 @@ GameObject:
   - component: {fileID: 960429747}
   - component: {fileID: 960429749}
   m_Layer: 0
-  m_Name: bee-station
+  m_Name: Lure Flower Pot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2174,12 +2174,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemInteractable
   interactionText: Interact
   knowledgeIdsToLearn: []
-  taskIdsToComplete:
-  - guide-bees
+  taskIdsToComplete: []
   canBePickedUp: 1
-  itemId: cherry
-  displayName: Cherry
-  pickupPrompt: Guide bees
+  itemId: lure-flower-pot
+  displayName: Lure Flower Pot
+  pickupPrompt: Pick Up Lure Pot
   looseUseGravity: 1
   looseIsKinematic: 0
   requiredCompletedTaskIds: []
