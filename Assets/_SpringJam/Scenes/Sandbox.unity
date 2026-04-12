@@ -3892,7 +3892,7 @@ GameObject:
   - component: {fileID: 2100000012}
   - component: {fileID: 2100000013}
   m_Layer: 0
-  m_Name: Cherry Socket A
+  m_Name: Meadow Lure Pot Stand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3931,8 +3931,9 @@ MonoBehaviour:
   knowledgeIdsToLearn: []
   taskIdsToComplete: []
   socketAnchor: {fileID: 2100000021}
-  acceptedItemIds: []
-  placementPrompt: Place Cherry
+  acceptedItemIds:
+  - lure-flower-pot
+  placementPrompt: Place Lure Pot
   taskIdOnPlacement: 
   startingItem: {fileID: 960429747}
   onItemPlaced:
