@@ -83,7 +83,7 @@ namespace SpringJam.Tests.EditMode
             Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
             Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
 
-            greenhouseStand.Socket.PlaceItem(scenario.Item);
+            Assert.That(greenhouseStand.Socket.PlaceItem(scenario.Item), Is.True);
 
             Assert.That(meadowStand.Socket.HasPlacedItem, Is.False);
             Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
@@ -113,7 +113,9 @@ namespace SpringJam.Tests.EditMode
             SocketScenario greenhouseStand = CreateSocketScenario(
                 "Greenhouse Lure Pot Stand",
                 null,
-                new List<string> { "bloom-flowers" });
+                new List<string> { "bloom-flowers" },
+                null,
+                "guide-bees");
 
             Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Bloom Meadow First"));
 
@@ -122,6 +124,38 @@ namespace SpringJam.Tests.EditMode
             Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
             Assert.That(scenario.Item.IsHeld, Is.True);
             Assert.That(scenario.Interactor.HeldItem, Is.SameAs(scenario.Item));
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenBeeMovementRequiredButMoverMissing_DoesNotCompleteGuideBees()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                null,
+                "guide-bees");
+            SetPrivateField(greenhouseStand.Socket, "moveBeeSwarmOnPlacement", true);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
 
             DestroySocketScenario(greenhouseStand);
             DestroyScenario(scenario);

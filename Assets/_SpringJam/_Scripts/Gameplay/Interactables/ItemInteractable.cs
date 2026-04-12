@@ -166,7 +166,7 @@ public class ItemInteractable : BaseInteractable
         ApplyHeldState();
     }
 
-    public void PlaceIntoSocket(
+    public bool PlaceIntoSocket(
         ItemSocketInteractable socket,
         Transform anchor,
         bool markAsLoopStartPlacement,
@@ -175,7 +175,7 @@ public class ItemInteractable : BaseInteractable
         Transform target = ResolveAttachmentTarget(anchor, socket != null ? socket.SocketAnchor : null, "place");
         if (target == null)
         {
-            return;
+            return false;
         }
 
         ReleaseFromHolder();
@@ -206,6 +206,8 @@ public class ItemInteractable : BaseInteractable
         {
             onPlaced?.Invoke();
         }
+
+        return true;
     }
 
     public void DropToWorld(Vector3 worldPosition)

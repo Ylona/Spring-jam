@@ -94,10 +94,7 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
-        if (interactor.TryPlaceHeldItem(this))
-        {
-            DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
-        }
+        interactor.TryPlaceHeldItem(this);
     }
 
     public override string GetInteractionText(PlayerInteractor interactor)
@@ -146,21 +143,34 @@ public class ItemSocketInteractable : BaseInteractable
 
     public bool CanPlace(ItemInteractable item)
     {
-        return CanAccept(item) && IsPlacementUnlocked();
+        return !HasPlacedItem && CanAccept(item) && IsPlacementUnlocked();
     }
 
-    public void PlaceItem(ItemInteractable item)
+    public bool PlaceItem(ItemInteractable item)
     {
         if (item == null || !CanPlace(item))
         {
-            return;
+            return false;
         }
 
         placedItem = item;
-        placedItem.PlaceIntoSocket(this, SocketAnchor, false, true);
+        if (!placedItem.PlaceIntoSocket(this, SocketAnchor, false, true))
+        {
+            placedItem = null;
+            return false;
+        }
+
         onItemPlaced?.Invoke();
-        MoveBeeSwarm();
+
+        bool placementEffectsSucceeded = TryApplyPlacementEffects();
         PlayPlacementFeedback();
+
+        if (placementEffectsSucceeded && !string.IsNullOrWhiteSpace(taskIdOnPlacement))
+        {
+            DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
+        }
+
+        return true;
     }
 
     public void ClearPlacedItem(ItemInteractable item)
@@ -233,11 +243,11 @@ public class ItemSocketInteractable : BaseInteractable
         }
     }
 
-    private void MoveBeeSwarm()
+    private bool TryApplyPlacementEffects()
     {
         if (!moveBeeSwarmOnPlacement)
         {
-            return;
+            return true;
         }
 
         BeeSwarmAnchorMover mover = beeSwarmMoverOnPlacement;
@@ -249,10 +259,16 @@ public class ItemSocketInteractable : BaseInteractable
         if (mover == null)
         {
             Debug.LogWarning("No bee swarm mover is assigned for this placement socket.", this);
-            return;
+            return false;
         }
 
         mover.MoveToGreenhouseAnchor();
+        if (!mover.IsAtGreenhouse)
+        {
+            Debug.LogWarning("Bee swarm mover is missing its greenhouse anchor.", this);
+        }
+
+        return mover.IsAtGreenhouse;
     }
 
     private void ApplyStartingItemPlacement()
