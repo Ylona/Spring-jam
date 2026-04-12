@@ -194,6 +194,58 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void Interact_WhenBeeSwarmRelocates_CompletesGuideBeesAndUnlocksMintPatch()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            GameObject mintPatchRoot = new GameObject("Mint Patch");
+            ItemInteractable mintPatch = mintPatchRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(mintPatch, "itemId", "mint-bundle");
+            SetPrivateField(mintPatch, "displayName", "Mint Bundle");
+            SetPrivateField(mintPatch, "pickupPrompt", "Harvest Mint");
+            SetPrivateField(mintPatch, "lockedPickupPrompt", "Pollinate Mint First");
+            SetPrivateField(mintPatch, "lockedPickupMessage", "The mint patch is still dormant.");
+            SetPrivateField(mintPatch, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(mintPatch, "Awake");
+            InvokePrivateMethod(mintPatch, "OnEnable");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover,
+                "guide-bees");
+
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.True);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Harvest Mint"));
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(mintPatchRoot);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -227,7 +279,8 @@ namespace SpringJam.Tests.EditMode
             string name,
             ItemInteractable startingItem,
             List<string> requiredCompletedTaskIds = null,
-            BeeSwarmAnchorMover beeSwarmMoverOnPlacement = null)
+            BeeSwarmAnchorMover beeSwarmMoverOnPlacement = null,
+            string taskIdOnPlacement = "")
         {
             GameObject socketRoot = new GameObject(name);
             Transform anchor = CreateAnchor(socketRoot.transform);
@@ -235,6 +288,7 @@ namespace SpringJam.Tests.EditMode
             SetPrivateField(socket, "socketAnchor", anchor);
             SetPrivateField(socket, "acceptedItemIds", new List<string> { "lure-flower-pot" });
             SetPrivateField(socket, "placementPrompt", "Place Lure Pot");
+            SetPrivateField(socket, "taskIdOnPlacement", taskIdOnPlacement);
             SetPrivateField(socket, "startingItem", startingItem);
             SetPrivateField(socket, "requiredCompletedTaskIds", requiredCompletedTaskIds ?? new List<string>());
             SetPrivateField(socket, "lockedPlacementPrompt", "Bloom Meadow First");
