@@ -195,7 +195,7 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
-        public void Interact_WhenBeeSwarmRelocates_CompletesGuideBeesAndUnlocksMintPatch()
+        public void Interact_WhenBeeSwarmRelocates_CompletesGuideBeesAndUnlocksBeeRewards()
         {
             TestScenario scenario = CreateScenario();
             SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
@@ -222,6 +222,17 @@ namespace SpringJam.Tests.EditMode
             InvokePrivateMethod(mintPatch, "Awake");
             InvokePrivateMethod(mintPatch, "OnEnable");
 
+            GameObject honeyShelfRoot = new GameObject("Mara Honey Shelf");
+            ItemInteractable honeyShelf = honeyShelfRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(honeyShelf, "itemId", "honey-jar");
+            SetPrivateField(honeyShelf, "displayName", "Honey Jar");
+            SetPrivateField(honeyShelf, "pickupPrompt", "Take Honey Jar");
+            SetPrivateField(honeyShelf, "lockedPickupPrompt", "Wait For Mara");
+            SetPrivateField(honeyShelf, "lockedPickupMessage", "Mara keeps the honey shelf closed until the bees reach the greenhouse.");
+            SetPrivateField(honeyShelf, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(honeyShelf, "Awake");
+            InvokePrivateMethod(honeyShelf, "OnEnable");
+
             SocketScenario greenhouseStand = CreateSocketScenario(
                 "Greenhouse Lure Pot Stand",
                 null,
@@ -230,6 +241,7 @@ namespace SpringJam.Tests.EditMode
                 "guide-bees");
 
             Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Wait For Mara"));
 
             greenhouseStand.Socket.Interact(scenario.Interactor);
 
@@ -237,8 +249,10 @@ namespace SpringJam.Tests.EditMode
             Assert.That(taskSnapshot.IsCompleted, Is.True);
             Assert.That(swarmMover.IsAtGreenhouse, Is.True);
             Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Harvest Mint"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Take Honey Jar"));
 
             DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(honeyShelfRoot);
             Object.DestroyImmediate(mintPatchRoot);
             Object.DestroyImmediate(swarmRoot);
             Object.DestroyImmediate(greenhouseAnchorRoot);
