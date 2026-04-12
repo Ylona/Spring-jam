@@ -12,6 +12,13 @@ public class ItemSocketInteractable : BaseInteractable
     [SerializeField] private string taskIdOnPlacement = string.Empty;
     [SerializeField] private ItemInteractable startingItem;
 
+    [Header("Availability")]
+    [SerializeField] private List<string> requiredCompletedTaskIds = new List<string>();
+    [SerializeField] private string lockedPlacementPrompt = "Unavailable";
+    [SerializeField]
+    [TextArea(2, 3)]
+    private string lockedPlacementMessage = "You cannot place this here yet.";
+
     [Header("Events")]
     [SerializeField] private UnityEvent onItemPlaced;
 
@@ -68,6 +75,16 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
+        if (!IsPlacementUnlocked())
+        {
+            if (!string.IsNullOrWhiteSpace(lockedPlacementMessage))
+            {
+                Debug.Log(lockedPlacementMessage.Trim(), this);
+            }
+
+            return;
+        }
+
         if (interactor.TryPlaceHeldItem(this))
         {
             DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
@@ -86,7 +103,12 @@ public class ItemSocketInteractable : BaseInteractable
             return placementPrompt;
         }
 
-        return CanAccept(interactor.HeldItem) ? placementPrompt : "Wrong Item";
+        if (!CanAccept(interactor.HeldItem))
+        {
+            return "Wrong Item";
+        }
+
+        return IsPlacementUnlocked() ? placementPrompt : ResolveLockedPrompt();
     }
 
     public bool CanAccept(ItemInteractable item)
@@ -113,9 +135,14 @@ public class ItemSocketInteractable : BaseInteractable
         return false;
     }
 
+    public bool CanPlace(ItemInteractable item)
+    {
+        return CanAccept(item) && IsPlacementUnlocked();
+    }
+
     public void PlaceItem(ItemInteractable item)
     {
-        if (item == null)
+        if (item == null || !CanPlace(item))
         {
             return;
         }
@@ -139,6 +166,43 @@ public class ItemSocketInteractable : BaseInteractable
         {
             startingItem = null;
         }
+    }
+
+    private bool IsPlacementUnlocked()
+    {
+        if (requiredCompletedTaskIds == null || requiredCompletedTaskIds.Count == 0)
+        {
+            return true;
+        }
+
+        DayLoopRuntime runtime = DayLoopRuntime.Instance;
+        if (runtime == null)
+        {
+            return false;
+        }
+
+        foreach (string taskId in requiredCompletedTaskIds)
+        {
+            string normalizedTaskId = NormalizeId(taskId);
+            if (string.IsNullOrEmpty(normalizedTaskId))
+            {
+                continue;
+            }
+
+            if (!runtime.TryGetTask(normalizedTaskId, out DayLoopTaskSnapshot taskSnapshot) || !taskSnapshot.IsCompleted)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private string ResolveLockedPrompt()
+    {
+        return string.IsNullOrWhiteSpace(lockedPlacementPrompt)
+            ? "Unavailable"
+            : lockedPlacementPrompt.Trim();
     }
 
     private void ApplyStartingItemPlacement()

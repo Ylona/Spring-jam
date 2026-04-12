@@ -4138,6 +4138,10 @@ MonoBehaviour:
   placementPrompt: Place Lure Pot
   taskIdOnPlacement: 
   startingItem: {fileID: 0}
+  requiredCompletedTaskIds:
+  - bloom-flowers
+  lockedPlacementPrompt: Bloom Meadow First
+  lockedPlacementMessage: The lure pot needs the meadow in bloom first.
   onItemPlaced:
     m_PersistentCalls:
       m_Calls: []

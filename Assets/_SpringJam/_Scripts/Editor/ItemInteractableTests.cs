@@ -103,6 +103,58 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void Interact_WhenRequiredSocketTaskIncomplete_DoesNotPlaceHeldItem()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" });
+
+            Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Bloom Meadow First"));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(scenario.Item));
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenRequiredSocketTaskComplete_PlacesHeldItem()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" });
+
+            Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Place Lure Pot"));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(greenhouseStand.Anchor));
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -132,14 +184,21 @@ namespace SpringJam.Tests.EditMode
             return new TestScenario(runtimeRoot, runtime, playerRoot, interactor, itemRoot, item);
         }
 
-        private static SocketScenario CreateSocketScenario(string name, ItemInteractable startingItem)
+        private static SocketScenario CreateSocketScenario(
+            string name,
+            ItemInteractable startingItem,
+            List<string> requiredCompletedTaskIds = null)
         {
             GameObject socketRoot = new GameObject(name);
             Transform anchor = CreateAnchor(socketRoot.transform);
             ItemSocketInteractable socket = socketRoot.AddComponent<ItemSocketInteractable>();
             SetPrivateField(socket, "socketAnchor", anchor);
             SetPrivateField(socket, "acceptedItemIds", new List<string> { "lure-flower-pot" });
+            SetPrivateField(socket, "placementPrompt", "Place Lure Pot");
             SetPrivateField(socket, "startingItem", startingItem);
+            SetPrivateField(socket, "requiredCompletedTaskIds", requiredCompletedTaskIds ?? new List<string>());
+            SetPrivateField(socket, "lockedPlacementPrompt", "Bloom Meadow First");
+            SetPrivateField(socket, "lockedPlacementMessage", "The lure pot needs the meadow in bloom first.");
             InvokePrivateMethod(socket, "Awake");
             InvokePrivateMethod(socket, "OnEnable");
             InvokePrivateMethod(socket, "Start");

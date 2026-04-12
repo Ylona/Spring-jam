@@ -173,7 +173,7 @@ public class PlayerInteractor : MonoBehaviour, ILoopResetListener
 
     public bool TryPlaceHeldItem(ItemSocketInteractable socket)
     {
-        if (socket == null || heldItem == null || !socket.CanAccept(heldItem))
+        if (socket == null || heldItem == null || !socket.CanPlace(heldItem))
         {
             return false;
         }
