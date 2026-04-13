@@ -104,7 +104,7 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
-        public void Interact_WhenRequiredSocketTaskIncomplete_DoesNotPlaceHeldItem()
+        public void Interact_BeforeBloomFlowers_DoesNotPlaceLurePotOnGreenhouseStand()
         {
             TestScenario scenario = CreateScenario();
             SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
@@ -118,6 +118,7 @@ namespace SpringJam.Tests.EditMode
                 "guide-bees");
 
             Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Bloom Meadow First"));
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.False);
 
             greenhouseStand.Socket.Interact(scenario.Interactor);
 
