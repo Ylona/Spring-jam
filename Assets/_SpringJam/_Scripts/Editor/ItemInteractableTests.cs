@@ -275,7 +275,7 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
-        public void Interact_WhenBeeSwarmRelocates_CompletesGuideBeesAndUnlocksBeeRewards()
+        public void Interact_WhenBeeSwarmRelocates_AllowsMintAndHoneyAccess()
         {
             TestScenario scenario = CreateScenario();
             SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
@@ -330,6 +330,20 @@ namespace SpringJam.Tests.EditMode
             Assert.That(swarmMover.IsAtGreenhouse, Is.True);
             Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Harvest Mint"));
             Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Take Honey Jar"));
+
+            mintPatch.Interact(scenario.Interactor);
+
+            Assert.That(mintPatch.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(mintPatch));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Hands Full"));
+
+            Assert.That(scenario.Interactor.DropHeldItem(), Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+
+            honeyShelf.Interact(scenario.Interactor);
+
+            Assert.That(honeyShelf.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(honeyShelf));
 
             DestroySocketScenario(greenhouseStand);
             Object.DestroyImmediate(honeyShelfRoot);
