@@ -230,6 +230,51 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
+        public void Interact_WhenLurePotPlacedOnUnlockedGreenhouseStand_CompletesGuideBees()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover,
+                "guide-bees");
+
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.True);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.True);
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
         public void Interact_WhenBeeSwarmRelocates_CompletesGuideBeesAndUnlocksBeeRewards()
         {
             TestScenario scenario = CreateScenario();
