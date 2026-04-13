@@ -1,5 +1,86 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7426087132355663663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bee Task/Lure Pot Place
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Bee Task/Lure Pot Place
+  Guid:
+    Data1: -1055943807
+    Data2: 1084762343
+    Data3: 1453181568
+    Data4: 1835723348
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-7215740690022327214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Flower Task/Flower Right
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Flower Task/Flower Right
+  Guid:
+    Data1: -265703622
+    Data2: 1254392332
+    Data3: 908368562
+    Data4: -1447526003
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-6567621008181345165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bee Task/Bee Movement
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Bee Task/Bee Movement
+  Guid:
+    Data1: 342987075
+    Data2: 1135499178
+    Data3: 1101023885
+    Data4: 1088301743
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 4472
 --- !u!114 &-6301887140510597329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54,6 +135,53 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-5428483204718246974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_SpringJam/Audio/FMod/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639117021835475544
+  FileSizes:
+  - Name: 
+    Value: 1412
+  Exists: 1
+--- !u!114 &-4412116935955313583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Flower Task/Flower Interact
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Flower Task/Flower Interact
+  Guid:
+    Data1: 1146055640
+    Data2: 1234445127
+    Data3: 891015068
+    Data4: 865887387
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4049608611889212996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,6 +227,24 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 29250
+--- !u!114 &-1843372017208032426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: Assets/_SpringJam/Audio/FMod/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639117021835374734
+  FileSizes: []
+  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,26 +258,191 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EventCache
   EditorBanks:
-  - {fileID: 3906850785471336157}
-  - {fileID: -4049608611889212996}
+  - {fileID: -5428483204718246974}
+  - {fileID: -1843372017208032426}
   EditorEvents:
-  - {fileID: -3488812249545456811}
-  - {fileID: -6301887140510597329}
-  - {fileID: -5441226603616344766}
+  - {fileID: 5174973384750652665}
+  - {fileID: 9117365462392359156}
+  - {fileID: 2977396709997148227}
+  - {fileID: 4552490644292266724}
+  - {fileID: 1880651153900846923}
+  - {fileID: -7215740690022327214}
+  - {fileID: -6567621008181345165}
+  - {fileID: 1187739234533362984}
+  - {fileID: -7426087132355663663}
+  - {fileID: 5257205840656303864}
+  - {fileID: 1964551195898658729}
+  - {fileID: 3407887279669882185}
+  - {fileID: -4412116935955313583}
   EditorParameters: []
   MasterBanks:
-  - {fileID: -4049608611889212996}
+  - {fileID: -1843372017208032426}
   StringsBanks:
-  - {fileID: 3906850785471336157}
+  - {fileID: -5428483204718246974}
   cacheVersion: 131858
-  cacheTime: 639115351318465355
+  cacheTime: 639117021835475544
   SerializableEventsDict:
   - key: event:/Music/Field Theme
     index: 0
-  - key: event:/Task/Flower Bloom
-    index: 1
   - key: event:/Player/Player_Pickup_Forage
+    index: 1
+  - key: event:/Flower Task/Flower Wrong
     index: 2
+  - key: event:/Player/Player FS Grass
+    index: 3
+  - key: event:/Cooking Task/Prep Table place
+    index: 4
+  - key: event:/Flower Task/Flower Right
+    index: 5
+  - key: event:/Bee Task/Bee Movement
+    index: 6
+  - key: event:/Bee Task/Bee Sting
+    index: 7
+  - key: event:/Bee Task/Lure Pot Place
+    index: 8
+  - key: event:/Bee Task/Bee Swarm Loop
+    index: 9
+  - key: event:/Bee Task/Mint Bloom
+    index: 10
+  - key: event:/Cooking Task/Cooking Sequence
+    index: 11
+  - key: event:/Flower Task/Flower Interact
+    index: 12
+--- !u!114 &1187739234533362984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bee Task/Bee Sting
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Bee Task/Bee Sting
+  Guid:
+    Data1: -959737734
+    Data2: 1275586280
+    Data3: 2120844421
+    Data4: -1359924471
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1880651153900846923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Cooking Task/Prep Table place
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Cooking Task/Prep Table place
+  Guid:
+    Data1: -14096600
+    Data2: 1157963805
+    Data3: -1829427326
+    Data4: 1944786319
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1964551195898658729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bee Task/Mint Bloom
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Bee Task/Mint Bloom
+  Guid:
+    Data1: 154393781
+    Data2: 1136965672
+    Data3: 263424391
+    Data4: -2144925281
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &2977396709997148227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Flower Task/Flower Wrong
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Flower Task/Flower Wrong
+  Guid:
+    Data1: -1307245048
+    Data2: 1278735863
+    Data3: -1910159222
+    Data4: -1764995905
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &3407887279669882185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Cooking Task/Cooking Sequence
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Cooking Task/Cooking Sequence
+  Guid:
+    Data1: 311610054
+    Data2: 1239858670
+    Data3: -305627734
+    Data4: -1825141439
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &3906850785471336157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,3 +463,111 @@ MonoBehaviour:
   - Name: 
     Value: 896
   Exists: 1
+--- !u!114 &4552490644292266724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player/Player FS Grass
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Player/Player FS Grass
+  Guid:
+    Data1: 1637540384
+    Data2: 1339223540
+    Data3: -646020192
+    Data4: 1872340506
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &5174973384750652665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Music/Field Theme
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Music/Field Theme
+  Guid:
+    Data1: 490079644
+    Data2: 1093868972
+    Data3: 445771920
+    Data4: -2012645421
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 29250
+--- !u!114 &5257205840656303864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Bee Task/Bee Swarm Loop
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Bee Task/Bee Swarm Loop
+  Guid:
+    Data1: 1772980658
+    Data2: 1218407897
+    Data3: -965000270
+    Data4: -457284024
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 3088
+--- !u!114 &9117365462392359156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player/Player_Pickup_Forage
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Player/Player_Pickup_Forage
+  Guid:
+    Data1: 582906321
+    Data2: 1291339181
+    Data3: -1598756719
+    Data4: 35308765
+  Banks:
+  - {fileID: -1843372017208032426}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
