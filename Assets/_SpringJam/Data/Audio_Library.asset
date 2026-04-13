@@ -12,24 +12,94 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44c2ccff8a334544ab4f815cb81e143, type: 3}
   m_Name: Audio_Library
   m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.Data.AudioLibrary
-  pickupForage:
+  beeMoving:
     Guid:
-      Data1: 582906321
-      Data2: 1291339181
-      Data3: -1598756719
-      Data4: 35308765
-    Path: event:/Player/Player_Pickup_Forage
-  flowerBloom:
+      Data1: 342987075
+      Data2: 1135499178
+      Data3: 1101023885
+      Data4: 1088301743
+    Path: event:/Bee Task/Bee Movement
+  beeSting:
+    Guid:
+      Data1: -959737734
+      Data2: 1275586280
+      Data3: 2120844421
+      Data4: -1359924471
+    Path: event:/Bee Task/Bee Sting
+  beeSwarmLoop:
+    Guid:
+      Data1: 1772980658
+      Data2: 1218407897
+      Data3: -965000270
+      Data4: -457284024
+    Path: event:/Bee Task/Bee Swarm Loop
+  lurePotPlace:
+    Guid:
+      Data1: -1055943807
+      Data2: 1084762343
+      Data3: 1453181568
+      Data4: 1835723348
+    Path: event:/Bee Task/Lure Pot Place
+  mintBloom:
     Guid:
       Data1: 154393781
       Data2: 1136965672
       Data3: 263424391
       Data4: -2144925281
-    Path: event:/Task/Flower Bloom
-  musicFieldTheme:
+    Path: event:/Bee Task/Mint Bloom
+  cookingSequence:
+    Guid:
+      Data1: 311610054
+      Data2: 1239858670
+      Data3: -305627734
+      Data4: -1825141439
+    Path: event:/Cooking Task/Cooking Sequence
+  prepTablePlace:
+    Guid:
+      Data1: -14096600
+      Data2: 1157963805
+      Data3: -1829427326
+      Data4: 1944786319
+    Path: event:/Cooking Task/Prep Table place
+  flowerInteract:
+    Guid:
+      Data1: 1146055640
+      Data2: 1234445127
+      Data3: 891015068
+      Data4: 865887387
+    Path: event:/Flower Task/Flower Interact
+  flowerRight:
+    Guid:
+      Data1: -265703622
+      Data2: 1254392332
+      Data3: 908368562
+      Data4: -1447526003
+    Path: event:/Flower Task/Flower Right
+  flowerWrong:
+    Guid:
+      Data1: -1307245048
+      Data2: 1278735863
+      Data3: -1910159222
+      Data4: -1764995905
+    Path: event:/Flower Task/Flower Wrong
+  fieldTheme:
     Guid:
       Data1: 490079644
       Data2: 1093868972
       Data3: 445771920
       Data4: -2012645421
     Path: event:/Music/Field Theme
+  playerFootstepGrass:
+    Guid:
+      Data1: 1637540384
+      Data2: 1339223540
+      Data3: -646020192
+      Data4: 1872340506
+    Path: event:/Player/Player FS Grass
+  playerPickupForage:
+    Guid:
+      Data1: 582906321
+      Data2: 1291339181
+      Data3: -1598756719
+      Data4: 35308765
+    Path: event:/Player/Player_Pickup_Forage

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
 using SpringJam2026.Audio;
 using SpringJam2026.Utils;
@@ -13,6 +14,13 @@ public class ItemInteractable : BaseInteractable
     [SerializeField] private string pickupPrompt = "Pick Up";
     [SerializeField] private bool looseUseGravity = true;
     [SerializeField] private bool looseIsKinematic;
+
+    [Header("Availability")]
+    [SerializeField] private List<string> requiredCompletedTaskIds = new List<string>();
+    [SerializeField] private string lockedPickupPrompt = "Unavailable";
+    [SerializeField]
+    [TextArea(2, 3)]
+    private string lockedPickupMessage = "You cannot pick this up yet.";
 
     [Header("Events")]
     [SerializeField] private UnityEvent onPickedUp;
@@ -82,11 +90,21 @@ public class ItemInteractable : BaseInteractable
             return;
         }
 
+        if (!IsPickupUnlocked())
+        {
+            if (!string.IsNullOrWhiteSpace(lockedPickupMessage))
+            {
+                Debug.Log(lockedPickupMessage.Trim(), this);
+            }
+
+            return;
+        }
+
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
             
-            ServiceLocator.Get<AudioService>().PlayPickupForage(interactor.transform.position);
+            ServiceLocator.Get<AudioService>()?.PlayPlayerPickupForage(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
         }
@@ -106,9 +124,12 @@ public class ItemInteractable : BaseInteractable
 
         if (!canBePickedUp)
         {
-            return string.IsNullOrWhiteSpace(pickupPrompt)
-                ? base.GetInteractionText(interactor)
-                : pickupPrompt.Trim();
+            return ResolvePickupPrompt(interactor);
+        }
+
+        if (!IsPickupUnlocked())
+        {
+            return ResolveLockedPrompt();
         }
 
         if (interactor != null && interactor.HasHeldItem)
@@ -116,9 +137,7 @@ public class ItemInteractable : BaseInteractable
             return "Hands Full";
         }
 
-        return string.IsNullOrWhiteSpace(pickupPrompt)
-            ? base.GetInteractionText(interactor)
-            : pickupPrompt.Trim();
+        return ResolvePickupPrompt(interactor);
     }
 
     public void AttachToHolder(
@@ -357,6 +376,50 @@ public class ItemInteractable : BaseInteractable
         }
 
         return target;
+    }
+
+    private string ResolvePickupPrompt(PlayerInteractor interactor)
+    {
+        return string.IsNullOrWhiteSpace(pickupPrompt)
+            ? base.GetInteractionText(interactor)
+            : pickupPrompt.Trim();
+    }
+
+    private string ResolveLockedPrompt()
+    {
+        return string.IsNullOrWhiteSpace(lockedPickupPrompt)
+            ? "Unavailable"
+            : lockedPickupPrompt.Trim();
+    }
+
+    private bool IsPickupUnlocked()
+    {
+        if (requiredCompletedTaskIds == null || requiredCompletedTaskIds.Count == 0)
+        {
+            return true;
+        }
+
+        DayLoopRuntime runtime = DayLoopRuntime.Instance;
+        if (runtime == null)
+        {
+            return false;
+        }
+
+        foreach (string taskId in requiredCompletedTaskIds)
+        {
+            string normalizedTaskId = NormalizeId(taskId);
+            if (string.IsNullOrEmpty(normalizedTaskId))
+            {
+                continue;
+            }
+
+            if (!runtime.TryGetTask(normalizedTaskId, out DayLoopTaskSnapshot taskSnapshot) || !taskSnapshot.IsCompleted)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)
