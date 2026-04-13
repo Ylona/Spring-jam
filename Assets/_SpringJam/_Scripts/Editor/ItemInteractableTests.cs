@@ -341,7 +341,7 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
-        public void RestartLoop_AfterBeeRewardsUnlocked_ResetsBeePuzzleState()
+        public void RestartLoop_AfterBeePuzzleProgress_RestoresInitialBeePuzzleState()
         {
             TestScenario scenario = CreateScenario();
             SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
@@ -400,15 +400,19 @@ namespace SpringJam.Tests.EditMode
 
             scenario.Runtime.RestartLoop();
 
-            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
-            Assert.That(taskSnapshot.IsCompleted, Is.False);
+            Assert.That(scenario.Runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot bloomTaskSnapshot), Is.True);
+            Assert.That(bloomTaskSnapshot.IsCompleted, Is.False);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot guideBeesTaskSnapshot), Is.True);
+            Assert.That(guideBeesTaskSnapshot.IsCompleted, Is.False);
             Assert.That(swarmMover.IsAtGreenhouse, Is.False);
             Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
             Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
             Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Wait For Mara"));
             Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
             Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.False);
             Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
             Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
             Assert.That(scenario.Interactor.HeldItem, Is.Null);
 
