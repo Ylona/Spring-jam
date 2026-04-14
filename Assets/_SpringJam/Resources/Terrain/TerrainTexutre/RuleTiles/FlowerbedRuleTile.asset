@@ -19,13 +19,17 @@ MonoBehaviour:
   - m_Id: 3
     m_Sprites:
     - {fileID: 203238195, guid: d5e182013a7464d40bd33fb7f6c0c475, type: 3}
+    - {fileID: 132903688, guid: d5e182013a7464d40bd33fb7f6c0c475, type: 3}
+    - {fileID: 1094742433, guid: d5e182013a7464d40bd33fb7f6c0c475, type: 3}
+    - {fileID: 862236722, guid: d5e182013a7464d40bd33fb7f6c0c475, type: 3}
+    - {fileID: 982174703, guid: d5e182013a7464d40bd33fb7f6c0c475, type: 3}
     m_GameObject: {fileID: 0}
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
-    m_PerlinScale: 0.5
-    m_Output: 0
+    m_PerlinScale: 0.817
+    m_Output: 1
     m_ColliderType: 0
-    m_RandomTransform: 0
+    m_RandomTransform: 5
     m_Neighbors: 0100000001000000010000000100000001000000010000000100000001000000
     m_NeighborPositions:
     - {x: 0, y: 1, z: 0}
@@ -112,9 +116,9 @@ MonoBehaviour:
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
     m_PerlinScale: 0.5
-    m_Output: 0
+    m_Output: 1
     m_ColliderType: 0
-    m_RandomTransform: 0
+    m_RandomTransform: 2
     m_Neighbors: 0200000001000000
     m_NeighborPositions:
     - {x: 0, y: -1, z: 0}
@@ -127,9 +131,9 @@ MonoBehaviour:
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
     m_PerlinScale: 0.5
-    m_Output: 0
+    m_Output: 1
     m_ColliderType: 0
-    m_RandomTransform: 0
+    m_RandomTransform: 3
     m_Neighbors: 0200000001000000
     m_NeighborPositions:
     - {x: -1, y: 0, z: 0}
@@ -142,9 +146,9 @@ MonoBehaviour:
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
     m_PerlinScale: 0.5
-    m_Output: 0
+    m_Output: 1
     m_ColliderType: 0
-    m_RandomTransform: 0
+    m_RandomTransform: 3
     m_Neighbors: 0200000001000000
     m_NeighborPositions:
     - {x: 1, y: 0, z: 0}
@@ -156,10 +160,10 @@ MonoBehaviour:
     m_GameObject: {fileID: 0}
     m_MinAnimationSpeed: 1
     m_MaxAnimationSpeed: 1
-    m_PerlinScale: 0.5
-    m_Output: 0
+    m_PerlinScale: 0.168
+    m_Output: 1
     m_ColliderType: 0
-    m_RandomTransform: 0
+    m_RandomTransform: 2
     m_Neighbors: 0200000001000000
     m_NeighborPositions:
     - {x: 0, y: 1, z: 0}
