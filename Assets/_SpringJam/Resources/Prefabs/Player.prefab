@@ -249,6 +249,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   interactPoint: {fileID: 305529562707431105}
+  heldItemAnchor: {fileID: 0}
+  heldItemLocalPosition: {x: 0.45, y: 0.5, z: 0}
+  heldItemLocalEulerAngles: {x: 0, y: 0, z: 0}
+  dropDistance: 0.75
+  dropHeightOffset: 0.15
 --- !u!54 &2438899782924322314
 Rigidbody:
   m_ObjectHideFlags: 0
