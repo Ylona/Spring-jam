@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_SpringJam/Resources/UI/PauseMenu/PauseMenu.uss?fileID=7433441132597879392&amp;guid=267c5e1f69f9ec0418b32c348ac838b3&amp;type=3#PauseMenu"/>
+    <ui:VisualElement name="root" class="root">
+        <ui:VisualElement class="menu" style="background-image: url(&quot;project://database/Assets/_SpringJam/Art/UI/ui-placeholders.png?fileID=-2105526474&amp;guid=f8d162ba5b7e5f44c9642a625ea52d01&amp;type=3#panel&quot;);">
+            <ui:Image source="project://database/Assets/_SpringJam/Art/Sprites/springtopia-logo.png?fileID=2800000&amp;guid=ef3f4ac5bf31e884ca08624034772b8b&amp;type=3#springtopia-logo"/>
+            <ui:Button name="resumeButton" text="Resume" class="button" style="background-image: url(&quot;project://database/Assets/_SpringJam/Art/UI/ui-placeholders.png?fileID=-582672648&amp;guid=f8d162ba5b7e5f44c9642a625ea52d01&amp;type=3#button&quot;); border-left-width: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-left-color: rgba(149, 149, 149, 0); border-right-color: rgba(149, 149, 149, 0); border-top-color: rgba(149, 149, 149, 0); border-bottom-color: rgba(149, 149, 149, 0);"/>
+            <ui:Button name="restartButton" text="Restart" class="button" style="background-image: url(&quot;project://database/Assets/_SpringJam/Art/UI/ui-placeholders.png?fileID=-582672648&amp;guid=f8d162ba5b7e5f44c9642a625ea52d01&amp;type=3#button&quot;); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;"/>
+            <ui:Label text="Audio" class="section-header" style="color: rgb(0, 0, 0); -unity-text-align: upper-center;"/>
+            <ui:Slider name="volumeSlider" low-value="0" high-value="1" value="1" class="volume-slider"/>
+            <ui:Toggle name="muteToggle" text="Mute" class="mute-toggle" style="width: 63px; justify-content: center; right: auto; left: auto; flex-direction: row; align-self: center; align-items: center; color: rgb(0, 0, 0); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-text-align: upper-left;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

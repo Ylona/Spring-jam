@@ -33,21 +33,14 @@ namespace SpringJam2026.Utils
         {
             if (_services == null || _services.Count == 0)
             {
-                UnityEngine.Debug.Log("[ServiceLocator] No services registered.");
                 return;
             }
-
-            UnityEngine.Debug.Log($"[ServiceLocator] Dumping {_services.Count} services:");
-
+            
             foreach (var kvp in _services)
             {
                 var keyType = kvp.Key;
                 var instance = kvp.Value;
                 var concreteType = instance?.GetType();
-
-                UnityEngine.Debug.Log(
-                    $"[ServiceLocator] Key: {keyType.FullName} | Instance: {concreteType?.FullName}"
-                );
             }
         }
     }   
