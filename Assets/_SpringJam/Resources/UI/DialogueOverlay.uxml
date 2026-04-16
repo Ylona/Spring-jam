@@ -1,5 +1,21 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="DialogueOverlay.uss" />
+
     <ui:VisualElement name="dialogue-overlay" class="dialogue-overlay">
+        <ui:VisualElement name="journal-shell" class="journal-shell">
+            <ui:Label name="journal-title" class="journal-title" text="Spring Weave" />
+            <ui:VisualElement name="time-shell" class="time-shell">
+                <ui:VisualElement name="sky-band" class="sky-band time-band--dawn">
+                    <ui:VisualElement name="sun-track" class="sun-track">
+                        <ui:VisualElement name="sun-disc" class="sun-disc" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="petal-strip" class="petal-strip" />
+                <ui:Label name="time-hint-label" class="time-hint-label" text="Dawn hush" />
+            </ui:VisualElement>
+            <ui:VisualElement name="task-list" class="task-list" />
+        </ui:VisualElement>
+
         <ui:VisualElement name="bottom-stack" class="bottom-stack">
             <ui:VisualElement name="prompt-shell" class="prompt-shell">
                 <ui:Label name="prompt-label" class="prompt-label" text="" />
