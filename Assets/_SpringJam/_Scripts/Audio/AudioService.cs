@@ -93,11 +93,13 @@ namespace SpringJam2026.Audio
 
         public void StartMusic()
         {
-            controller.PlayLoop("music", library.forestAmbience);
+            controller.PlayLoop("forest-ambience", library.forestAmbience);
+            controller.PlayLoop("music", library.zoneMusicSwitch);
         }
 
         public void StopMusic()
         {
+            controller.StopLoop("forest-ambience");
             controller.StopLoop("music");
         }
         
