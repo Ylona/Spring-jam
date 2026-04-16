@@ -83,7 +83,7 @@ namespace SpringJam2026.Audio
 
         public void StartMusic()
         {
-            controller.PlayLoop("music", library.fieldTheme);
+            controller.PlayLoop("music", library.forestAmbience);
         }
 
         public void StopMusic()
@@ -92,6 +92,21 @@ namespace SpringJam2026.Audio
         }
         
         public void PlayPlayerFootstepGrass(Vector3? position = null)
+        {
+            PlayOneShot(library.playerFootstepGrass, position);
+        }
+        
+        public void PlayPlayerFootstepDirt(Vector3? position = null)
+        {
+            PlayOneShot(library.playerFootstepDirt, position);
+        }
+        
+        public void PlayPlayerFootstepWood(Vector3? position = null)
+        {
+            PlayOneShot(library.playerFootstepWood, position);
+        }
+        
+        public void PlayPlayerFootstepCobblestone(Vector3? position = null)
         {
             PlayOneShot(library.playerFootstepGrass, position);
         }

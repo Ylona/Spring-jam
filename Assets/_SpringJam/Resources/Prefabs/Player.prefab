@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 2438899782924322314}
   - component: {fileID: 5144099727759075635}
   - component: {fileID: 6501150216397800123}
+  - component: {fileID: 3395666221285522472}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -318,3 +319,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   captureStateOnAwake: 1
   resetRigidbodies: 1
+--- !u!114 &3395666221285522472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069800074909061852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7756e42cd850cd04a9a8d58b4936343f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.PlayerFootstep
+  baseStepInterval: 0.4
+  input: {fileID: 0}
+  defaultSurface: 0

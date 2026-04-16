@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e44c2ccff8a334544ab4f815cb81e143, type: 3}
   m_Name: Audio_Library
   m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.Data.AudioLibrary
+  forestAmbience:
+    Guid:
+      Data1: 163556949
+      Data2: 1281182593
+      Data3: 1521540795
+      Data4: -191468099
+    Path: event:/Ambience/Forest Ambience
   beeMoving:
     Guid:
       Data1: 342987075
@@ -26,6 +33,13 @@ MonoBehaviour:
       Data3: 2120844421
       Data4: -1359924471
     Path: event:/Bee Task/Bee Sting
+  beeSuccessJingle:
+    Guid:
+      Data1: -1089690337
+      Data2: 1265334157
+      Data3: 858042767
+      Data4: -154835137
+    Path: event:/Bee Task/Bee Success Jingle
   beeSwarmLoop:
     Guid:
       Data1: 1772980658
@@ -82,13 +96,55 @@ MonoBehaviour:
       Data3: -1910159222
       Data4: -1764995905
     Path: event:/Flower Task/Flower Wrong
-  fieldTheme:
+  cookingSuccess:
     Guid:
-      Data1: 490079644
-      Data2: 1093868972
-      Data3: 445771920
-      Data4: -2012645421
-    Path: event:/Music/Field Theme
+      Data1: -771996143
+      Data2: 1302822376
+      Data3: -69050179
+      Data4: -877300521
+    Path: event:/Music/Cooking Success
+  morningIntro:
+    Guid:
+      Data1: -613920676
+      Data2: 1262188236
+      Data3: 1866544573
+      Data4: 241084757
+    Path: event:/Music/Morning Intro
+  nightOutro:
+    Guid:
+      Data1: -725650776
+      Data2: 1128155622
+      Data3: -1920175943
+      Data4: -1504800098
+    Path: event:/Music/Night Outro
+  springVictory:
+    Guid:
+      Data1: 2036034727
+      Data2: 1098275240
+      Data3: 774765971
+      Data4: -1520945173
+    Path: event:/Music/Spring Victory
+  titleThemeLoop:
+    Guid:
+      Data1: 861821082
+      Data2: 1262005998
+      Data3: 1693798802
+      Data4: -1956621998
+    Path: event:/Music/Title Theme Loop
+  zoneMusicSwitch:
+    Guid:
+      Data1: 2131643935
+      Data2: 1315093264
+      Data3: 875758498
+      Data4: -1907512183
+    Path: event:/Music/Zone Music Switch
+  playerFootstepDirt:
+    Guid:
+      Data1: 882729221
+      Data2: 1273290552
+      Data3: -1649101136
+      Data4: -2095068112
+    Path: event:/Player/Player FS Dirt
   playerFootstepGrass:
     Guid:
       Data1: 1637540384
@@ -96,6 +152,13 @@ MonoBehaviour:
       Data3: -646020192
       Data4: 1872340506
     Path: event:/Player/Player FS Grass
+  playerFootstepWood:
+    Guid:
+      Data1: -880809792
+      Data2: 1204889530
+      Data3: 1973522356
+      Data4: 942758013
+    Path: event:/Player/Player FS Wood
   playerPickupForage:
     Guid:
       Data1: 582906321
@@ -103,3 +166,38 @@ MonoBehaviour:
       Data3: -1598756719
       Data4: 35308765
     Path: event:/Player/Player_Pickup_Forage
+  uiHover:
+    Guid:
+      Data1: -232469362
+      Data2: 1208231528
+      Data3: -1260581713
+      Data4: 442457775
+    Path: event:/UI/UI Hover
+  uiReturn:
+    Guid:
+      Data1: -1160572649
+      Data2: 1221679840
+      Data3: -769350999
+      Data4: -60041946
+    Path: event:/UI/UI Return
+  uiSelect:
+    Guid:
+      Data1: 1112760286
+      Data2: 1340278922
+      Data3: 589226638
+      Data4: -1337199969
+    Path: event:/UI/UI Select
+  uiStartGame:
+    Guid:
+      Data1: 1131648419
+      Data2: 1144197493
+      Data3: 1621075367
+      Data4: 519969346
+    Path: event:/UI/UI Start Game
+  bunnyHops:
+    Guid:
+      Data1: 1471257484
+      Data2: 1142003283
+      Data3: 1284245422
+      Data4: -1296303093
+    Path: event:/Bunny Hops
