@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
+using SpringJam2026.Audio;
+using SpringJam2026.Utils;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -11,6 +13,20 @@ public class ItemSocketInteractable : BaseInteractable
     [SerializeField] private string placementPrompt = "Place Item";
     [SerializeField] private string taskIdOnPlacement = string.Empty;
     [SerializeField] private ItemInteractable startingItem;
+
+    [Header("Availability")]
+    [SerializeField] private List<string> requiredCompletedTaskIds = new List<string>();
+    [SerializeField] private string lockedPlacementPrompt = "Unavailable";
+    [SerializeField]
+    [TextArea(2, 3)]
+    private string lockedPlacementMessage = "You cannot place this here yet.";
+
+    [Header("Feedback")]
+    [SerializeField] private bool playBeeMovementFeedbackOnPlacement;
+
+    [Header("Bee Swarm")]
+    [SerializeField] private bool moveBeeSwarmOnPlacement;
+    [SerializeField] private BeeSwarmAnchorMover beeSwarmMoverOnPlacement;
 
     [Header("Events")]
     [SerializeField] private UnityEvent onItemPlaced;
@@ -68,10 +84,17 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
-        if (interactor.TryPlaceHeldItem(this))
+        if (!IsPlacementUnlocked())
         {
-            DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
+            if (!string.IsNullOrWhiteSpace(lockedPlacementMessage))
+            {
+                Debug.Log(lockedPlacementMessage.Trim(), this);
+            }
+
+            return;
         }
+
+        interactor.TryPlaceHeldItem(this);
     }
 
     public override string GetInteractionText(PlayerInteractor interactor)
@@ -86,7 +109,12 @@ public class ItemSocketInteractable : BaseInteractable
             return placementPrompt;
         }
 
-        return CanAccept(interactor.HeldItem) ? placementPrompt : "Wrong Item";
+        if (!CanAccept(interactor.HeldItem))
+        {
+            return "Wrong Item";
+        }
+
+        return IsPlacementUnlocked() ? placementPrompt : ResolveLockedPrompt();
     }
 
     public bool CanAccept(ItemInteractable item)
@@ -113,16 +141,36 @@ public class ItemSocketInteractable : BaseInteractable
         return false;
     }
 
-    public void PlaceItem(ItemInteractable item)
+    public bool CanPlace(ItemInteractable item)
     {
-        if (item == null)
+        return !HasPlacedItem && CanAccept(item) && IsPlacementUnlocked();
+    }
+
+    public bool PlaceItem(ItemInteractable item)
+    {
+        if (item == null || !CanPlace(item))
         {
-            return;
+            return false;
         }
 
         placedItem = item;
-        placedItem.PlaceIntoSocket(this, SocketAnchor, false, true);
+        if (!placedItem.PlaceIntoSocket(this, SocketAnchor, false, true))
+        {
+            placedItem = null;
+            return false;
+        }
+
         onItemPlaced?.Invoke();
+
+        bool placementEffectsSucceeded = TryApplyPlacementEffects();
+        PlayPlacementFeedback();
+
+        if (placementEffectsSucceeded && !string.IsNullOrWhiteSpace(taskIdOnPlacement))
+        {
+            DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
+        }
+
+        return true;
     }
 
     public void ClearPlacedItem(ItemInteractable item)
@@ -141,6 +189,99 @@ public class ItemSocketInteractable : BaseInteractable
         }
     }
 
+    internal void RestoreLoopStartItemReference(ItemInteractable item)
+    {
+        if (item == null || loopStartItem != item)
+        {
+            return;
+        }
+
+        placedItem = item;
+        startingItem = item;
+    }
+
+    private bool IsPlacementUnlocked()
+    {
+        if (requiredCompletedTaskIds == null || requiredCompletedTaskIds.Count == 0)
+        {
+            return true;
+        }
+
+        DayLoopRuntime runtime = DayLoopRuntime.Instance;
+        if (runtime == null)
+        {
+            return false;
+        }
+
+        foreach (string taskId in requiredCompletedTaskIds)
+        {
+            string normalizedTaskId = NormalizeId(taskId);
+            if (string.IsNullOrEmpty(normalizedTaskId))
+            {
+                continue;
+            }
+
+            if (!runtime.TryGetTask(normalizedTaskId, out DayLoopTaskSnapshot taskSnapshot) || !taskSnapshot.IsCompleted)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private string ResolveLockedPrompt()
+    {
+        return string.IsNullOrWhiteSpace(lockedPlacementPrompt)
+            ? "Unavailable"
+            : lockedPlacementPrompt.Trim();
+    }
+
+    private void PlayPlacementFeedback()
+    {
+        if (!playBeeMovementFeedbackOnPlacement || !Application.isPlaying)
+        {
+            return;
+        }
+
+        try
+        {
+            ServiceLocator.Get<AudioService>()?.PlayBeeMovement(SocketAnchor.position);
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogWarning($"Could not play bee movement feedback: {exception.Message}", this);
+        }
+    }
+
+    private bool TryApplyPlacementEffects()
+    {
+        if (!moveBeeSwarmOnPlacement)
+        {
+            return true;
+        }
+
+        BeeSwarmAnchorMover mover = beeSwarmMoverOnPlacement;
+        if (mover == null && Application.isPlaying)
+        {
+            mover = FindFirstObjectByType<BeeSwarmAnchorMover>();
+        }
+
+        if (mover == null)
+        {
+            Debug.LogWarning("No bee swarm mover is assigned for this placement socket.", this);
+            return false;
+        }
+
+        mover.MoveToGreenhouseAnchor();
+        if (!mover.IsAtGreenhouse)
+        {
+            Debug.LogWarning("Bee swarm mover is missing its greenhouse anchor.", this);
+        }
+
+        return mover.IsAtGreenhouse;
+    }
+
     private void ApplyStartingItemPlacement()
     {
         if (loopStartItem == null)
@@ -149,9 +290,14 @@ public class ItemSocketInteractable : BaseInteractable
             return;
         }
 
-        placedItem = loopStartItem;
-        startingItem = loopStartItem;
-        loopStartItem.PlaceIntoSocket(this, SocketAnchor, true, false);
+        if (loopStartItem.PlaceIntoSocket(this, SocketAnchor, true, false))
+        {
+            placedItem = loopStartItem;
+            startingItem = loopStartItem;
+            return;
+        }
+
+        placedItem = null;
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _)

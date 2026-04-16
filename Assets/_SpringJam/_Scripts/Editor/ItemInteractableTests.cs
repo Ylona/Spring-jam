@@ -70,6 +70,376 @@ namespace SpringJam.Tests.EditMode
             DestroyScenario(scenario);
         }
 
+        [Test]
+        public void LoopStarted_AfterDestinationPlacement_RestoresLurePotToMeadowStand()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+
+            SocketScenario meadowStand = CreateSocketScenario("Meadow Lure Pot Stand", scenario.Item);
+            SocketScenario greenhouseStand = CreateSocketScenario("Greenhouse Lure Pot Stand", null);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
+
+            Assert.That(greenhouseStand.Socket.PlaceItem(scenario.Item), Is.True);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(greenhouseStand.Anchor));
+
+            InvokePrivateMethod(meadowStand.Socket, "HandleLoopStarted", (object)null);
+            InvokePrivateMethod(scenario.Item, "HandleLoopStarted", (object)null);
+            InvokePrivateMethod(greenhouseStand.Socket, "HandleLoopStarted", (object)null);
+
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
+
+            DestroySocketScenario(greenhouseStand);
+            DestroySocketScenario(meadowStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_BeforeBloomFlowers_DoesNotPlaceLurePotOnGreenhouseStand()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                null,
+                "guide-bees");
+
+            Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Bloom Meadow First"));
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.False);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(scenario.Item.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(scenario.Item));
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenBeeMovementRequiredButMoverMissing_DoesNotCompleteGuideBees()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                null,
+                "guide-bees");
+            SetPrivateField(greenhouseStand.Socket, "moveBeeSwarmOnPlacement", true);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenRequiredSocketTaskComplete_PlacesHeldItem()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" });
+
+            Assert.That(greenhouseStand.Socket.GetInteractionText(scenario.Interactor), Is.EqualTo("Place Lure Pot"));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(greenhouseStand.Anchor));
+
+            DestroySocketScenario(greenhouseStand);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenRequiredSocketTaskComplete_MovesBeeSwarmToGreenhouseAnchor()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            meadowAnchorRoot.transform.position = new Vector3(1f, 0.5f, 2f);
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            greenhouseAnchorRoot.transform.position = new Vector3(4f, 0.5f, 5f);
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover);
+
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(greenhouseAnchorRoot.transform.position));
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenLurePotPlacedOnUnlockedGreenhouseStand_CompletesGuideBees()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover,
+                "guide-bees");
+
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.True);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.False);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.True);
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void Interact_WhenBeeSwarmRelocates_AllowsMintAndHoneyAccess()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+
+            GameObject mintPatchRoot = new GameObject("Mint Patch");
+            ItemInteractable mintPatch = mintPatchRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(mintPatch, "itemId", "mint-bundle");
+            SetPrivateField(mintPatch, "displayName", "Mint Bundle");
+            SetPrivateField(mintPatch, "pickupPrompt", "Harvest Mint");
+            SetPrivateField(mintPatch, "lockedPickupPrompt", "Pollinate Mint First");
+            SetPrivateField(mintPatch, "lockedPickupMessage", "The mint patch is still dormant.");
+            SetPrivateField(mintPatch, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(mintPatch, "Awake");
+            InvokePrivateMethod(mintPatch, "OnEnable");
+
+            GameObject honeyShelfRoot = new GameObject("Mara Honey Shelf");
+            ItemInteractable honeyShelf = honeyShelfRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(honeyShelf, "itemId", "honey-jar");
+            SetPrivateField(honeyShelf, "displayName", "Honey Jar");
+            SetPrivateField(honeyShelf, "pickupPrompt", "Take Honey Jar");
+            SetPrivateField(honeyShelf, "lockedPickupPrompt", "Wait For Mara");
+            SetPrivateField(honeyShelf, "lockedPickupMessage", "Mara keeps the honey shelf closed until the bees reach the greenhouse.");
+            SetPrivateField(honeyShelf, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(honeyShelf, "Awake");
+            InvokePrivateMethod(honeyShelf, "OnEnable");
+
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover,
+                "guide-bees");
+
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Wait For Mara"));
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot taskSnapshot), Is.True);
+            Assert.That(taskSnapshot.IsCompleted, Is.True);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Harvest Mint"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Take Honey Jar"));
+
+            mintPatch.Interact(scenario.Interactor);
+
+            Assert.That(mintPatch.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(mintPatch));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Hands Full"));
+
+            Assert.That(scenario.Interactor.DropHeldItem(), Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+
+            honeyShelf.Interact(scenario.Interactor);
+
+            Assert.That(honeyShelf.IsHeld, Is.True);
+            Assert.That(scenario.Interactor.HeldItem, Is.SameAs(honeyShelf));
+
+            DestroySocketScenario(greenhouseStand);
+            Object.DestroyImmediate(honeyShelfRoot);
+            Object.DestroyImmediate(mintPatchRoot);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
+        [Test]
+        public void RestartLoop_AfterBeePuzzleProgress_RestoresInitialBeePuzzleState()
+        {
+            TestScenario scenario = CreateScenario();
+            SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
+            Assert.That(scenario.Runtime.StartActiveDay(), Is.True);
+            Assert.That(scenario.Runtime.TryCompleteTask("bloom-flowers"), Is.True);
+
+            GameObject meadowAnchorRoot = new GameObject("Bee Meadow Anchor");
+            meadowAnchorRoot.transform.position = new Vector3(1f, 0.5f, 2f);
+            GameObject greenhouseAnchorRoot = new GameObject("Bee Greenhouse Anchor");
+            greenhouseAnchorRoot.transform.position = new Vector3(4f, 0.5f, 5f);
+            GameObject swarmRoot = new GameObject("Bee Swarm");
+            BeeSwarmAnchorMover swarmMover = swarmRoot.AddComponent<BeeSwarmAnchorMover>();
+            SetPrivateField(swarmMover, "meadowAnchor", meadowAnchorRoot.transform);
+            SetPrivateField(swarmMover, "greenhouseAnchor", greenhouseAnchorRoot.transform);
+            InvokePrivateMethod(swarmMover, "Awake");
+            InvokePrivateMethod(swarmMover, "OnEnable");
+            InvokePrivateMethod(swarmMover, "Start");
+
+            GameObject mintPatchRoot = new GameObject("Mint Patch");
+            ItemInteractable mintPatch = mintPatchRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(mintPatch, "itemId", "mint-bundle");
+            SetPrivateField(mintPatch, "displayName", "Mint Bundle");
+            SetPrivateField(mintPatch, "pickupPrompt", "Harvest Mint");
+            SetPrivateField(mintPatch, "lockedPickupPrompt", "Pollinate Mint First");
+            SetPrivateField(mintPatch, "lockedPickupMessage", "The mint patch is still dormant.");
+            SetPrivateField(mintPatch, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(mintPatch, "Awake");
+            InvokePrivateMethod(mintPatch, "OnEnable");
+
+            GameObject honeyShelfRoot = new GameObject("Mara Honey Shelf");
+            ItemInteractable honeyShelf = honeyShelfRoot.AddComponent<ItemInteractable>();
+            SetPrivateField(honeyShelf, "itemId", "honey-jar");
+            SetPrivateField(honeyShelf, "displayName", "Honey Jar");
+            SetPrivateField(honeyShelf, "pickupPrompt", "Take Honey Jar");
+            SetPrivateField(honeyShelf, "lockedPickupPrompt", "Wait For Mara");
+            SetPrivateField(honeyShelf, "lockedPickupMessage", "Mara keeps the honey shelf closed until the bees reach the greenhouse.");
+            SetPrivateField(honeyShelf, "requiredCompletedTaskIds", new List<string> { "guide-bees" });
+            InvokePrivateMethod(honeyShelf, "Awake");
+            InvokePrivateMethod(honeyShelf, "OnEnable");
+
+            SocketScenario meadowStand = CreateSocketScenario("Meadow Lure Pot Stand", scenario.Item);
+            SocketScenario greenhouseStand = CreateSocketScenario(
+                "Greenhouse Lure Pot Stand",
+                null,
+                new List<string> { "bloom-flowers" },
+                swarmMover,
+                "guide-bees");
+            Assert.That(scenario.Interactor.TryPickUpItem(scenario.Item), Is.True);
+
+            greenhouseStand.Socket.Interact(scenario.Interactor);
+
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.True);
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Harvest Mint"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Take Honey Jar"));
+
+            scenario.Runtime.RestartLoop();
+
+            Assert.That(scenario.Runtime.TryGetTask("bloom-flowers", out DayLoopTaskSnapshot bloomTaskSnapshot), Is.True);
+            Assert.That(bloomTaskSnapshot.IsCompleted, Is.False);
+            Assert.That(scenario.Runtime.TryGetTask("guide-bees", out DayLoopTaskSnapshot guideBeesTaskSnapshot), Is.True);
+            Assert.That(guideBeesTaskSnapshot.IsCompleted, Is.False);
+            Assert.That(swarmMover.IsAtGreenhouse, Is.False);
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
+            Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
+            Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Wait For Mara"));
+            Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
+            Assert.That(greenhouseStand.Socket.HasPlacedItem, Is.False);
+            Assert.That(greenhouseStand.Socket.CanPlace(scenario.Item), Is.False);
+            Assert.That(scenario.Item.IsPlaced, Is.True);
+            Assert.That(scenario.Item.IsHeld, Is.False);
+            Assert.That(scenario.Item.transform.parent, Is.SameAs(meadowStand.Anchor));
+            Assert.That(scenario.Interactor.HeldItem, Is.Null);
+
+            DestroySocketScenario(greenhouseStand);
+            DestroySocketScenario(meadowStand);
+            Object.DestroyImmediate(honeyShelfRoot);
+            Object.DestroyImmediate(mintPatchRoot);
+            Object.DestroyImmediate(swarmRoot);
+            Object.DestroyImmediate(greenhouseAnchorRoot);
+            Object.DestroyImmediate(meadowAnchorRoot);
+            DestroyScenario(scenario);
+        }
+
         private static TestScenario CreateScenario()
         {
             if (DayLoopRuntime.Instance != null)
@@ -99,6 +469,44 @@ namespace SpringJam.Tests.EditMode
             return new TestScenario(runtimeRoot, runtime, playerRoot, interactor, itemRoot, item);
         }
 
+        private static SocketScenario CreateSocketScenario(
+            string name,
+            ItemInteractable startingItem,
+            List<string> requiredCompletedTaskIds = null,
+            BeeSwarmAnchorMover beeSwarmMoverOnPlacement = null,
+            string taskIdOnPlacement = "")
+        {
+            GameObject socketRoot = new GameObject(name);
+            Transform anchor = CreateAnchor(socketRoot.transform);
+            ItemSocketInteractable socket = socketRoot.AddComponent<ItemSocketInteractable>();
+            SetPrivateField(socket, "socketAnchor", anchor);
+            SetPrivateField(socket, "acceptedItemIds", new List<string> { "lure-flower-pot" });
+            SetPrivateField(socket, "placementPrompt", "Place Lure Pot");
+            SetPrivateField(socket, "taskIdOnPlacement", taskIdOnPlacement);
+            SetPrivateField(socket, "startingItem", startingItem);
+            SetPrivateField(socket, "requiredCompletedTaskIds", requiredCompletedTaskIds ?? new List<string>());
+            SetPrivateField(socket, "lockedPlacementPrompt", "Bloom Meadow First");
+            SetPrivateField(socket, "lockedPlacementMessage", "The lure pot needs the meadow in bloom first.");
+            SetPrivateField(socket, "moveBeeSwarmOnPlacement", beeSwarmMoverOnPlacement != null);
+            SetPrivateField(socket, "beeSwarmMoverOnPlacement", beeSwarmMoverOnPlacement);
+            InvokePrivateMethod(socket, "Awake");
+            InvokePrivateMethod(socket, "OnEnable");
+            InvokePrivateMethod(socket, "Start");
+            return new SocketScenario(socketRoot, socket, anchor);
+        }
+
+        private static Transform CreateAnchor(Transform parent)
+        {
+            GameObject anchor = new GameObject("Anchor");
+            anchor.transform.SetParent(parent, false);
+            return anchor.transform;
+        }
+
+        private static void DestroySocketScenario(SocketScenario scenario)
+        {
+            Object.DestroyImmediate(scenario.Root);
+        }
+
         private static void InitializeRuntime(DayLoopRuntime runtime)
         {
             InvokePrivateMethod(runtime, "Awake");
@@ -113,11 +521,11 @@ namespace SpringJam.Tests.EditMode
             field.SetValue(target, value);
         }
 
-        private static void InvokePrivateMethod(object target, string methodName)
+        private static void InvokePrivateMethod(object target, string methodName, params object[] arguments)
         {
             MethodInfo method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null, $"Missing method '{methodName}' on {target.GetType().Name}.");
-            method.Invoke(target, null);
+            method.Invoke(target, arguments.Length == 0 ? null : arguments);
         }
 
         private static void DestroyScenario(TestScenario scenario)
@@ -125,6 +533,20 @@ namespace SpringJam.Tests.EditMode
             Object.DestroyImmediate(scenario.ItemRoot);
             Object.DestroyImmediate(scenario.PlayerRoot);
             Object.DestroyImmediate(scenario.RuntimeRoot);
+        }
+
+        private readonly struct SocketScenario
+        {
+            public SocketScenario(GameObject root, ItemSocketInteractable socket, Transform anchor)
+            {
+                Root = root;
+                Socket = socket;
+                Anchor = anchor;
+            }
+
+            public GameObject Root { get; }
+            public ItemSocketInteractable Socket { get; }
+            public Transform Anchor { get; }
         }
 
         private readonly struct TestScenario
