@@ -3175,6 +3175,50 @@ Transform:
   - {fileID: 138721860}
   m_Father: {fileID: 1241385536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1237298225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1237298227}
+  - component: {fileID: 1237298226}
+  m_Layer: 0
+  m_Name: DayLoopAudioHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1237298226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237298225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c50a5169d291c7345928b28ff835bfe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpringJam2026.Systems.DayLoopAudioHandler
+--- !u!4 &1237298227
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1237298225}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1241385535
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3547,7 @@ Transform:
   m_GameObject: {fileID: 1565415190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 7.18, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4679,13 +4723,12 @@ MonoBehaviour:
   placementPrompt: Place Lure Pot
   taskIdOnPlacement: guide-bees
   startingItem: {fileID: 0}
-  requiredCompletedTaskIds:
-  - bloom-flowers
-  lockedPlacementPrompt: Bloom Meadow First
-  lockedPlacementMessage: The lure pot needs the meadow in bloom first.
-  playBeeMovementFeedbackOnPlacement: 1
-  moveBeeSwarmOnPlacement: 1
-  beeSwarmMoverOnPlacement: {fileID: 2100000072}
+  requiredCompletedTaskIds: []
+  lockedPlacementPrompt: Unavailable
+  lockedPlacementMessage: You cannot place this here yet.
+  playBeeMovementFeedbackOnPlacement: 0
+  moveBeeSwarmOnPlacement: 0
+  beeSwarmMoverOnPlacement: {fileID: 0}
   onItemPlaced:
     m_PersistentCalls:
       m_Calls: []
@@ -5354,3 +5397,4 @@ SceneRoots:
   - {fileID: 963248502}
   - {fileID: 2135645400}
   - {fileID: 31421718}
+  - {fileID: 1237298227}

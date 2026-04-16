@@ -25,6 +25,16 @@ namespace SpringJam2026.Audio
         public void Bind() { }
 
         #region Gameplay Audio
+
+        public void PlayMorningIntro(Vector3? position = null)
+        {
+            PlayOneShot(library.morningIntro, position);
+        }
+
+        public void PlayNightOutro(Vector3? position = null)
+        {
+            PlayOneShot(library.nightOutro, position);
+        }
         
         public void PlayBeeMovement(Vector3? position = null)
         {
