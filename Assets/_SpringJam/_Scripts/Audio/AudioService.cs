@@ -76,7 +76,7 @@ namespace SpringJam2026.Audio
             PlayOneShot(library.prepTablePlace, position);
         }
         
-        public void PlayerFlowerInteract(Vector3? position = null)
+        public void PlayFlowerInteract(Vector3? position = null)
         {
             PlayOneShot(library.flowerInteract, position);
         }

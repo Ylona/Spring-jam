@@ -1,14 +1,13 @@
 using UnityEngine;
 using SpringJam.Systems.DayLoop;
-using SpringJam2026.Audio;
 using SpringJam2026.Utils;
 
-namespace SpringJam2026.Systems
+namespace SpringJam2026.Audio
 {
     public class DayLoopAudioHandler : MonoBehaviour, IGameService
     {
         private DayLoopRuntime runtime;
-        private AudioService audio;
+        private AudioService audioService;
     
         private bool outroPlayed;
     
@@ -18,7 +17,7 @@ namespace SpringJam2026.Systems
         public void Initialize()
         {
             runtime = DayLoopRuntime.Instance;
-            audio = ServiceLocator.Get<AudioService>();
+            audioService = ServiceLocator.Get<AudioService>();
         }
 
         public void Bind()
@@ -70,12 +69,12 @@ namespace SpringJam2026.Systems
     
         private void PlayMorningIntro()
         {
-            audio.PlayMorningIntro();
+            audioService.PlayMorningIntro();
         }
     
         private void PlayNightOutro()
         {
-            audio.PlayNightOutro();
+            audioService.PlayNightOutro();
         }
     }   
 }
