@@ -212,7 +212,6 @@ namespace SpringJam.Dialogue
         private void BuildUi()
         {
             VisualTreeAsset overlayAsset = Resources.Load<VisualTreeAsset>(OverlayResourcePath);
-            StyleSheet overlayStyleSheet = Resources.Load<StyleSheet>(OverlayResourcePath);
             if (overlayAsset == null)
             {
                 Debug.LogError($"Dialogue overlay UXML is missing at Resources/{OverlayResourcePath}.uxml", this);
@@ -245,11 +244,6 @@ namespace SpringJam.Dialogue
             root.pickingMode = PickingMode.Ignore;
             StretchToParent(root);
 
-            if (overlayStyleSheet != null)
-            {
-                root.styleSheets.Add(overlayStyleSheet);
-            }
-
             TemplateContainer overlayRoot = overlayAsset.CloneTree();
             overlayRoot.pickingMode = PickingMode.Ignore;
             StretchToParent(overlayRoot);
@@ -262,50 +256,20 @@ namespace SpringJam.Dialogue
             bodyLabel = root.Q<Label>("body-label");
             footerLabel = root.Q<Label>("footer-label");
 
-            BuildTaskJournal(root);
+            BindTaskJournal(root);
             ApplyRuntimeTextDefaults(root);
         }
 
-        private void BuildTaskJournal(VisualElement root)
+        private void BindTaskJournal(VisualElement root)
         {
-            journalShell = new VisualElement { name = "journal-shell" };
-            journalShell.AddToClassList("journal-shell");
-            root.Add(journalShell);
-
-            journalTitleLabel = new Label("Spring Weave");
-            journalTitleLabel.name = "journal-title";
-            journalTitleLabel.AddToClassList("journal-title");
-            journalShell.Add(journalTitleLabel);
-
-            VisualElement timeShell = new VisualElement { name = "time-shell" };
-            timeShell.AddToClassList("time-shell");
-            journalShell.Add(timeShell);
-
-            skyBand = new VisualElement { name = "sky-band" };
-            skyBand.AddToClassList("sky-band");
-            skyBand.AddToClassList("time-band--dawn");
-            timeShell.Add(skyBand);
-
-            sunTrack = new VisualElement { name = "sun-track" };
-            sunTrack.AddToClassList("sun-track");
-            skyBand.Add(sunTrack);
-
-            sunDisc = new VisualElement { name = "sun-disc" };
-            sunDisc.AddToClassList("sun-disc");
-            sunTrack.Add(sunDisc);
-
-            petalStrip = new VisualElement { name = "petal-strip" };
-            petalStrip.AddToClassList("petal-strip");
-            timeShell.Add(petalStrip);
-
-            timeHintLabel = new Label("Dawn hush");
-            timeHintLabel.name = "time-hint-label";
-            timeHintLabel.AddToClassList("time-hint-label");
-            timeShell.Add(timeHintLabel);
-
-            taskList = new VisualElement { name = "task-list" };
-            taskList.AddToClassList("task-list");
-            journalShell.Add(taskList);
+            journalShell = root.Q<VisualElement>("journal-shell");
+            journalTitleLabel = root.Q<Label>("journal-title");
+            skyBand = root.Q<VisualElement>("sky-band");
+            sunTrack = root.Q<VisualElement>("sun-track");
+            sunDisc = root.Q<VisualElement>("sun-disc");
+            petalStrip = root.Q<VisualElement>("petal-strip");
+            timeHintLabel = root.Q<Label>("time-hint-label");
+            taskList = root.Q<VisualElement>("task-list");
 
             BuildPetals();
         }
@@ -576,6 +540,11 @@ namespace SpringJam.Dialogue
                 TaskJournalTaskPresentation presentation = TaskJournalPresenter.GetTaskPresentation(task.TaskId);
                 VisualElement row = new VisualElement();
                 row.AddToClassList("task-card");
+                if (taskRows.Count == 0)
+                {
+                    row.AddToClassList("is-first");
+                }
+
                 row.AddToClassList(presentation.ThemeClass);
 
                 Label markLabel = new Label(presentation.BadgeText);

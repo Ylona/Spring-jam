@@ -103,7 +103,6 @@ public class ItemInteractable : BaseInteractable
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
-
             PlayPickupAudio(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
@@ -299,7 +298,10 @@ public class ItemInteractable : BaseInteractable
             return;
         }
 
-        ServiceLocator.Get<AudioService>()?.PlayPlayerPickupForage(position);
+        if (ServiceLocator.TryGet<AudioService>(out AudioService audioService))
+        {
+            audioService.PlayPlayerPickupForage(position);
+        }
     }
 
     private void ApplyKinematicState(bool useGravity)
