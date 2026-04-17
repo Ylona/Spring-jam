@@ -269,7 +269,7 @@
     border-left-color: rgba(201, 218, 184, 0.14);
 }
 
-.task-card:first-child {
+.task-card.is-first {
     margin-top: 0px;
 }
 

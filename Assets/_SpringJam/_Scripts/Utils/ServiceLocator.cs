@@ -28,6 +28,18 @@ namespace SpringJam2026.Utils
 
             throw new Exception($"Service not found: {typeof(T)}");
         }
+
+        public static bool TryGet<T>(out T service) where T : class
+        {
+            if (_services.TryGetValue(typeof(T), out var registeredService))
+            {
+                service = registeredService as T;
+                return service != null;
+            }
+
+            service = null;
+            return false;
+        }
         
         public static void DebugDumpServices()
         {
