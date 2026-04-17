@@ -103,8 +103,7 @@ public class ItemInteractable : BaseInteractable
         if (interactor.TryPickUpItem(this))
         {
             ApplyInteractionProgression();
-            
-            ServiceLocator.Get<AudioService>()?.PlayPlayerPickupForage(interactor.transform.position);
+            PlayPickupAudio(interactor.transform.position);
             onPickedUp?.Invoke();
             return;
         }
@@ -166,7 +165,7 @@ public class ItemInteractable : BaseInteractable
         ApplyHeldState();
     }
 
-    public void PlaceIntoSocket(
+    public bool PlaceIntoSocket(
         ItemSocketInteractable socket,
         Transform anchor,
         bool markAsLoopStartPlacement,
@@ -175,12 +174,16 @@ public class ItemInteractable : BaseInteractable
         Transform target = ResolveAttachmentTarget(anchor, socket != null ? socket.SocketAnchor : null, "place");
         if (target == null)
         {
-            return;
+            return false;
         }
 
         ReleaseFromHolder();
         RefreshSocketReferenceFromHierarchy();
-        ReleaseFromSocket();
+
+        if (currentSocket != null && currentSocket != socket)
+        {
+            ReleaseFromSocket();
+        }
 
         currentSocket = socket;
         isPlaced = true;
@@ -202,6 +205,8 @@ public class ItemInteractable : BaseInteractable
         {
             onPlaced?.Invoke();
         }
+
+        return true;
     }
 
     public void DropToWorld(Vector3 worldPosition)
@@ -232,9 +237,9 @@ public class ItemInteractable : BaseInteractable
         currentSocket = null;
         isPlaced = false;
 
-        if (loopStartSocket != null)
+        if (loopStartSocket != null && PlaceIntoSocket(loopStartSocket, loopStartSocketAnchor, false, false))
         {
-            PlaceIntoSocket(loopStartSocket, loopStartSocketAnchor, false, false);
+            loopStartSocket.RestoreLoopStartItemReference(this);
             return;
         }
 
@@ -284,6 +289,19 @@ public class ItemInteractable : BaseInteractable
         }
 
         RestoreColliderStates();
+    }
+
+    private static void PlayPickupAudio(Vector3 position)
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        if (ServiceLocator.TryGet<AudioService>(out AudioService audioService))
+        {
+            audioService.PlayPlayerPickupForage(position);
+        }
     }
 
     private void ApplyKinematicState(bool useGravity)
