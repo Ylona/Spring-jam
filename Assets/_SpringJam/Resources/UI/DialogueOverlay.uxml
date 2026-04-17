@@ -1,6 +1,12 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <Style src="DialogueOverlay.uss" />
-
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_SpringJam/Resources/UI/DialogueOverlay.uss?fileID=7433441132597879392&amp;guid=ef295268e85647a8a9ee68e2790c34a3&amp;type=3#DialogueOverlay"/>
+    <Style src="project://database/Assets/_SpringJam/Resources/UI/MinimapOverlay.uss?fileID=7433441132597879392&amp;guid=542cea95f78b8834d910a4361fc5b506&amp;type=3#MinimapOverlay"/>
+    <ui:VisualElement name="MinimapWrapper" style="opacity: 1; top: auto; bottom: 24px;">
+        <ui:VisualElement name="MinimapMask" style="opacity: 0.7;">
+            <ui:Image name="MinimapImage" source="project://database/Assets/_SpringJam/Resources/RenderTexutures/minimap.renderTexture?fileID=8400000&amp;guid=de1eb01fd9eae88439c2ba77ff014bbb&amp;type=2#minimap"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="MinimapFrame" style="background-image: url(&quot;project://database/Assets/_SpringJam/Art/Sprites/border-minimap.png?fileID=2800000&amp;guid=a9f2b16b9a65e3b42bd605d3e8c9a43a&amp;type=3#border-minimap&quot;);"/>
+    </ui:VisualElement>
     <ui:VisualElement name="dialogue-overlay" class="dialogue-overlay">
         <ui:VisualElement name="journal-shell" class="journal-shell">
             <ui:Label name="journal-title" class="journal-title" text="Spring Weave" />
@@ -18,13 +24,12 @@
 
         <ui:VisualElement name="bottom-stack" class="bottom-stack">
             <ui:VisualElement name="prompt-shell" class="prompt-shell">
-                <ui:Label name="prompt-label" class="prompt-label" text="" />
+                <ui:Label name="prompt-label" text="" class="prompt-label"/>
             </ui:VisualElement>
-
             <ui:VisualElement name="dialogue-shell" class="dialogue-shell">
-                <ui:Label name="speaker-label" class="speaker-label" text="" />
-                <ui:Label name="body-label" class="body-label" text="" />
-                <ui:Label name="footer-label" class="footer-label" text="" />
+                <ui:Label name="speaker-label" text="" class="speaker-label"/>
+                <ui:Label name="body-label" text="" class="body-label"/>
+                <ui:Label name="footer-label" text="" class="footer-label"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
