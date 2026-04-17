@@ -108,10 +108,6 @@ namespace SpringJam2026.Core
 
         public void TogglePause()
         {
-            // Temp
-            if (!dialogueUI)
-                dialogueUI = FindFirstObjectByType<DialogueRuntimeController>()?.GetComponent<UIDocument>();
-            
             isPaused = !isPaused;
 
             if (isPaused)
@@ -122,11 +118,11 @@ namespace SpringJam2026.Core
 
         private void Pause()
         {
+            GamePause.SetPaused(true);
+
             if (dialogueUI != null)
-            {
                 dialogueUI.rootVisualElement.style.display = DisplayStyle.None;
-            }
-                
+
             Time.timeScale = 0f;
 
             root.style.display = DisplayStyle.Flex;
@@ -136,18 +132,18 @@ namespace SpringJam2026.Core
             uiMap.Enable();
 
             EventSystem.current.SetSelectedGameObject(null);
-            
+
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
         }
 
         private void Resume()
         {
+            GamePause.SetPaused(false);
+
             if (dialogueUI != null)
-            {
                 dialogueUI.rootVisualElement.style.display = DisplayStyle.Flex;
-            }
-            
+
             Time.timeScale = 1f;
 
             menu.style.display = DisplayStyle.None;
