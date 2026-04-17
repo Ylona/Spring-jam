@@ -159,6 +159,13 @@ MonoBehaviour:
       Data3: 1973522356
       Data4: 942758013
     Path: event:/Player/Player FS Wood
+  playerFootstepCobblestone:
+    Guid:
+      Data1: 399125787
+      Data2: 1300568150
+      Data3: 784535722
+      Data4: 1586888287
+    Path: event:/Player/Player FS Stone
   playerPickupForage:
     Guid:
       Data1: 582906321

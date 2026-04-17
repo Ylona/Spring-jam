@@ -120,7 +120,7 @@ namespace SpringJam2026.Audio
         
         public void PlayPlayerFootstepCobblestone(Vector3? position = null)
         {
-            PlayOneShot(library.playerFootstepGrass, position);
+            PlayOneShot(library.playerFootstepCobblestone, position);
         }
         
         public void PlayPlayerPickupForage(Vector3? position = null)

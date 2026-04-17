@@ -38,6 +38,7 @@ namespace SpringJam2026.Data
         public EventReference playerFootstepDirt;
         public EventReference playerFootstepGrass;
         public EventReference playerFootstepWood;
+        public EventReference playerFootstepCobblestone;
         public EventReference playerPickupForage;
         
         [Header("UI")]
