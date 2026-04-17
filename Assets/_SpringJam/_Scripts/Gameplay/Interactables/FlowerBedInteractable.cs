@@ -19,6 +19,7 @@ public sealed class FlowerBedInteractable : BaseInteractable
     [SerializeField] private string failedInteractionText = "Try Again";
     [SerializeField] private string completedInteractionText = "Bloomed";
     [SerializeField] private FlowerBloomPuzzleController puzzleController;
+    [SerializeField] private bool useSpriteMode = false;
 
     [Header("Visual Feedback")]
     [SerializeField] private List<Renderer> feedbackRenderers = new List<Renderer>();
@@ -29,6 +30,14 @@ public sealed class FlowerBedInteractable : BaseInteractable
     [SerializeField] private float activatedScaleMultiplier = 1.06f;
     [SerializeField] private float failedScaleMultiplier = 0.94f;
     [SerializeField] private float completedScaleMultiplier = 1.12f;
+
+    [Header("Visual Feedback sprite")]
+    [SerializeField] private SpriteRenderer flowerSpriteRenderer;
+    [SerializeField] private Sprite failedSprite;
+    [SerializeField] private Sprite dormantSprite;
+    [SerializeField] private Sprite activatedSprite;
+
+    [SerializeField] private Sprite completedSprite;
 
     [Header("Events")]
     [SerializeField] private UnityEvent onActivated;
@@ -172,6 +181,28 @@ public sealed class FlowerBedInteractable : BaseInteractable
     {
         EnsureVisualCache();
 
+        if (useSpriteMode)
+            ApplyVisualStateSprite();
+        else
+            ApplyVisualStateGrow();
+    }
+
+    private void ApplyVisualStateSprite()
+    {
+        EnsureVisualCache();
+
+        if (flowerSpriteRenderer != null)
+        {
+            Sprite target = GetStateSprite(CurrentFeedbackState);
+            if (target != null)
+                flowerSpriteRenderer.sprite = target;
+        }
+    }
+
+    private void ApplyVisualStateGrow()
+    {
+        EnsureVisualCache();
+
         transform.localScale = initialLocalScale * GetScaleMultiplier(CurrentFeedbackState);
         Color color = GetStateColor(CurrentFeedbackState);
 
@@ -190,7 +221,18 @@ public sealed class FlowerBedInteractable : BaseInteractable
         }
     }
 
-        private float GetScaleMultiplier(FlowerBedFeedbackState feedbackState)
+    private Sprite GetStateSprite(FlowerBedFeedbackState feedbackState)
+    {
+        return feedbackState switch
+        {
+            FlowerBedFeedbackState.Activated => activatedSprite,
+            FlowerBedFeedbackState.Failed => failedSprite,
+            FlowerBedFeedbackState.Completed => completedSprite,
+            _ => dormantSprite,
+        };
+    }
+
+    private float GetScaleMultiplier(FlowerBedFeedbackState feedbackState)
     {
         return feedbackState switch
         {
