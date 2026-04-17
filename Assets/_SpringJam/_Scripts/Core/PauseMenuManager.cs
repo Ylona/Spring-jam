@@ -136,10 +136,9 @@ namespace SpringJam2026.Core
             uiMap.Enable();
 
             EventSystem.current.SetSelectedGameObject(null);
-
-            // IDK do we need cursor or not?
-            // UnityEngine.Cursor.lockState = CursorLockMode.None;
-            // UnityEngine.Cursor.visible = true;
+            
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
         }
 
         private void Resume()
@@ -157,8 +156,8 @@ namespace SpringJam2026.Core
             uiMap.Disable();
             playerMap.Enable();
 
-            // UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-            // UnityEngine.Cursor.visible = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
         }
 
         private void RestartGame()

@@ -19,16 +19,12 @@
     min-height: auto;
 }
 
-.logo {
-    font-size: 24px;
-    -unity-font-style: bold;
-    margin-bottom: 20px;
-    -unity-text-align: middle-center;
+.menu-bg {
+    background-image: url("project://database/Assets/_SpringJam/Art/UI/ui-placeholders.png?fileID=-2105526474&guid=f8d162ba5b7e5f44c9642a625ea52d01&type=3#panel");
 }
 
-.button {
-    margin-top: 10px;
-    background-color: rgb(255, 221, 203);
+.logo {
+    margin-bottom: 20px;
 }
 
 .section-header {
@@ -38,30 +34,20 @@
     -unity-font-style: bold;
 }
 
-.volume-slider {
-    margin-top: 5px;
+.section-header-center {
+    -unity-text-align: upper-center;
+    color: rgb(0, 0, 0);
 }
 
-.mute-toggle {
+.button {
     margin-top: 10px;
-}
-
-.mute-toggle .unity-toggle__input {
-    background-color: transparent;
+    background-color: rgb(255, 221, 203);
     border-width: 0;
+    border-radius: 0;
 }
 
-.mute-toggle .unity-toggle__checkmark {
-    width: 20px;
-    height: 20px;
-    background-image: url("project://database/Assets/_SpringJam/Art/UI/checkbox-no.png?fileID=2800000&guid=37baf2ebf4bfb224788c1ea79181665d&type=3#checkbox-no");
-    background-size: contain;
-    background-repeat: no-repeat;
-    -unity-background-image-tint-color: white;
-}
-
-.mute-toggle:checked .unity-toggle__checkmark {
-    background-image: url("project://database/Assets/_SpringJam/Art/UI/checkbox-yes.png?fileID=2800000&guid=aac9f20bddbc3c84190b4d91bda43837&type=3#checkbox-yes");
+.button-bg {
+    background-image: url("project://database/Assets/_SpringJam/Art/UI/ui-placeholders.png?fileID=-582672648&guid=f8d162ba5b7e5f44c9642a625ea52d01&type=3#button");
 }
 
 .volume-slider {
@@ -95,4 +81,37 @@
 
 .volume-slider .unity-base-slider__thumb:active {
     background-color: rgb(205, 122, 135);
+}
+
+.mute-toggle {
+    margin-top: 10px;
+}
+
+.mute-toggle-layout {
+    width: 63px;
+    flex-direction: row;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 0, 0);
+    border-width: 0;
+    -unity-text-align: upper-left;
+}
+
+.mute-toggle .unity-toggle__input {
+    background-color: transparent;
+    border-width: 0;
+}
+
+.mute-toggle .unity-toggle__checkmark {
+    width: 20px;
+    height: 20px;
+    background-image: url("project://database/Assets/_SpringJam/Art/UI/checkbox-no.png?fileID=2800000&guid=37baf2ebf4bfb224788c1ea79181665d&type=3#checkbox-no");
+    background-size: contain;
+    background-repeat: no-repeat;
+    -unity-background-image-tint-color: white;
+}
+
+.mute-toggle:checked .unity-toggle__checkmark {
+    background-image: url("project://database/Assets/_SpringJam/Art/UI/checkbox-yes.png?fileID=2800000&guid=aac9f20bddbc3c84190b4d91bda43837&type=3#checkbox-yes");
 }
