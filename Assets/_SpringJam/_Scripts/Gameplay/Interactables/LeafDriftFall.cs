@@ -7,6 +7,9 @@ public class LeafDriftFall : MonoBehaviour
     [SerializeField] private float driftFrequency = 1.5f;
     [SerializeField] private Transform landingTarget;
 
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
+
 
     private Rigidbody rb;
     private bool isFalling;
@@ -19,6 +22,8 @@ public class LeafDriftFall : MonoBehaviour
 
     public void StartFall()
     {
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
         gameObject.SetActive(true);
         isFalling = true;
         fallTimer = 0f;
@@ -63,6 +68,27 @@ public class LeafDriftFall : MonoBehaviour
         rb.isKinematic = true;
 
         transform.rotation = Quaternion.identity;
+    }
+
+        public void ResetFall()
+    {
+        if(initialPosition == null || initialPosition == Vector3.zero)
+        {
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+        }
+        isFalling = false;
+        fallTimer = 0f;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
+        transform.SetPositionAndRotation(initialPosition, initialRotation);
+        gameObject.SetActive(false);
     }
 
 }
