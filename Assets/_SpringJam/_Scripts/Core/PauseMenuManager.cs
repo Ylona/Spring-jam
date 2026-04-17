@@ -185,19 +185,19 @@ namespace SpringJam2026.Core
         private void OnVolumeChanged(ChangeEvent<float> evt)
         {
             float value = evt.newValue;
-
-            audioService.SetMasterVolume(value);
-
-            if (value <= 0f)
-            {
-                audioService.MuteMasterVolume(true);
-                muteToggle.SetValueWithoutNotify(true);
-            }
-            else
+            
+            if (value > 0f)
             {
                 audioService.MuteMasterVolume(false);
                 muteToggle.SetValueWithoutNotify(false);
             }
+            else
+            {
+                audioService.MuteMasterVolume(true);
+                muteToggle.SetValueWithoutNotify(true);
+            }
+            
+            audioService.SetMasterVolume(value);
         }
     }
 }
