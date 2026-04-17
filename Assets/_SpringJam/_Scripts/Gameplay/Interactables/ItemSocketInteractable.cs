@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
 using SpringJam2026.Audio;
@@ -36,7 +37,10 @@ public class ItemSocketInteractable : BaseInteractable
     private ItemInteractable loopStartItem;
 
     public bool HasPlacedItem => placedItem != null;
+    public ItemInteractable PlacedItem => placedItem;
     public Transform SocketAnchor => socketAnchor != null ? socketAnchor : transform;
+    public event Action<ItemSocketInteractable> ItemPlaced;
+    public event Action<ItemSocketInteractable> ItemCleared;
 
     private void Awake()
     {
@@ -170,6 +174,7 @@ public class ItemSocketInteractable : BaseInteractable
             DayLoopRuntime.Instance?.TryCompleteTask(taskIdOnPlacement);
         }
 
+        ItemPlaced?.Invoke(this);
         return true;
     }
 
@@ -187,6 +192,8 @@ public class ItemSocketInteractable : BaseInteractable
         {
             startingItem = null;
         }
+
+        ItemCleared?.Invoke(this);
     }
 
     internal void RestoreLoopStartItemReference(ItemInteractable item)
