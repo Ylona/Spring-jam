@@ -10,7 +10,7 @@ namespace SpringJam.Tests.EditMode
     {
         private static readonly string[] RequiredIngredientIds =
         {
-            "cherry-basket",
+            "cherry",
             "honey-jar",
             "mint-bundle",
             "blossom-petals",
@@ -26,7 +26,7 @@ namespace SpringJam.Tests.EditMode
             DayLoopEndContext endingContext = null;
             scenario.Runtime.LoopEnded += context => endingContext = context;
 
-            scenario.PlaceIngredient("cherry-basket");
+            scenario.PlaceIngredient("cherry");
             scenario.PlaceIngredient("honey-jar");
             scenario.PlaceIngredient("mint-bundle");
 
@@ -49,7 +49,7 @@ namespace SpringJam.Tests.EditMode
             DayLoopEndContext endingContext = null;
             scenario.Runtime.LoopEnded += context => endingContext = context;
 
-            scenario.PlaceItemInSocket("winter-stone", "cherry-basket");
+            scenario.PlaceItemInSocket("winter-stone", "cherry");
             scenario.PlaceIngredient("honey-jar");
             scenario.PlaceIngredient("mint-bundle");
             scenario.PlaceIngredient("blossom-petals");

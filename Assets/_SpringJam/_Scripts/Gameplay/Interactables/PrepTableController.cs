@@ -41,7 +41,7 @@ public sealed class PrepTableController : MonoBehaviour
     [SerializeField]
     private List<PrepTableIngredientRequirement> ingredientSockets = new List<PrepTableIngredientRequirement>
     {
-        new PrepTableIngredientRequirement("cherry-basket"),
+        new PrepTableIngredientRequirement("cherry"),
         new PrepTableIngredientRequirement("honey-jar"),
         new PrepTableIngredientRequirement("mint-bundle"),
         new PrepTableIngredientRequirement("blossom-petals"),
