@@ -41,25 +41,15 @@ namespace SpringJam2026.Utils
             
             // Seconds we initialize
             foreach (var service in services)
-            {
                 service.Initialize();
-
-                Debug.Log($"[Bootstrap] Initialized: {service.GetType().Name} (Priority: {service.Priority})");
-            }
             
             // Lastly we can subscribe to events
             foreach (var service in services)
-            {
                 service.Bind();
-
-                Debug.Log($"[Bootstrap] Bound: {service.GetType().Name}");
-            }
         }
 
         private void InitializeSystems()
         {
-            Debug.Log("Game Initialized");
-
             ServiceLocator.DebugDumpServices();
             
             // Not the best place to put this but just for testing
