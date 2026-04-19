@@ -41,8 +41,8 @@ namespace SpringJam2026.Core
 
         public void Initialize()
         {
-            root = uiDocument.rootVisualElement;
-            menu = root.Q<VisualElement>("root");
+            root = uiDocument.rootVisualElement.Q<VisualElement>("root");
+            menu = root.Q<VisualElement>("pause-menu");
 
             resumeButton = root.Q<Button>("resumeButton");
             restartButton = root.Q<Button>("restartButton");
@@ -54,8 +54,7 @@ namespace SpringJam2026.Core
 
             muteToggle.RegisterValueChangedCallback(OnMuteChanged);
             volumeSlider.RegisterValueChangedCallback(OnVolumeChanged);
-
-            menu.AddToClassList("hidden");
+            
             menu.pickingMode = PickingMode.Position;
 
             playerMap = inputActions.FindActionMap("Player");
@@ -124,9 +123,8 @@ namespace SpringJam2026.Core
                 dialogueUI.rootVisualElement.style.display = DisplayStyle.None;
 
             Time.timeScale = 0f;
-
+            
             root.RemoveFromClassList("hidden");
-            menu.RemoveFromClassList("hidden");
 
             playerMap.Disable();
             uiMap.Enable();
@@ -145,8 +143,7 @@ namespace SpringJam2026.Core
                 dialogueUI.rootVisualElement.style.display = DisplayStyle.Flex;
 
             Time.timeScale = 1f;
-
-            menu.AddToClassList("hidden");
+            
             root.AddToClassList("hidden");
 
             uiMap.Disable();

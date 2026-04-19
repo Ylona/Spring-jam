@@ -120,3 +120,4 @@ InitTestScene*.unity*
 **/FMODStudioCache.asset
 **/FMODStudioCache.asset.meta
 fmod_editor.log
+Assets/Plugins/FMOD/Cache/Editor/FMODStudioCache.asset
