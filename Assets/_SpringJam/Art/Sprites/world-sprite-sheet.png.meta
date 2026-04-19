@@ -4034,6 +4034,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: sign
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 352
+        width: 16
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89ec66e4635f918419f21bbbe9d289fb
+      internalID: 1621338213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -4151,6 +4173,7 @@ TextureImporter:
       grass_TR: -1165325738
       grass_small_path_hor: 1213516709
       grass_small_path_ver: 612878200
+      sign: 1621338213
       stone_BL: 1447520016
       stone_BM: -1734426493
       stone_BR: -118142165

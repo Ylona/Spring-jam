@@ -11,6 +11,13 @@ public class NpcInteractable : BaseInteractable
     [SerializeField] private List<ConditionalDialogueSequenceDefinition> dialogueVariants = new List<ConditionalDialogueSequenceDefinition>();
     [SerializeField] private UnityEvent onNpcTalkedTo;
 
+    private NPCWanderer wanderer;
+
+    private void Awake()
+    {
+        wanderer = GetComponent<NPCWanderer>();
+    }
+
     public override void Interact(PlayerInteractor interactor)
     {
         DialogueSequenceDefinition sequence = SelectSequence();
@@ -21,9 +28,16 @@ public class NpcInteractable : BaseInteractable
             return;
         }
 
-        DialogueConversation conversation = sequence.CreateConversation(() => CompleteSequence(sequence));
+        if (wanderer != null) wanderer.StopWandering();
+
+        DialogueConversation conversation = sequence.CreateConversation(() =>
+        {
+            if (wanderer != null) wanderer.ResumeWandering();
+            CompleteSequence(sequence);
+        });
         if (conversation == null)
         {
+            if (wanderer != null) wanderer.ResumeWandering();
             Debug.LogWarning($"Dialogue sequence on {name} has no lines.", this);
             return;
         }
