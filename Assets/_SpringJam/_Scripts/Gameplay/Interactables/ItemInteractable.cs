@@ -84,6 +84,11 @@ public class ItemInteractable : BaseInteractable
             return;
         }
 
+        if (isPlaced && currentSocket != null && currentSocket.BlockPickupWhenPlaced)
+        {
+            return;
+        }
+
         if (!canBePickedUp)
         {
             ApplyInteractionProgression();
@@ -116,7 +121,7 @@ public class ItemInteractable : BaseInteractable
 
     public override string GetInteractionText(PlayerInteractor interactor)
     {
-        if (IsHeld)
+        if (IsHeld || (isPlaced && currentSocket != null && currentSocket.BlockPickupWhenPlaced))
         {
             return string.Empty;
         }

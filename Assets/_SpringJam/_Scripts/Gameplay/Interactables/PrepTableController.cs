@@ -47,6 +47,9 @@ public sealed class PrepTableController : MonoBehaviour
         new PrepTableIngredientRequirement("blossom-petals"),
     };
 
+    [Header("Completion Effect")]
+    [SerializeField] private MealCompletionEffect completionEffect;
+
     [Header("Events")]
     [SerializeField] private UnityEvent onIngredientStateChanged;
     [SerializeField] private UnityEvent onMealCompleted;
@@ -136,6 +139,7 @@ public sealed class PrepTableController : MonoBehaviour
         }
 
         PlayCompletionAudio();
+        completionEffect?.Play();
         onMealCompleted?.Invoke();
         return true;
     }

@@ -3,6 +3,78 @@
     {
       "conditions": {
         "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": ["bunny-cake-hint"],
+        "requiredCompletedTaskIds": ["bloom-flowers", "guide-bees"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-cake-to-bunny",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Go talk to Bunny." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["bunny-cake-hint"],
+        "blockedKnowledgeIds": ["mara-cake-hint"],
+        "requiredCompletedTaskIds": ["bloom-flowers", "guide-bees"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-cake-to-mara",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Go talk to Mara." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["mara-cake-hint"],
+        "blockedKnowledgeIds": ["grandma-cake-hint"],
+        "requiredCompletedTaskIds": ["bloom-flowers", "guide-bees"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-cake-to-grandma",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Go talk to Grandma." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["grandma-cake-hint"],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["bloom-flowers", "guide-bees"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-cake-ready",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "You have everything you need. Go bake that cake!" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
         "blockedKnowledgeIds": ["fairy-intro-done"],
         "requiredCompletedTaskIds": [],
         "requiredIncompleteTaskIds": []
@@ -166,20 +238,76 @@
     },
     {
       "conditions": {
-        "requiredKnowledgeIds": [""],
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": ["bunny-bees-hint"],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-bees-to-bunny",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "You're looking for ingredients for the cake, aren't you?" },
+          { "speakerName": "Fairy", "body": "Bunny might know something. She keeps a close eye on everything in the forest." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["bunny-bees-hint"],
+        "blockedKnowledgeIds": ["grandma-bees"],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-bees-to-grandma",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Still looking for something for the cake?" },
+          { "speakerName": "Fairy", "body": "Grandma has lived here a long time. She probably knows more than she lets on." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["grandma-bees"],
+        "blockedKnowledgeIds": ["mara-bees-hint"],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-bees-to-mara",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Sounds like you still need an ingredient for the cake." },
+          { "speakerName": "Fairy", "body": "Have you spoken to Mara yet? She\u2019s the beekeeper to the North." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["mara-bees-hint"],
         "blockedKnowledgeIds": [],
         "requiredCompletedTaskIds": ["bloom-flowers"],
         "requiredIncompleteTaskIds": ["guide-bees"]
       },
       "sequence": {
-        "sequenceId": "fairy-hint-bees",
+        "sequenceId": "fairy-hint-bees-active",
         "interactionText": "Talk",
         "speakerName": "Fairy",
         "lines": [
-          { "speakerName": "Fairy", "body": "The flowers are blooming — well done!" },
-          { "speakerName": "Fairy", "body": "But spring isn't here yet. The bees still need to find their way." },
-          { "speakerName": "Fairy", "body": "There's a beekeeper to the North — Maya. She'll know what to do." },
-          { "speakerName": "Fairy", "body": "Grandma mentioned her too, I think" }
+          { "speakerName": "Fairy", "body": "The flowers are blooming \u2014 well done!" },
+          { "speakerName": "Fairy", "body": "But spring isn\u2019t here yet. The bees still need to find their way." },
+          { "speakerName": "Fairy", "body": "Mara is counting on you. Go help her bees!" }
         ],
         "knowledgeIdsToLearn": [],
         "taskIdsToComplete": []

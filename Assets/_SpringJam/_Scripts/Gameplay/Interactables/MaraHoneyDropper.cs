@@ -5,7 +5,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class MaraHoneyDropper : MonoBehaviour
 {
-    [SerializeField] private string unlockTaskId = "guide-bees";
+    [SerializeField] private string walkTaskId = "bloom-flowers";
+    [SerializeField] private string dropTaskId = "guide-bees";
     [SerializeField] private Transform startAnchor;
     [SerializeField] private Transform dropAnchor;
     [SerializeField] private Transform honeyDropAnchor;
@@ -19,6 +20,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
 
     private DayLoopRuntime subscribedRuntime;
     private bool isWalkingToDrop;
+    private bool isWaitingAtDrop;
     private bool isWalkingAfterDrop;
     private bool hasDroppedHoney;
 
@@ -40,7 +42,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
     private void Start()
     {
         TrySubscribe();
-        BeginDropIfTaskAlreadyComplete();
+        CheckTasksOnStart();
     }
 
     private void Update()
@@ -61,9 +63,10 @@ public sealed class MaraHoneyDropper : MonoBehaviour
         Unsubscribe();
     }
 
-    private void BeginHoneyDrop()
+    // Called when bloom-flowers completes: Mara walks to the drop spot and waits.
+    private void BeginWalk()
     {
-        if (hasDroppedHoney || isWalkingToDrop)
+        if (hasDroppedHoney || isWalkingToDrop || isWaitingAtDrop)
         {
             return;
         }
@@ -72,13 +75,46 @@ public sealed class MaraHoneyDropper : MonoBehaviour
         SetMaraVisible(true);
     }
 
+    // Called when guide-bees completes: Mara drops the honey (she may already be at the spot or still walking).
+    private void AllowDrop()
+    {
+        if (hasDroppedHoney)
+        {
+            return;
+        }
+
+        if (isWaitingAtDrop)
+        {
+            DropHoney();
+        }
+        else
+        {
+            // She will drop as soon as she arrives (flag checked in UpdateDropMovement).
+            isWaitingAtDrop = false; // repurpose: treat arrival as immediate drop
+        }
+    }
+
     private void UpdateDropMovement(float deltaTime)
     {
         if (isWalkingToDrop)
         {
             if (dropAnchor == null || MoveTowardAnchor(dropAnchor, deltaTime))
             {
-                DropHoney();
+                isWalkingToDrop = false;
+
+                DayLoopRuntime runtime = DayLoopRuntime.Instance;
+                bool dropTaskDone = runtime != null
+                    && runtime.TryGetTask(NormalizeId(dropTaskId), out DayLoopTaskSnapshot snap)
+                    && snap.IsCompleted;
+
+                if (dropTaskDone)
+                {
+                    DropHoney();
+                }
+                else
+                {
+                    isWaitingAtDrop = true;
+                }
             }
 
             return;
@@ -129,7 +165,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
 
     private void DropHoney()
     {
-        isWalkingToDrop = false;
+        isWaitingAtDrop = false;
         hasDroppedHoney = true;
 
         Transform jarAnchor = honeyDropAnchor != null ? honeyDropAnchor : dropAnchor;
@@ -145,6 +181,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
     private void ResetRoutine()
     {
         isWalkingToDrop = false;
+        isWaitingAtDrop = false;
         isWalkingAfterDrop = false;
         hasDroppedHoney = false;
 
@@ -157,30 +194,43 @@ public sealed class MaraHoneyDropper : MonoBehaviour
         SetHoneyAvailable(false);
     }
 
-    private void BeginDropIfTaskAlreadyComplete()
+    private void CheckTasksOnStart()
     {
         DayLoopRuntime runtime = DayLoopRuntime.Instance;
-        if (runtime == null || !runtime.TryGetTask(NormalizeId(unlockTaskId), out DayLoopTaskSnapshot taskSnapshot))
-        {
-            return;
-        }
+        if (runtime == null) return;
 
-        if (taskSnapshot.IsCompleted)
+        bool walkDone = runtime.TryGetTask(NormalizeId(walkTaskId), out DayLoopTaskSnapshot walkSnap) && walkSnap.IsCompleted;
+        bool dropDone = runtime.TryGetTask(NormalizeId(dropTaskId), out DayLoopTaskSnapshot dropSnap) && dropSnap.IsCompleted;
+
+        if (walkDone && dropDone)
         {
-            BeginHoneyDrop();
+            // Both already done: skip straight to dropped state.
+            isWalkingToDrop = false;
+            isWaitingAtDrop = false;
+            hasDroppedHoney = true;
+            SetMaraVisible(true);
+            SetHoneyAvailable(true);
+        }
+        else if (walkDone)
+        {
+            // Walk task done but not yet dropped: start walking.
+            BeginWalk();
         }
     }
 
     private void HandleTaskChanged(DayLoopTaskSnapshot taskSnapshot)
     {
-        if (taskSnapshot == null || !taskSnapshot.IsCompleted)
-        {
-            return;
-        }
+        if (taskSnapshot == null || !taskSnapshot.IsCompleted) return;
 
-        if (NormalizeId(taskSnapshot.TaskId) == NormalizeId(unlockTaskId))
+        string id = NormalizeId(taskSnapshot.TaskId);
+
+        if (id == NormalizeId(walkTaskId))
         {
-            BeginHoneyDrop();
+            BeginWalk();
+        }
+        else if (id == NormalizeId(dropTaskId))
+        {
+            AllowDrop();
         }
     }
 
@@ -231,10 +281,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
             maraSpriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
         }
 
-        if (honeyJar == null)
-        {
-            return;
-        }
+        if (honeyJar == null) return;
 
         if (honeyJarRenderers == null || honeyJarRenderers.Length == 0)
         {
@@ -250,10 +297,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
     private void TrySubscribe()
     {
         DayLoopRuntime runtime = DayLoopRuntime.Instance;
-        if (runtime == null || subscribedRuntime == runtime)
-        {
-            return;
-        }
+        if (runtime == null || subscribedRuntime == runtime) return;
 
         Unsubscribe();
         subscribedRuntime = runtime;
@@ -263,10 +307,7 @@ public sealed class MaraHoneyDropper : MonoBehaviour
 
     private void Unsubscribe()
     {
-        if (subscribedRuntime == null)
-        {
-            return;
-        }
+        if (subscribedRuntime == null) return;
 
         subscribedRuntime.TaskChanged -= HandleTaskChanged;
         subscribedRuntime.LoopStarted -= HandleLoopStarted;

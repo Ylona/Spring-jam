@@ -18,6 +18,7 @@ namespace SpringJam.Systems.DayLoop
         private readonly HashSet<string> learnedKnowledge;
 
         private bool hasBegun;
+        private bool isFrozen;
         private float elapsedSeconds;
         private float phaseElapsedSeconds;
         private DayLoopPhase currentPhase;
@@ -69,9 +70,14 @@ namespace SpringJam.Systems.DayLoop
             StartNextLoop();
         }
 
+        public void Freeze()
+        {
+            isFrozen = true;
+        }
+
         public void Tick(float deltaTime)
         {
-            if (!hasBegun || deltaTime <= 0f)
+            if (!hasBegun || isFrozen || deltaTime <= 0f)
             {
                 return;
             }
@@ -221,6 +227,7 @@ namespace SpringJam.Systems.DayLoop
                 task.ResetForNewLoop();
             }
 
+            learnedKnowledge.Clear();
             hasBegun = true;
             TryUnlockDeferredTasks();
             LoopStarted?.Invoke(CreateSnapshot());
@@ -229,6 +236,13 @@ namespace SpringJam.Systems.DayLoop
         private void EndLoop(DayLoopEndReason reason)
         {
             LoopEnded?.Invoke(new DayLoopEndContext(reason, CreateSnapshot()));
+
+            if (reason == DayLoopEndReason.SuccessfulLoop)
+            {
+                isFrozen = true;
+                return;
+            }
+
             StartNextLoop();
         }
 

@@ -8,6 +8,26 @@
         "requiredIncompleteTaskIds": []
       },
       "sequence": {
+        "sequenceId": "grandma-cake-ingredients",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "Oh, the bees are home and the flowers are blooming. Spring is truly here!" },
+          { "speakerName": "Grandma", "body": "You know, a proper spring cake needs just three things: a blossom petal, fresh honey, and a ripe cherry on top." },
+          { "speakerName": "Grandma", "body": "If you can gather those, I think you could bake something wonderful." }
+        ],
+        "knowledgeIdsToLearn": ["grandma-cake-hint"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["guide-bees", "bloom-flowers"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
         "sequenceId": "grandma-cake",
         "interactionText": "Talk",
         "speakerName": "Grandma",
@@ -43,6 +63,27 @@
       "conditions": {
         "requiredKnowledgeIds": [],
         "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "grandma-bees-bloom",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "Oh, the flowers are blooming! That\u2019s a good sign." },
+          { "speakerName": "Grandma", "body": "You should go visit Mara. She\u2019s the beekeeper, lives to the North of here." },
+          { "speakerName": "Grandma", "body": "She always waits indoors until the flowers bloom \u2014 says it\u2019s bad luck to let the bees out before that." },
+          { "speakerName": "Grandma", "body": "Now that the flowers are blooming, she should be outside. Go find her!" }
+        ],
+        "knowledgeIdsToLearn": ["grandma-bees"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
         "requiredCompletedTaskIds": [],
         "requiredIncompleteTaskIds": ["bloom-flowers"]
       },
@@ -55,9 +96,7 @@
           { "speakerName": "Grandma", "body": "Discia first, then daffodil, followed by hyacinth\u2026" },
           { "speakerName": "Grandma", "body": "And tulips always come last. They like to take their time." }
         ],
-        "knowledgeIdsToLearn": [
-          "grandma-flowers"
-        ],
+        "knowledgeIdsToLearn": ["grandma-flowers"],
         "taskIdsToComplete": []
       }
     },
@@ -73,9 +112,9 @@
         "interactionText": "Talk",
         "speakerName": "Grandma",
         "lines": [
-          { "speakerName": "Grandma", "body": "You should go visit Maya again, dear." },
-          { "speakerName": "Grandma", "body": "She\u2019s the beekeeper in the North, always busy with her little friends." },
-          { "speakerName": "Grandma", "body": "If something feels off, she\u2019ll know what to do" }
+          { "speakerName": "Grandma", "body": "You should go visit Mara, dear. She\u2019s the beekeeper to the North." },
+          { "speakerName": "Grandma", "body": "But she won\u2019t come outside until the flowers are blooming \u2014 she\u2019s very particular about that." },
+          { "speakerName": "Grandma", "body": "Make sure the flowers bloom first, and then go find her." }
         ],
         "knowledgeIdsToLearn": [],
         "taskIdsToComplete": []
