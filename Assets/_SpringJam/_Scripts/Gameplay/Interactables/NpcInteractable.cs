@@ -73,11 +73,10 @@ public class NpcInteractable : BaseInteractable
 
         if (wanderer != null) wanderer.StopWandering();
 
-        DialogueConversation conversation = sequence.CreateConversation(() =>
-        {
-            if (wanderer != null) wanderer.ResumeWandering();
-            CompleteSequence(sequence);
-        });
+        void OnResume() { if (wanderer != null) wanderer.ResumeWandering(); }
+        DialogueConversation conversation = sequence.CreateConversation(
+            onCompleted: () => { OnResume(); CompleteSequence(sequence); },
+            onCancelled: OnResume);
         if (conversation == null)
         {
             if (wanderer != null) wanderer.ResumeWandering();

@@ -26,13 +26,15 @@ namespace SpringJam.Dialogue
     public sealed class DialogueConversation
     {
         private readonly Action onCompleted;
+        private readonly Action onCancelled;
 
-        public DialogueConversation(string conversationId, string interactionText, IReadOnlyList<DialogueLine> lines, Action onCompleted = null)
+        public DialogueConversation(string conversationId, string interactionText, IReadOnlyList<DialogueLine> lines, Action onCompleted = null, Action onCancelled = null)
         {
             ConversationId = Normalize(conversationId);
             InteractionText = string.IsNullOrWhiteSpace(interactionText) ? "Talk" : interactionText.Trim();
             Lines = lines ?? Array.Empty<DialogueLine>();
             this.onCompleted = onCompleted;
+            this.onCancelled = onCancelled;
         }
 
         public string ConversationId { get; }
@@ -43,6 +45,11 @@ namespace SpringJam.Dialogue
         internal void Complete()
         {
             onCompleted?.Invoke();
+        }
+
+        internal void Cancel()
+        {
+            onCancelled?.Invoke();
         }
 
         private static string Normalize(string value)
@@ -285,7 +292,7 @@ namespace SpringJam.Dialogue
             }
         }
 
-        public DialogueConversation CreateConversation(Action onCompleted = null)
+        public DialogueConversation CreateConversation(Action onCompleted = null, Action onCancelled = null)
         {
             List<DialogueLine> runtimeLines = new List<DialogueLine>();
             string defaultSpeaker = string.IsNullOrWhiteSpace(speakerName) ? string.Empty : speakerName.Trim();
@@ -302,7 +309,7 @@ namespace SpringJam.Dialogue
 
             return runtimeLines.Count == 0
                 ? null
-                : new DialogueConversation(sequenceId, InteractionText, runtimeLines.AsReadOnly(), onCompleted);
+                : new DialogueConversation(sequenceId, InteractionText, runtimeLines.AsReadOnly(), onCompleted, onCancelled);
         }
 
         public void ApplyProgressionEffects(DayLoopRuntime runtime)
