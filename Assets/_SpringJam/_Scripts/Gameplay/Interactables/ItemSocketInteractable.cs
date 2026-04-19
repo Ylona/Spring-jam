@@ -280,6 +280,11 @@ public class ItemSocketInteractable : BaseInteractable
             return false;
         }
 
+        if (placedItem != null)
+        {
+            mover.SetFollowTarget(placedItem.transform);
+        }
+
         mover.MoveToGreenhouseAnchor();
         if (!mover.IsAtGreenhouse)
         {
