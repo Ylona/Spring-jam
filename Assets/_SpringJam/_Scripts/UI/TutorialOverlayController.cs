@@ -8,7 +8,7 @@ public class TutorialOverlayController : MonoBehaviour
     private VisualElement root;
     private Button closeButton;
 
-    private void OnEnable()
+    private void Awake()
     {
         root = uiDocument.rootVisualElement;
         root.pickingMode = PickingMode.Position;
@@ -18,6 +18,7 @@ public class TutorialOverlayController : MonoBehaviour
         {
             closeButton.clicked -= Hide;
             closeButton.clicked += Hide;
+            Hide();
         }
     }
 

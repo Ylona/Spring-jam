@@ -1,0 +1,33 @@
+.victory-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(16, 8, 36, 0.92);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.victory-title {
+    color: rgb(255, 230, 180);
+    font-size: 64px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    width: 100%;
+    margin-bottom: 24px;
+    padding-left: 48px;
+    padding-right: 48px;
+}
+
+.victory-sub {
+    color: rgb(210, 240, 200);
+    font-size: 32px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    width: 100%;
+    padding-left: 48px;
+    padding-right: 48px;
+}

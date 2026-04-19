@@ -12,6 +12,7 @@ public class ItemSocketInteractable : BaseInteractable
     [SerializeField] private Transform socketAnchor;
     [SerializeField] private List<string> acceptedItemIds = new List<string>();
     [SerializeField] private string placementPrompt = "Place Item";
+    [SerializeField] private bool blockPickupWhenPlaced = false;
     [SerializeField] private string taskIdOnPlacement = string.Empty;
     [SerializeField] private ItemInteractable startingItem;
 
@@ -38,6 +39,7 @@ public class ItemSocketInteractable : BaseInteractable
 
     public bool HasPlacedItem => placedItem != null;
     public ItemInteractable PlacedItem => placedItem;
+    public bool BlockPickupWhenPlaced => blockPickupWhenPlaced;
     public Transform SocketAnchor => socketAnchor != null ? socketAnchor : transform;
     public event Action<ItemSocketInteractable> ItemPlaced;
     public event Action<ItemSocketInteractable> ItemCleared;
@@ -162,6 +164,12 @@ public class ItemSocketInteractable : BaseInteractable
         {
             placedItem = null;
             return false;
+        }
+
+        if (blockPickupWhenPlaced)
+        {
+            Collider placedCollider = placedItem.GetComponentInChildren<Collider>();
+            if (placedCollider != null) placedCollider.enabled = false;
         }
 
         onItemPlaced?.Invoke();
@@ -314,6 +322,12 @@ public class ItemSocketInteractable : BaseInteractable
 
     private void HandleLoopStarted(DayLoopSnapshot _)
     {
+        if (blockPickupWhenPlaced && placedItem != null)
+        {
+            Collider placedCollider = placedItem.GetComponentInChildren<Collider>();
+            if (placedCollider != null) placedCollider.enabled = true;
+        }
+
         placedItem = null;
         startingItem = loopStartItem;
         ApplyStartingItemPlacement();
