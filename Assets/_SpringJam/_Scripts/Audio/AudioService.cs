@@ -134,6 +134,30 @@ namespace SpringJam2026.Audio
         }
 
         #endregion
+        
+        #region UI Sounds
+        
+        public void PlayUIHover()
+        {
+            PlayOneShot(library.uiHover);
+        }
+        
+        public void PlayUIReturn()
+        {
+            PlayOneShot(library.uiReturn);
+        }
+        
+        public void PlayUISelect()
+        {
+            PlayOneShot(library.uiSelect);
+        }
+        
+        public void PlayUIStartGame()
+        {
+            PlayOneShot(library.uiStartGame);
+        }
+        
+        #endregion
 
         #region Volume
 

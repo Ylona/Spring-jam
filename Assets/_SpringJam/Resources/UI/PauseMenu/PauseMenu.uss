@@ -58,6 +58,21 @@
     background-color: rgb(255, 221, 203);
     border-width: 0;
     border-radius: 0;
+
+    transition-property: scale, background-color;
+    transition-duration: 0.1s;
+
+    scale: 1;
+}
+
+.button:hover {
+    scale: 1.05;
+    background-color: rgb(255, 235, 220);
+}
+
+.button:active {
+    scale: 0.95;
+    background-color: rgb(230, 190, 170);
 }
 
 .button-bg {

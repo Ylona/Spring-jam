@@ -5,7 +5,7 @@
             <ui:Image source="project://database/Assets/_SpringJam/Art/Sprites/springtopia-logo.png?fileID=2800000&amp;guid=ef3f4ac5bf31e884ca08624034772b8b&amp;type=3#springtopia-logo" class="logo"/>
             <ui:Button name="resumeButton" text="Resume" class="button button-bg"/>
             <ui:Button name="restartButton" text="Restart" class="button button-bg"/>
-            <ui:Label text="Audio" class="section-header section-header-center"/>
+            <ui:Label text="Volume" class="section-header section-header-center"/>
             <ui:Slider name="volumeSlider" low-value="0" high-value="1" value="1" class="volume-slider"/>
             <ui:Toggle name="muteToggle" text="Mute" class="mute-toggle mute-toggle-layout"/>
         </ui:VisualElement>

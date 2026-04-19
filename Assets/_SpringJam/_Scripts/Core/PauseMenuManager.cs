@@ -49,9 +49,6 @@ namespace SpringJam2026.Core
             muteToggle = root.Q<Toggle>("muteToggle");
             volumeSlider = root.Q<Slider>("volumeSlider");
 
-            resumeButton.clicked += TogglePause;
-            restartButton.clicked += RestartGame;
-
             muteToggle.RegisterValueChangedCallback(OnMuteChanged);
             volumeSlider.RegisterValueChangedCallback(OnVolumeChanged);
             
@@ -74,6 +71,22 @@ namespace SpringJam2026.Core
                 volumeSlider.SetValueWithoutNotify(volume);
                 muteToggle.SetValueWithoutNotify(volume <= 0f);   
             }
+            
+            resumeButton.clicked += () =>
+            {
+                PlayReturn();
+                TogglePause();
+            };
+
+            resumeButton.RegisterCallback<MouseEnterEvent>(_ => PlayHover());
+            
+            restartButton.clicked += () =>
+            {
+                PlaySelect();
+                RestartGame();
+            };
+
+            restartButton.RegisterCallback<MouseEnterEvent>(_ => PlayHover());
         }
 
         public void Bind()
@@ -192,5 +205,24 @@ namespace SpringJam2026.Core
             
             audioService.SetMasterVolume(value);
         }
+        
+        #region Audio Events
+        
+        private void PlayHover()
+        {
+            audioService?.PlayUIHover();
+        }
+
+        private void PlaySelect()
+        {
+            audioService?.PlayUISelect();
+        }
+
+        private void PlayReturn()
+        {
+            audioService?.PlayUIReturn();
+        }
+        
+        #endregion
     }
 }
