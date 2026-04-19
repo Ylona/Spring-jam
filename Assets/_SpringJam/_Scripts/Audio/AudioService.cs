@@ -124,7 +124,7 @@ namespace SpringJam2026.Audio
         
         public void PlayBunnyHop(Vector3? position = null)
         {
-            PlayOneShot(library.bunnyHops, position);
+            PlayOneShot(library.bunnyHops, position, 0.1f);
         }
 
         public void StartMusic()
@@ -230,15 +230,15 @@ namespace SpringJam2026.Audio
         
         #region Helper
         
-        private void PlayOneShot(EventReference clip, Vector3? position = null)
+        private void PlayOneShot(EventReference clip, Vector3? position = null, float vol = 1f)
         {
             if (position.HasValue)
             {
-                controller.PlayOneShot(clip, position.Value);
+                controller.PlayOneShot(clip, position.Value, vol);
             }
             else
             {
-                controller.PlayOneShot(clip);
+                controller.PlayOneShot(clip, null, vol);
             }
         }
         

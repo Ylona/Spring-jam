@@ -20,6 +20,7 @@ namespace SpringJam2026.Audio
         public void Bind()
         {
             controller.PlayLoop3D(BEE_SWARM_ID, controller.library.beeSwarmLoop, swarm.transform);
+            controller.SetLoopVolume(BEE_SWARM_ID, 0.5f);
         }
         
         private void OnDestroy()

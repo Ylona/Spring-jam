@@ -52,6 +52,21 @@ namespace SpringJam2026.Audio
             RuntimeManager.PlayOneShot(sound, position);
         }
         
+        public void PlayOneShot(EventReference clip, Vector3? position = null, float volume = 1f)
+        {
+            var instance = RuntimeManager.CreateInstance(clip);
+
+            if (position.HasValue)
+            {
+                instance.set3DAttributes(RuntimeUtils.To3DAttributes(position.Value));
+            }
+
+            instance.setVolume(volume);
+
+            instance.start();
+            instance.release();
+        }
+        
         #endregion
 
         #region Looping
