@@ -14,6 +14,8 @@ namespace SpringJam.Systems.DayLoop
         private Vector3 capturedPosition;
         private Quaternion capturedRotation;
         private Vector3 capturedLocalScale;
+        private SpriteRenderer spriteRenderer;
+        private bool capturedSpriteEnabled;
 
         private void Awake()
         {
@@ -46,6 +48,8 @@ namespace SpringJam.Systems.DayLoop
             capturedPosition = transform.position;
             capturedRotation = transform.rotation;
             capturedLocalScale = transform.localScale;
+            if (spriteRenderer != null)
+                capturedSpriteEnabled = spriteRenderer.enabled;
             hasCapturedState = true;
         }
 
@@ -59,6 +63,8 @@ namespace SpringJam.Systems.DayLoop
             transform.position = capturedPosition;
             transform.rotation = capturedRotation;
             transform.localScale = capturedLocalScale;
+            if (spriteRenderer != null)
+                spriteRenderer.enabled = capturedSpriteEnabled;
 
             if (resetRigidbodies)
             {
@@ -115,9 +121,10 @@ namespace SpringJam.Systems.DayLoop
         private Rigidbody CacheComponents()
         {
             if (attachedRigidbody == null)
-            {
                 attachedRigidbody = GetComponent<Rigidbody>();
-            }
+
+            if (spriteRenderer == null)
+                spriteRenderer = GetComponent<SpriteRenderer>();
 
             return attachedRigidbody;
         }

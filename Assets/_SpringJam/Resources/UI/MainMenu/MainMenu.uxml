@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="project://database/Assets/_SpringJam/Resources/UI/MainMenu/MainMenu.uss"/>
+
+    <ui:VisualElement class="root main-menu-root">
+        <ui:VisualElement class="background"/>
+        
+        <ui:VisualElement class="content">
+            <ui:Button name="playButton" text="PLAY GAME" class="play-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

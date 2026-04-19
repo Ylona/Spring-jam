@@ -114,7 +114,15 @@ namespace SpringJam2026.Audio
         
         public void SetMasterVolume(float volume)
         {
-            masterBus.setVolume(Mathf.Clamp01(volume));
+            volume = Mathf.Clamp01(volume);
+
+            if (isMasterMuted)
+            {
+                lastVolumeBeforeMute = volume;
+                return;
+            }
+
+            masterBus.setVolume(volume);
         }
 
         public float GetMasterVolume()

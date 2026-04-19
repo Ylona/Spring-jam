@@ -127,6 +127,11 @@ namespace SpringJam2026.Audio
         {
             PlayOneShot(library.playerPickupForage, position);
         }
+        
+        public void StopAllLoops()
+        {
+            controller.StopAll();
+        }
 
         #endregion
 
