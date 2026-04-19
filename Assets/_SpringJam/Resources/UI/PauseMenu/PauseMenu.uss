@@ -1,9 +1,11 @@
-.root {
+.pause-root {
     flex-grow: 1;
     width: 100%;
     height: 100%;
+
     justify-content: center;
     align-items: center;
+
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
 }
@@ -12,22 +14,9 @@
     display: none;
 }
 
-.menu {
+.pause-menu {
     transition-property: scale, opacity;
     transition-duration: 0.2s;
-}
-
-.root.hidden .menu {
-    opacity: 0;
-    scale: 0.95;
-}
-
-.root:not(.hidden) .menu {
-    opacity: 1;
-    scale: 1;
-}
-
-.menu {
     width: 300px;
     height: 450px;
     padding: 20px;
@@ -35,7 +24,13 @@
     border-radius: 8px;
     flex-direction: column;
     align-self: center;
-    min-height: auto;
+    opacity: 1;
+    scale: 1;
+}
+
+.pause-root.hidden .pause-menu {
+    opacity: 0;
+    scale: 0.95;
 }
 
 .menu-bg {
@@ -63,6 +58,21 @@
     background-color: rgb(255, 221, 203);
     border-width: 0;
     border-radius: 0;
+
+    transition-property: scale, background-color;
+    transition-duration: 0.1s;
+
+    scale: 1;
+}
+
+.button:hover {
+    scale: 1.05;
+    background-color: rgb(255, 235, 220);
+}
+
+.button:active {
+    scale: 0.95;
+    background-color: rgb(230, 190, 170);
 }
 
 .button-bg {

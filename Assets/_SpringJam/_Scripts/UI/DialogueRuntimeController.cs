@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using SpringJam.Systems.DayLoop;
 using SpringJam.UI;
+using SpringJam2026.Core;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
@@ -94,12 +95,16 @@ namespace SpringJam.Dialogue
             controls?.Enable();
             TrySubscribeDayLoop();
             RefreshTaskJournal();
+            
+            GamePause.OnPauseChanged += HandlePauseChanged;
         }
 
         private void OnDisable()
         {
             controls?.Disable();
             UnsubscribeDayLoop();
+            
+            GamePause.OnPauseChanged -= HandlePauseChanged;
         }
 
         private void OnDestroy()
@@ -167,6 +172,19 @@ namespace SpringJam.Dialogue
                     RefreshUi();
                 }
             }
+        }
+        
+        private void HandlePauseChanged(bool isPaused)
+        {
+            if (uiDocument == null)
+                return;
+
+            var root = uiDocument.rootVisualElement;
+
+            if (root == null)
+                return;
+
+            root.style.display = isPaused ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public static bool TryStartConversation(DialogueConversation conversation)

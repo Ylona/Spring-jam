@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - Grass
+  - Dirt
+  - Wood
+  - Cobblestone
+  - Forest
   layers:
   - Default
   - TransparentFX

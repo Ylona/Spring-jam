@@ -24,7 +24,7 @@ public class ItemSocketInteractable : BaseInteractable
     private string lockedPlacementMessage = "You cannot place this here yet.";
 
     [Header("Feedback")]
-    [SerializeField] private bool playBeeMovementFeedbackOnPlacement;
+    [SerializeField] private bool playLurePotPlacement;
 
     [Header("Bee Swarm")]
     [SerializeField] private bool moveBeeSwarmOnPlacement;
@@ -254,14 +254,14 @@ public class ItemSocketInteractable : BaseInteractable
 
     private void PlayPlacementFeedback()
     {
-        if (!playBeeMovementFeedbackOnPlacement || !Application.isPlaying)
+        if (!playLurePotPlacement || !Application.isPlaying)
         {
             return;
         }
 
         try
         {
-            ServiceLocator.Get<AudioService>()?.PlayBeeMovement(SocketAnchor.position);
+            ServiceLocator.Get<AudioService>()?.PlayLurePotPlace(SocketAnchor.position);
         }
         catch (System.Exception exception)
         {

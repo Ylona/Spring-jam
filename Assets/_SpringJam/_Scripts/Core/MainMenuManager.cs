@@ -2,10 +2,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using SpringJam2026.Audio;
+using SpringJam2026.Utils;
 
 namespace SpringJam2026.Core
 {
-    public class MainMenuManager : MonoBehaviour
+    public class MainMenuManager : MonoBehaviour, IGameService
     {
         [SerializeField] private UIDocument uiDocument;
         [SerializeField] private string gameSceneName = "Map";
@@ -14,27 +16,38 @@ namespace SpringJam2026.Core
         private InputAction submitAction;
         private InputActionMap uiMap;
         private Button playButton;
+        private AudioService audioService;
 
-        private void Awake()
+        public int Priority => 45;
+        public void Initialize()
         {
+            audioService = ServiceLocator.Get<AudioService>();
+            
             var root = uiDocument.rootVisualElement;
 
             playButton = root.Q<Button>("playButton");
-            playButton.clicked += OnPlayClicked;
             
             uiMap = inputActions.FindActionMap("UI");
             submitAction = uiMap.FindAction("Submit");
-            
-            submitAction.performed += OnSubmit;
 
             uiMap.Enable();
             
             Time.timeScale = 1f;
             
-            SpringJam2026.Core.GamePause.SetPaused(false);
+            GamePause.SetPaused(false);
 
             UnityEngine.Cursor.lockState = CursorLockMode.None;
             UnityEngine.Cursor.visible = true;
+        }
+        
+        public void Bind()
+        {
+            submitAction.performed += OnSubmit;
+            playButton.clicked += OnPlayClicked;
+            
+            playButton.RegisterCallback<MouseEnterEvent>(_ => audioService.PlayUIHover());
+            
+            audioService.StartMenuMusic();
         }
         
         private void OnDestroy()
@@ -45,6 +58,8 @@ namespace SpringJam2026.Core
 
         private void OnPlayClicked()
         {
+            audioService.StopMenuMusic();
+            audioService.PlayUIStartGame();
             SceneManager.LoadScene(gameSceneName);
         }
         
