@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_SpringJam/Resources/UI/TutorialOverlay/TutorialOverlay.uss?fileID=7433441132597879392&amp;guid=08ba1b39cd01e0b4d9409bed039bdbf1&amp;type=3#TutorialOverlay"/>
+    <ui:VisualElement name="TutorialOverlay" class="tutorial-overlay">
+        <ui:VisualElement class="tutorial-panel">
+            <ui:Label text="How to Play" class="tutorial-title" style="color: rgb(255, 255, 255);"/>
+            <ui:Label text="Every morning feels the same…&#10;The same paths. The same faces. The same words.&#10;&#10;But something is off.&#10;&#10;People don’t notice it.&#10;Or maybe… they choose not to.&#10;&#10;Talk to the villagers.&#10;Listen carefully. Patterns repeat for a reason.&#10;&#10;Help them. Change something small.&#10;Sometimes that’s all it takes to break the loop.&#10;&#10;Or… is it?&#10;" class="tutorial-text" style="color: rgb(255, 255, 255); left: 24px;"/>
+            <ui:Label text="Controls" class="tutorial-subtitle" style="color: rgb(255, 255, 255);"/>
+            <ui:Label text="WASD — Move&#10;E — Interact&#10;ESC — Pause&#10;" class="tutorial-text" style="color: rgb(255, 255, 255); left: 24px;"/>
+            <ui:Button name="CloseButton" text="Close" class="tutorial-button" style="margin-top: 0;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
