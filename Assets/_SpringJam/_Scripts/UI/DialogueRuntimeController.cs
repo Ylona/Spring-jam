@@ -5,6 +5,7 @@ using SpringJam.UI;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 namespace SpringJam.Dialogue
 {
@@ -55,6 +56,13 @@ namespace SpringJam.Dialogue
         private static void Bootstrap()
         {
             isShuttingDown = false;
+            
+            string sceneName = SceneManager.GetActiveScene().name;
+            
+            // Exclude this from running on the MainMenu scene
+            if (sceneName == "MainMenu")
+                return;
+            
             EnsureInstance();
         }
 
