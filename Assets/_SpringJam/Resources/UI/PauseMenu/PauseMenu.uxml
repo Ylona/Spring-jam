@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/_SpringJam/Resources/UI/PauseMenu/PauseMenu.uss?fileID=7433441132597879392&amp;guid=267c5e1f69f9ec0418b32c348ac838b3&amp;type=3#PauseMenu"/>
 
-    <ui:VisualElement name="root" class="root">
+    <ui:VisualElement name="root" class="root hidden">
         <ui:VisualElement class="menu menu-bg">
             <ui:Image class="logo" source="project://database/Assets/_SpringJam/Art/Sprites/springtopia-logo.png?fileID=2800000&amp;guid=ef3f4ac5bf31e884ca08624034772b8b&amp;type=3#springtopia-logo"/>
             <ui:Button name="resumeButton" text="Resume" class="button button-bg"/>

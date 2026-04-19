@@ -55,7 +55,7 @@ namespace SpringJam2026.Core
             muteToggle.RegisterValueChangedCallback(OnMuteChanged);
             volumeSlider.RegisterValueChangedCallback(OnVolumeChanged);
 
-            menu.style.display = DisplayStyle.None;
+            menu.AddToClassList("hidden");
             menu.pickingMode = PickingMode.Position;
 
             playerMap = inputActions.FindActionMap("Player");
@@ -125,8 +125,8 @@ namespace SpringJam2026.Core
 
             Time.timeScale = 0f;
 
-            root.style.display = DisplayStyle.Flex;
-            menu.style.display = DisplayStyle.Flex;
+            root.RemoveFromClassList("hidden");
+            menu.RemoveFromClassList("hidden");
 
             playerMap.Disable();
             uiMap.Enable();
@@ -146,8 +146,8 @@ namespace SpringJam2026.Core
 
             Time.timeScale = 1f;
 
-            menu.style.display = DisplayStyle.None;
-            root.style.display = DisplayStyle.None;
+            menu.AddToClassList("hidden");
+            root.AddToClassList("hidden");
 
             uiMap.Disable();
             playerMap.Enable();
