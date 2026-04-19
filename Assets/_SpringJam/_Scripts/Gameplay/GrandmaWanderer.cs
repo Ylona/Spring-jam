@@ -68,8 +68,11 @@ public class GrandmaWanderer : NPCWanderer
         SpriteRenderer sr = cherry.GetComponent<SpriteRenderer>();
         if (sr != null) sr.enabled = true;
 
-        Collider2D col = cherry.GetComponent<Collider2D>();
-        if (col != null) col.enabled = true;
+        foreach (Collider col in cherry.GetComponentsInChildren<Collider>(true))
+            col.enabled = true;
+
+        foreach (Collider2D col in cherry.GetComponentsInChildren<Collider2D>(true))
+            col.enabled = true;
 
         hasBasket = false;
     }
