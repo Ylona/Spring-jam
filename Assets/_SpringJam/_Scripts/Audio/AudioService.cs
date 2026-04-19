@@ -197,6 +197,16 @@ namespace SpringJam2026.Audio
             PlayOneShot(library.uiStartGame);
         }
         
+        public void StartMenuMusic()
+        {
+            controller.PlayLoop("menu-music", library.titleThemeLoop);
+        }
+        
+        public void StopMenuMusic()
+        {
+            controller.StopLoop("menu-music");
+        }
+        
         #endregion
 
         #region Volume
