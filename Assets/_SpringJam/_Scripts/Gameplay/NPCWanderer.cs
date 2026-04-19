@@ -85,7 +85,7 @@ public class NPCWanderer : MonoBehaviour, ILoopResetListener
         {
             Vector3 dir = (target - transform.position).normalized;
             transform.position += dir * moveSpeed * Time.deltaTime;
-            SetAnimatorMoving(new Vector2(dir.x, dir.y));
+            SetAnimatorMoving(new Vector2(dir.x, dir.z));
             yield return null;
         }
     }
