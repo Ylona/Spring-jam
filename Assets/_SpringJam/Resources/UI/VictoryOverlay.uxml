@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="VictoryOverlay.uss"/>
+    <ui:VisualElement name="victory-overlay" class="victory-overlay">
+        <ui:Label name="victory-title" class="victory-title" text="You saved spring!" />
+        <ui:Label name="victory-sub" class="victory-sub" text="The blossoms bloom again, thanks to you." />
+    </ui:VisualElement>
+</ui:UXML>

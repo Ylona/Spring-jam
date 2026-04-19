@@ -40,7 +40,7 @@ public class NpcInteractable : BaseInteractable
     }
 
     [ContextMenu("Load Dialogue From JSON")]
-    private void LoadDialogueFromJson()
+    public void LoadDialogueFromJson()
     {
         if (string.IsNullOrWhiteSpace(dialogueJsonFile))
             return;

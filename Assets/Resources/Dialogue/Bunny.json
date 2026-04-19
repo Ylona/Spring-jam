@@ -3,32 +3,67 @@
         {
             "conditions": {
                 "requiredKnowledgeIds": [],
-                "blockedKnowledgeIds": [],
-                "requiredCompletedTaskIds": [
-                    "bloom-flowers",
-                    "guide-bees"
-                ],
+                "blockedKnowledgeIds": [""],
+                "requiredCompletedTaskIds": ["bloom-flowers", "guide-bees"],
                 "requiredIncompleteTaskIds": []
             },
             "sequence": {
-                "sequenceId": "bunny-pie",
+                "sequenceId": "bunny-cake-hint",
                 "interactionText": "Talk",
                 "speakerName": "Bunny",
                 "lines": [
                     {
                         "speakerName": "Bunny",
-                        "body": "Every year, Grandma bakes a big spring cake… it’s my favorite day."
+                        "body": "Oh, everything is so beautiful now! The flowers, the bees\u2026"
                     },
                     {
                         "speakerName": "Bunny",
-                        "body": "But… she didn’t bake one this time."
+                        "body": "And that outdoor oven over there \u2014 doesn\u2019t it look perfect for baking something? I love it!"
                     },
                     {
                         "speakerName": "Bunny",
-                        "body": "Do you think she forgot… or did spring not come yet?"
+                        "body": "Just imagine the smell of fresh cake baking out here in the open air\u2026"
                     }
                 ],
-                "knowledgeIdsToLearn": [],
+                "knowledgeIdsToLearn": ["bunny-cake-hint"],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        },
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": ["bloom-flowers"],
+                "requiredIncompleteTaskIds": ["guide-bees"]
+            },
+            "sequence": {
+                "sequenceId": "bunny-bees-hint",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "The flowers bloomed! Everything smells so nice now."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "You know, Mara to the North makes the most delicious honey from her bees…"
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Imagine how good that would taste in Grandma\u2019s spring cake! All warm and sweet\u2026"
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Maybe you should go see her!"
+                    }
+                ],
+                "knowledgeIdsToLearn": ["bunny-bees-hint"],
                 "taskIdsToComplete": [],
                 "onSequenceCompleted": {
                     "m_PersistentCalls": {
@@ -53,15 +88,15 @@
                 "lines": [
                     {
                         "speakerName": "Bunny",
-                        "body": "Hey… didn’t we talk about cherries already?"
+                        "body": "Hey… didn't we talk about cherries already?"
                     },
                     {
                         "speakerName": "Bunny",
-                        "body": "I feel like I’ve said this before… exactly like this."
+                        "body": "I feel like I've said this before… exactly like this."
                     },
                     {
                         "speakerName": "Bunny",
-                        "body": "That’s weird… right?"
+                        "body": "That's weird… right?"
                     }
                 ],
                 "knowledgeIdsToLearn": [],
@@ -89,11 +124,11 @@
                 "lines": [
                     {
                         "speakerName": "Bunny",
-                        "body": "Oh! You’re here again!"
+                        "body": "Oh! You're here again!"
                     },
                     {
                         "speakerName": "Bunny",
-                        "body": "I really, really like cherries… they’re my favorite thing in the whole forest."
+                        "body": "I really, really like cherries… they're my favorite thing in the whole forest."
                     }
                 ],
                 "knowledgeIdsToLearn": [
@@ -123,7 +158,7 @@
                 "lines": [
                     {
                         "speakerName": "Bunny",
-                        "body": "Sometimes Grandma drops one while she’s walking."
+                        "body": "Sometimes Grandma drops one while she's walking."
                     },
                     {
                         "speakerName": "Bunny",
@@ -137,6 +172,41 @@
                 "knowledgeIdsToLearn": [
                     "bunny-cherry-hint"
                 ],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        },
+                {
+            "conditions": {
+                "requiredKnowledgeIds": [],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": [
+                ],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "bunny-pie",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Every year, Grandma bakes a big spring cake… it's my favorite day."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "But… she didn't bake one this time."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Do you think she forgot… or did spring not come yet?"
+                    }
+                ],
+                "knowledgeIdsToLearn": [],
                 "taskIdsToComplete": [],
                 "onSequenceCompleted": {
                     "m_PersistentCalls": {

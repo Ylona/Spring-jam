@@ -1,0 +1,83 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["guide-bees", "bloom-flowers"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "mara-cake-hint",
+        "interactionText": "Talk",
+        "speakerName": "Mara",
+        "lines": [
+          { "speakerName": "Mara", "body": "They made it! My bees are back at the stump, safe and sound." },
+          { "speakerName": "Mara", "body": "I can start making honey again. Thank you so much!" },
+          { "speakerName": "Mara", "body": "Mmm\u2026 all this honey is making me think about cake. A nice spring cake would be lovely right now!" }
+        ],
+        "knowledgeIdsToLearn": ["mara-cake-hint"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["guide-bees"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "mara-done",
+        "interactionText": "Talk",
+        "speakerName": "Mara",
+        "lines": [
+          { "speakerName": "Mara", "body": "They made it! My bees are back at the stump, safe and sound." },
+          { "speakerName": "Mara", "body": "I can start making honey again. Thank you so much!" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "mara-bees-lost",
+        "interactionText": "Talk",
+        "speakerName": "Mara",
+        "lines": [
+          { "speakerName": "Mara", "body": "Oh, finally some fresh air! I always wait for the flowers before going outside." },
+          { "speakerName": "Mara", "body": "But something is wrong \u2014 my bees have wandered off. I can\u2019t find them anywhere!" },
+          { "speakerName": "Mara", "body": "They need to get back to the old tree stump right next to my house. That\u2019s where they make the honey." },
+          { "speakerName": "Mara", "body": "Would you help guide them back there? I\u2019d be so grateful!" }
+        ],
+        "knowledgeIdsToLearn": ["mara-bees-hint"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["bloom-flowers"]
+      },
+      "sequence": {
+        "sequenceId": "mara-waiting",
+        "interactionText": "Talk",
+        "speakerName": "Mara",
+        "lines": [
+          { "speakerName": "Mara", "body": "I\u2019m not stepping outside until the flowers bloom. It\u2019s not safe for the bees yet." },
+          { "speakerName": "Mara", "body": "Come back when spring is a little further along." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}

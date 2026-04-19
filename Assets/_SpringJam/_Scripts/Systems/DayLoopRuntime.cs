@@ -135,6 +135,14 @@ namespace SpringJam.Systems.DayLoop
             return stateMachine != null && stateMachine.HasLearned(knowledgeId);
         }
 
+        public void FreezeLoop()
+        {
+            if (stateMachine != null)
+            {
+                stateMachine.Freeze();
+            }
+        }
+
         public void RestartLoop()
         {
             if (stateMachine != null)
