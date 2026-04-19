@@ -79,7 +79,6 @@ namespace SpringJam2026.Audio
     
         private void OnLoopStarted(DayLoopSnapshot snapshot)
         {
-            Debug.Log("[DayLoopAudioHandler] OnLoopStarted");
             outroPlayed = false;
             musicStarted = false;
 
