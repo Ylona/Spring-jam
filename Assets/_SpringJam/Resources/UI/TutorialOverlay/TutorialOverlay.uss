@@ -1,0 +1,48 @@
+.tutorial-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.tutorial-panel {
+    width: 900px;
+    min-height: 800px;
+    padding: 64px;
+    border-radius: 16px;
+    background-color: rgb(167, 91, 128);
+    flex-shrink: 1;
+}
+
+.tutorial-title {
+    font-size: 40px;
+    margin-bottom: 16px;
+    color: rgb(22, 40, 65);
+    -unity-font-style: bold;
+}
+
+.tutorial-subtitle {
+    font-size: 28px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: rgb(22, 40, 65);
+    -unity-font-style: bold;
+}
+
+.tutorial-text {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: rgb(22, 40, 65);
+}
+
+.tutorial-button {
+    margin-top: 32px;
+    height: 52px;
+    align-self: flex-end;
+    width: 150px;
+    font-size: 20px;
+}

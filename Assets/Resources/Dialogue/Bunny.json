@@ -1,0 +1,149 @@
+{
+    "variants": [
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": [
+                    "bloom-flowers",
+                    "guide-bees"
+                ],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "bunny-pie",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Every year, Grandma bakes a big spring cake… it’s my favorite day."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "But… she didn’t bake one this time."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Do you think she forgot… or did spring not come yet?"
+                    }
+                ],
+                "knowledgeIdsToLearn": [],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        },
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [
+                    "cherry-picked-up"
+                ],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": [],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "bunny-map-reminder",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Hey… didn’t we talk about cherries already?"
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "I feel like I’ve said this before… exactly like this."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "That’s weird… right?"
+                    }
+                ],
+                "knowledgeIdsToLearn": [],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        },
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [],
+                "blockedKnowledgeIds": [
+                    "bunny-loop-hint"
+                ],
+                "requiredCompletedTaskIds": [],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "bunny-map-intro",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Oh! You’re here again!"
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "I really, really like cherries… they’re my favorite thing in the whole forest."
+                    }
+                ],
+                "knowledgeIdsToLearn": [
+                    "bunny-loop-hint"
+                ],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        },
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [
+                    "bunny-loop-hint"
+                ],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": [],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "bunny-map-reminder",
+                "interactionText": "Talk",
+                "speakerName": "Bunny",
+                "lines": [
+                    {
+                        "speakerName": "Bunny",
+                        "body": "Sometimes Grandma drops one while she’s walking."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "She never notices… but I always keep an eye out."
+                    },
+                    {
+                        "speakerName": "Bunny",
+                        "body": "It feels like it happens more often than it should…"
+                    }
+                ],
+                "knowledgeIdsToLearn": [
+                    "bunny-cherry-hint"
+                ],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -68,7 +68,9 @@ namespace SpringJam.Dialogue
                 return false;
             }
 
+            DialogueConversation cancelledConversation = activeConversation;
             CloseInternal();
+            cancelledConversation.Cancel();
             return true;
         }
 

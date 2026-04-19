@@ -48,13 +48,16 @@ public class NPCWanderer : MonoBehaviour, ILoopResetListener
 
     protected virtual void OnAwake() { }
 
-    private IEnumerator WanderRoutine()
+    private IEnumerator WanderRoutine(bool resumeFromCurrent = false)
     {
-        currentWaypointIndex = -1;
+        if (!resumeFromCurrent)
+            currentWaypointIndex = -1;
 
         while (true)
         {
-            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+            if (!resumeFromCurrent)
+                currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+            resumeFromCurrent = false;
             Transform waypoint = waypoints[currentWaypointIndex];
 
             yield return OnApproachingWaypoint(waypoint, currentWaypointIndex);
@@ -85,7 +88,7 @@ public class NPCWanderer : MonoBehaviour, ILoopResetListener
         {
             Vector3 dir = (target - transform.position).normalized;
             transform.position += dir * moveSpeed * Time.deltaTime;
-            SetAnimatorMoving(new Vector2(dir.x, dir.y));
+            SetAnimatorMoving(new Vector2(dir.x, dir.z));
             yield return null;
         }
     }
@@ -105,6 +108,22 @@ public class NPCWanderer : MonoBehaviour, ILoopResetListener
     }
 
     private void HandleLoopStarted(DayLoopSnapshot _) => OnLoopReset();
+
+    public void StopWandering()
+    {
+        if (wanderCoroutine != null)
+        {
+            StopCoroutine(wanderCoroutine);
+            wanderCoroutine = null;
+        }
+        SetAnimatorMoving(Vector2.zero);
+    }
+
+    public void ResumeWandering()
+    {
+        if (wanderCoroutine == null && waypoints != null && waypoints.Length > 0)
+            wanderCoroutine = StartCoroutine(WanderRoutine(resumeFromCurrent: currentWaypointIndex >= 0));
+    }
 
     public virtual void OnLoopReset()
     {

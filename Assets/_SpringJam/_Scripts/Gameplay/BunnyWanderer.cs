@@ -1,6 +1,7 @@
 using System.Collections;
 using SpringJam2026.Audio;
 using SpringJam2026.Utils;
+using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
 public class BunnyWanderer : NPCWanderer, IGameService
@@ -75,6 +76,8 @@ public class BunnyWanderer : NPCWanderer, IGameService
             sr.enabled = false;
         foreach (Collider col in cherry.GetComponentsInChildren<Collider>())
             col.enabled = false;
+
+        DayLoopRuntime.Instance?.TryLearnKnowledge("cherry-eaten");
     }
 
     private ItemInteractable FindCherryAt(Vector3 position)

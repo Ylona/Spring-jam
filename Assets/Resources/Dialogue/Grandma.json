@@ -1,0 +1,105 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["guide-bees", "bloom-flowers"],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "grandma-cake",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "I usually bake a cake to celebrate the start of spring." },
+          { "speakerName": "Grandma", "body": "It\u2019s something I\u2019ve done every year for as long as I can remember\u2026" },
+          { "speakerName": "Grandma", "body": "But I suppose I\u2019m getting a bit too old for it now." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": ["cherry-picked-up", "grandma-routine"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "grandma-routine",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "Every morning, I take a walk through the forest." },
+          { "speakerName": "Grandma", "body": "Same path, same trees\u2026 it\u2019s peaceful, in its own way." }
+        ],
+        "knowledgeIdsToLearn": ["grandma-routine"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["bloom-flowers"]
+      },
+      "sequence": {
+        "sequenceId": "grandma-flowers",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "In spring, the flowers must bloom in the proper order." },
+          { "speakerName": "Grandma", "body": "Discia first, then daffodil, followed by hyacinth\u2026" },
+          { "speakerName": "Grandma", "body": "And tulips always come last. They like to take their time." }
+        ],
+        "knowledgeIdsToLearn": [
+          "grandma-flowers"
+        ],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "grandma-bees",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "You should go visit Maya again, dear." },
+          { "speakerName": "Grandma", "body": "She\u2019s the beekeeper in the North, always busy with her little friends." },
+          { "speakerName": "Grandma", "body": "If something feels off, she\u2019ll know what to do" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "grandmy-deja",
+        "interactionText": "Talk",
+        "speakerName": "Grandma",
+        "lines": [
+          { "speakerName": "Grandma", "body": "Oh dear\u2026 do you ever get that strange feeling?" },
+          { "speakerName": "Grandma", "body": "Like you\u2019ve already lived this exact day before?" },
+          { "speakerName": "Grandma", "body": "I can\u2019t quite shake it\u2026" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}
