@@ -140,7 +140,13 @@ public sealed class PrepTableController : MonoBehaviour
         return true;
     }
 
-    private void HandleSocketChanged(ItemSocketInteractable _)
+    private void HandleItemPlaced(ItemSocketInteractable _)
+    {
+        PlayIngredientPlacedAudio();
+        EvaluateCompletion();
+    }
+
+    private void HandleItemCleared(ItemSocketInteractable _)
     {
         EvaluateCompletion();
     }
@@ -199,8 +205,8 @@ public sealed class PrepTableController : MonoBehaviour
                 continue;
             }
 
-            socket.ItemPlaced += HandleSocketChanged;
-            socket.ItemCleared += HandleSocketChanged;
+            socket.ItemPlaced += HandleItemPlaced;
+            socket.ItemCleared += HandleItemCleared;
             subscribedSockets.Add(socket);
         }
     }
@@ -214,11 +220,22 @@ public sealed class PrepTableController : MonoBehaviour
                 continue;
             }
 
-            socket.ItemPlaced -= HandleSocketChanged;
-            socket.ItemCleared -= HandleSocketChanged;
+            socket.ItemPlaced -= HandleItemPlaced;
+            socket.ItemCleared -= HandleItemCleared;
         }
 
         subscribedSockets.Clear();
+    }
+    
+    private static void PlayIngredientPlacedAudio()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        if (ServiceLocator.TryGet<AudioService>(out AudioService audioService))
+        {
+            audioService.PlayPrepTable();
+        }
     }
 
     private static void PlayCompletionAudio()
@@ -230,7 +247,7 @@ public sealed class PrepTableController : MonoBehaviour
 
         if (ServiceLocator.TryGet<AudioService>(out AudioService audioService))
         {
-            audioService.PlayPrepTable();
+            audioService.PlayCookingSequence();
         }
     }
 
