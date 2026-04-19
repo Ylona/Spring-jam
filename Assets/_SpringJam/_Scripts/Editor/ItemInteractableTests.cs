@@ -191,7 +191,7 @@ namespace SpringJam.Tests.EditMode
         }
 
         [Test]
-        public void Interact_WhenRequiredSocketTaskComplete_MovesBeeSwarmToGreenhouseAnchor()
+        public void Interact_WhenRequiredSocketTaskComplete_SetsBeeSwarmToFollowLurePot()
         {
             TestScenario scenario = CreateScenario();
             SetPrivateField(scenario.Item, "itemId", "lure-flower-pot");
@@ -220,7 +220,18 @@ namespace SpringJam.Tests.EditMode
             greenhouseStand.Socket.Interact(scenario.Interactor);
 
             Assert.That(swarmMover.IsAtGreenhouse, Is.True);
-            Assert.That(swarmRoot.transform.position, Is.EqualTo(greenhouseAnchorRoot.transform.position));
+            Assert.That(swarmMover.FollowTarget, Is.SameAs(scenario.Item.transform));
+            Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
+
+            scenario.Item.transform.position = new Vector3(2.5f, 0.5f, 3.5f);
+            InvokePrivateMethod(swarmMover, "FollowActiveTarget", 0.25f);
+
+            Assert.That(swarmRoot.transform.position, Is.Not.EqualTo(meadowAnchorRoot.transform.position));
+            Assert.That(swarmRoot.transform.position, Is.Not.EqualTo(scenario.Item.transform.position));
+
+            InvokePrivateMethod(swarmMover, "FollowActiveTarget", 10f);
+
+            Assert.That(Vector3.Distance(swarmRoot.transform.position, scenario.Item.transform.position), Is.LessThan(0.25f));
 
             DestroySocketScenario(greenhouseStand);
             Object.DestroyImmediate(swarmRoot);
@@ -420,6 +431,7 @@ namespace SpringJam.Tests.EditMode
             Assert.That(guideBeesTaskSnapshot.IsCompleted, Is.False);
             Assert.That(swarmMover.IsAtGreenhouse, Is.False);
             Assert.That(swarmRoot.transform.position, Is.EqualTo(meadowAnchorRoot.transform.position));
+            Assert.That(swarmMover.FollowTarget, Is.SameAs(scenario.Item.transform));
             Assert.That(mintPatch.GetInteractionText(scenario.Interactor), Is.EqualTo("Pollinate Mint First"));
             Assert.That(honeyShelf.GetInteractionText(scenario.Interactor), Is.EqualTo("Wait For Mara"));
             Assert.That(meadowStand.Socket.HasPlacedItem, Is.True);
