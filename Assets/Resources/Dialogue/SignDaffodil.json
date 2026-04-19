@@ -1,0 +1,32 @@
+{
+    "variants": [
+        {
+            "conditions": {
+                "requiredKnowledgeIds": [],
+                "blockedKnowledgeIds": [],
+                "requiredCompletedTaskIds": [],
+                "requiredIncompleteTaskIds": []
+            },
+            "sequence": {
+                "sequenceId": "daffodil-sign",
+                "interactionText": "Read",
+                "speakerName": "Sign",
+                "lines": [
+                    {
+                        "speakerName": "Sign",
+                        "body": "Daffodils grow here"
+                    }
+                ],
+                "knowledgeIdsToLearn": [
+                    "daffodil-sign"
+                ],
+                "taskIdsToComplete": [],
+                "onSequenceCompleted": {
+                    "m_PersistentCalls": {
+                        "m_Calls": []
+                    }
+                }
+            }
+        }
+    ]
+}

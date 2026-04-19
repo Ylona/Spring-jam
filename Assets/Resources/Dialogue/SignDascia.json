@@ -1,0 +1,22 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "diascia-sign",
+        "interactionText": "Read",
+        "speakerName": "Sign",
+        "lines": [
+          { "speakerName": "Sign", "body": "Diascia grow here" }
+        ],
+        "knowledgeIdsToLearn": ["diascia-sign"],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}

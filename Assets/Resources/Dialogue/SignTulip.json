@@ -1,0 +1,22 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "tulip-sign",
+        "interactionText": "Read",
+        "speakerName": "Sign",
+        "lines": [
+          { "speakerName": "Sign", "body": "Tulips grow here" }
+        ],
+        "knowledgeIdsToLearn": ["tulip-sign"],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}

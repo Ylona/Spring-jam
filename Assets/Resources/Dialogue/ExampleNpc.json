@@ -1,0 +1,23 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "example_intro",
+        "interactionText": "Praat",
+        "speakerName": "NPC",
+        "lines": [
+          { "speakerName": "", "body": "Hallo! Dit is een voorbeeld dialoog." },
+          { "speakerName": "", "body": "Je kunt meerdere regels toevoegen." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}

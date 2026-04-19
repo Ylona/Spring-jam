@@ -313,6 +313,12 @@ namespace SpringJam.Dialogue
     }
 
     [Serializable]
+    public sealed class NpcDialogueData
+    {
+        public List<ConditionalDialogueSequenceDefinition> variants = new List<ConditionalDialogueSequenceDefinition>();
+    }
+
+    [Serializable]
     public sealed class ConditionalDialogueSequenceDefinition
     {
         [SerializeField] private DialogueConditionDefinition conditions = new DialogueConditionDefinition();

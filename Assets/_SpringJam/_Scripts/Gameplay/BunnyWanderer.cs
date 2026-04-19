@@ -1,4 +1,5 @@
 using System.Collections;
+using SpringJam.Systems.DayLoop;
 using UnityEngine;
 
 public class BunnyWanderer : NPCWanderer
@@ -24,6 +25,8 @@ public class BunnyWanderer : NPCWanderer
             sr.enabled = false;
         foreach (Collider col in cherry.GetComponentsInChildren<Collider>())
             col.enabled = false;
+
+        DayLoopRuntime.Instance?.TryLearnKnowledge("cherry-eaten");
     }
 
     private ItemInteractable FindCherryAt(Vector3 position)

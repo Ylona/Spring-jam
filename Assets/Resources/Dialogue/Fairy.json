@@ -1,0 +1,189 @@
+{
+  "variants": [
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": ["fairy-intro-done"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-intro",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Oh, you can see me! That's unusual." },
+          { "speakerName": "Fairy", "body": "Everyone here is stuck in a loop. Every day resets… because Grandma normally bakes cake to start spring" },
+          { "speakerName": "Fairy", "body": "She doesn't even realize it." },
+          { "speakerName": "Fairy", "body": "If you want to break the loop, you'll need to help spring actually arrive and bake the cake yourself!" },
+          { "speakerName": "Fairy", "body": "Find 4 ingredients and put them on the table to make the magic happen." },
+          { "speakerName": "Fairy", "body": "If you ever get stuck, come find me. I'll point you in the right direction." }
+        ],
+        "knowledgeIdsToLearn": ["fairy-intro-done"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["cherry-eaten"],
+        "blockedKnowledgeIds": ["fairy-cherry-warning-done"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-cherry-eaten",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Oh no… the cherry is gone." },
+          { "speakerName": "Fairy", "body": "Bunny got to it before you did. You won't find it today." },
+          { "speakerName": "Fairy", "body": "She does love them. Can't really blame her." },
+          { "speakerName": "Fairy", "body": "But don't worry — tomorrow the loop resets. The cherry will be back." },
+          { "speakerName": "Fairy", "body": "You'll need the cherry for the cake" }
+        ],
+        "knowledgeIdsToLearn": ["fairy-cherry-warning-done"],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["bunny-loop-hint", "grandma-routine"],
+        "blockedKnowledgeIds": ["cherry-picked-up", "cherry-eaten"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-cherry-search",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "You're looking for something for the cake, aren't you?" },
+          { "speakerName": "Fairy", "body": "Find Grandma or Bunny again" },
+          { "speakerName": "Fairy", "body": "Keep your eyes open on Grandma's usual path." }
+
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [""],
+        "blockedKnowledgeIds": ["cherry-picked-up", "cherry-eaten", "bunny-cherry-hint"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-cherry-grandma",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Are you looking for ingredients to bake the cake yourself?" },
+          { "speakerName": "Fairy", "body": "Go talk to Bunny in the woods. She loves cherries — she'll have something to say about it." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+        {
+      "conditions": {
+        "requiredKnowledgeIds": [],
+        "blockedKnowledgeIds": ["cherry-picked-up", "cherry-eaten", "grandma-routine"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": []
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-cherry-grandma",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "You're looking for something, aren't you?" },
+          { "speakerName": "Fairy", "body": "Have you talked to Grandma about it? She lives in the North-West" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["cherry-picked-up", "grandma-flowers", "diascia-sign", "hyacinth-sign", "tulip-sign", "daffodil-sign"],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["bloom-flowers"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-flowers-puzzle",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "You've read all the signs and you know the order from Grandma." },
+          { "speakerName": "Fairy", "body": "Now find the flower puzzle — it's in the middle of the fields, where four flowers stand together." },
+          { "speakerName": "Fairy", "body": "Bloom them in the right order and part of spring will follow." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["cherry-picked-up", "grandma-flowers"],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["bloom-flowers"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-flowers-signs",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Grandma told you the order — good." },
+          { "speakerName": "Fairy", "body": "But do you know where each flower grows? There are signs at each field." },
+          { "speakerName": "Fairy", "body": "Find them all before you go to the puzzle." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": ["cherry-picked-up"],
+        "blockedKnowledgeIds": ["grandma-flowers"],
+        "requiredCompletedTaskIds": [],
+        "requiredIncompleteTaskIds": ["bloom-flowers"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-flowers-grandma",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "Good, you found the cherry!" },
+          { "speakerName": "Fairy", "body": "Now the flowers in the middle need to bloom — but in the right order." },
+          { "speakerName": "Fairy", "body": "Grandma mentions it almost every day. Go ask her." }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    },
+    {
+      "conditions": {
+        "requiredKnowledgeIds": [""],
+        "blockedKnowledgeIds": [],
+        "requiredCompletedTaskIds": ["bloom-flowers"],
+        "requiredIncompleteTaskIds": ["guide-bees"]
+      },
+      "sequence": {
+        "sequenceId": "fairy-hint-bees",
+        "interactionText": "Talk",
+        "speakerName": "Fairy",
+        "lines": [
+          { "speakerName": "Fairy", "body": "The flowers are blooming — well done!" },
+          { "speakerName": "Fairy", "body": "But spring isn't here yet. The bees still need to find their way." },
+          { "speakerName": "Fairy", "body": "There's a beekeeper to the North — Maya. She'll know what to do." },
+          { "speakerName": "Fairy", "body": "Grandma mentioned her too, I think" }
+        ],
+        "knowledgeIdsToLearn": [],
+        "taskIdsToComplete": []
+      }
+    }
+  ]
+}
