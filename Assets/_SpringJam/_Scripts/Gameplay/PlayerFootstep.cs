@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SpringJam2026.Audio;
 using SpringJam2026.Utils;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace SpringJam2026
         private float stepTimer;
         private SurfaceType currentSurface;
         private bool isAudioPaused = false;
+        private readonly HashSet<Collider> activeSurfaceColliders = new();
 
         public int Priority => 60;
 
@@ -96,39 +98,66 @@ namespace SpringJam2026
         
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Grass"))
+            if (IsSurface(other))
             {
-                currentSurface = SurfaceType.Grass;
-            }
-            else if (other.CompareTag("Dirt"))
-            {
-                currentSurface = SurfaceType.Dirt;
-            }
-            else if (other.CompareTag("Wood"))
-            {
-                currentSurface = SurfaceType.Wood;
-            }
-            else if (other.CompareTag("Cobblestone"))
-            {
-                currentSurface = SurfaceType.Cobblestone;
+                activeSurfaceColliders.Add(other);
+                ResolveSurface();
             }
         }
-        
+
         private void OnTriggerExit(Collider other)
         {
-            // Only reset if leaving the current surface
-            if (MatchesCurrentSurface(other.tag))
+            if (IsSurface(other))
             {
-                currentSurface = defaultSurface;
+                activeSurfaceColliders.Remove(other);
+                ResolveSurface();
             }
         }
         
-        private bool MatchesCurrentSurface(string tag)
+        private bool IsSurface(Collider other)
         {
-            return (tag == "Grass" && currentSurface == SurfaceType.Grass) ||
-                   (tag == "Dirt" && currentSurface == SurfaceType.Dirt) ||
-                   (tag == "Wood" && currentSurface == SurfaceType.Wood) ||
-                   (tag == "Cobblestone" && currentSurface == SurfaceType.Cobblestone);
+            return other.CompareTag("Dirt") ||
+                   other.CompareTag("Wood") ||
+                   other.CompareTag("Cobblestone");
+        }
+        
+        private void ResolveSurface()
+        {
+            bool hasCobble = false;
+            bool hasWood = false;
+            bool hasDirt = false;
+
+            foreach (var col in activeSurfaceColliders)
+            {
+                if (col == null) continue;
+
+                if (col.CompareTag("Cobblestone"))
+                    hasCobble = true;
+                else if (col.CompareTag("Wood"))
+                    hasWood = true;
+                else if (col.CompareTag("Dirt"))
+                    hasDirt = true;
+            }
+
+            if (hasCobble)
+            {
+                currentSurface = SurfaceType.Cobblestone;
+                return;
+            }
+
+            if (hasWood)
+            {
+                currentSurface = SurfaceType.Wood;
+                return;
+            }
+
+            if (hasDirt)
+            {
+                currentSurface = SurfaceType.Dirt;
+                return;
+            }
+
+            currentSurface = defaultSurface;
         }
         
         #endregion
