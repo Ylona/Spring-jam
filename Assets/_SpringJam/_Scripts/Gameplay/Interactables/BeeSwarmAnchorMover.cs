@@ -15,6 +15,10 @@ public sealed class BeeSwarmAnchorMover : MonoBehaviour
     [SerializeField] private float hoverFrequency = 2.5f;
     [SerializeField] private float snapDistance = 0.02f;
 
+    private Animator[] animators;
+    private static readonly int MoveX = Animator.StringToHash("MoveX");
+    private static readonly int MoveY = Animator.StringToHash("MoveY");
+
     private DayLoopRuntime subscribedRuntime;
     private Transform activeFollowTarget;
     private Vector3 followVelocity;
@@ -28,6 +32,7 @@ public sealed class BeeSwarmAnchorMover : MonoBehaviour
 
     private void Awake()
     {
+        animators = GetComponentsInChildren<Animator>();
         ResetToMeadowAnchor();
     }
 
@@ -101,6 +106,9 @@ public sealed class BeeSwarmAnchorMover : MonoBehaviour
             return;
         }
 
+        Vector3 toTarget = targetPosition - transform.position;
+        Vector2 dir = new Vector2(toTarget.x, toTarget.z);
+
         transform.position = Vector3.SmoothDamp(
             transform.position,
             targetPosition,
@@ -114,6 +122,8 @@ public sealed class BeeSwarmAnchorMover : MonoBehaviour
             transform.position = targetPosition;
             followVelocity = Vector3.zero;
         }
+
+        SetAnimatorDirection(dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector2.zero);
     }
 
     private Vector3 ResolveNaturalFollowPosition(Transform target)
@@ -139,6 +149,15 @@ public sealed class BeeSwarmAnchorMover : MonoBehaviour
         }
 
         return targetPosition;
+    }
+
+    private void SetAnimatorDirection(Vector2 direction)
+    {
+        foreach (Animator animator in animators)
+        {
+            animator.SetFloat(MoveX, direction.x);
+            animator.SetFloat(MoveY, direction.y);
+        }
     }
 
     private void ResetFollowVelocity()
