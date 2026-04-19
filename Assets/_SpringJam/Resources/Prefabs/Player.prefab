@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 6501150216397800123}
   - component: {fileID: 5995393814257441531}
   - component: {fileID: 4503532586168802973}
+  - component: {fileID: 1909097344180951535}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -256,6 +257,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06c2d450a9216ec48a7a260b394f591d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+--- !u!114 &1909097344180951535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8069800074909061852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &9014371178790464371
 GameObject:
   m_ObjectHideFlags: 0

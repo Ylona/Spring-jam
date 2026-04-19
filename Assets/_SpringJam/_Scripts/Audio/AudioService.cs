@@ -16,6 +16,7 @@ namespace SpringJam2026.Audio
 
         private AudioController controller;
         private AudioLibrary library;
+        
         private int forestZoneCount = 0;
         private const string FOREST_ID = "forest-ambience";
 
@@ -80,14 +81,9 @@ namespace SpringJam2026.Audio
             PlayOneShot(library.beeSting, position);
         }
         
-        public void StartBeeSwarmLoop()
+        public void PlayBeeSuccess(Vector3? position = null)
         {
-            controller.PlayLoop("beeSwarm", library.beeSwarmLoop);
-        }
-
-        public void StopBeeSwarmLoop()
-        {
-            controller.StopLoop("beeSwarm");
+            PlayOneShot(library.beeSuccessJingle, position);
         }
         
         public void PlayLurePotPlace(Vector3? position = null)

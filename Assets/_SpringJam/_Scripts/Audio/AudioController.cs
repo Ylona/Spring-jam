@@ -78,6 +78,24 @@ namespace SpringJam2026.Audio
             activeLoops.Remove(id);
         }
         
+        public EventInstance PlayLoop3D(string id, EventReference sound, Transform attachTo)
+        {
+            if (activeLoops.ContainsKey(id))
+                return activeLoops[id];
+
+            var instance = RuntimeManager.CreateInstance(sound);
+
+            RuntimeManager.AttachInstanceToGameObject(
+                instance,
+                attachTo.gameObject
+            );
+
+            instance.start();
+
+            activeLoops[id] = instance;
+            return instance;
+        }
+        
         #endregion
         
         #region FMod Parameters
