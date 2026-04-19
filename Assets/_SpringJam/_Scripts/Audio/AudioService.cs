@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using FMODUnity;
 using SpringJam2026.Data;
@@ -15,6 +16,8 @@ namespace SpringJam2026.Audio
 
         private AudioController controller;
         private AudioLibrary library;
+        private int forestZoneCount = 0;
+        private const string FOREST_ID = "forest-ambience";
 
         public void Initialize()
         {
@@ -25,6 +28,37 @@ namespace SpringJam2026.Audio
         public void Bind() { }
 
         #region Gameplay Audio
+        
+        public void EnterForest()
+        {
+            forestZoneCount++;
+
+            if (forestZoneCount > 1)
+                return;
+
+            var instance = controller.PlayLoop(FOREST_ID, library.forestAmbience);
+
+            controller.SetLoopVolume(FOREST_ID, 0f);
+            controller.FadeLoop(FOREST_ID, 1f, 2f);
+        }
+        
+        public void ExitForest()
+        {
+            forestZoneCount--;
+
+            if (forestZoneCount > 0)
+                return;
+
+            controller.FadeLoop(FOREST_ID, 0f, 2f);
+            controller.StartCoroutine(StopForestAfterFade());
+        }
+
+        private IEnumerator StopForestAfterFade()
+        {
+            yield return new WaitForSeconds(2f);
+
+            controller.StopLoop(FOREST_ID);
+        }
 
         public void PlayMorningIntro(Vector3? position = null)
         {

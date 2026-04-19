@@ -9,6 +9,7 @@ TagManager:
   - Dirt
   - Wood
   - Cobblestone
+  - Forest
   layers:
   - Default
   - TransparentFX

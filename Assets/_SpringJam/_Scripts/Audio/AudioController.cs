@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
@@ -150,6 +151,42 @@ namespace SpringJam2026.Audio
                 masterBus.setVolume(lastVolumeBeforeMute);
                 isMasterMuted = false;
             }
+        }
+        
+        public void SetLoopVolume(string id, float volume)
+        {
+            if (activeLoops.TryGetValue(id, out var instance))
+            {
+                instance.setVolume(Mathf.Clamp01(volume));
+            }
+        }
+        
+        public Coroutine FadeLoop(string id, float targetVolume, float duration)
+        {
+            if (!activeLoops.TryGetValue(id, out var instance))
+                return null;
+
+            return StartCoroutine(FadeRoutine(instance, targetVolume, duration));
+        }
+
+        private IEnumerator FadeRoutine(EventInstance instance, float targetVolume, float duration)
+        {
+            instance.getVolume(out float startVolume);
+
+            float time = 0f;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float t = Mathf.Clamp01(time / duration);
+
+                float newVolume = Mathf.Lerp(startVolume, targetVolume, t);
+                instance.setVolume(newVolume);
+
+                yield return null;
+            }
+
+            instance.setVolume(targetVolume);
         }
         
         #endregion
