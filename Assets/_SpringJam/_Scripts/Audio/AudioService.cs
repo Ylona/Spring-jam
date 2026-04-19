@@ -120,6 +120,11 @@ namespace SpringJam2026.Audio
         {
             PlayOneShot(library.flowerWrong, position);
         }
+        
+        public void PlayBunnyHop(Vector3? position = null)
+        {
+            PlayOneShot(library.bunnyHops, position);
+        }
 
         public void StartMusic()
         {
