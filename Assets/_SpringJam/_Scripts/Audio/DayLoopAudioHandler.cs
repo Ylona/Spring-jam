@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using SpringJam.Systems.DayLoop;
 using SpringJam2026.Utils;
@@ -8,10 +9,10 @@ namespace SpringJam2026.Audio
     {
         private DayLoopRuntime runtime;
         private AudioService audioService;
-    
-        private bool outroPlayed;
-    
         private const float OUTRO_DURATION = 6f;
+        private const float INTRO_DURATION = 5f;
+        private bool outroPlayed;
+        private bool musicStarted;
         
         public int Priority => 60;
         public void Initialize()
@@ -26,6 +27,8 @@ namespace SpringJam2026.Audio
     
             runtime.LoopStarted += OnLoopStarted;
             runtime.LoopEnded += OnLoopEnded;
+            
+            SyncWithCurrentState();
         }
     
         void OnDisable()
@@ -50,16 +53,38 @@ namespace SpringJam2026.Audio
             // Try play the outro before the day ends, like +- 6 seconds I recon
             if (!outroPlayed && remaining <= OUTRO_DURATION)
             {
+                if (musicStarted)
+                {
+                    audioService.StopMusic();
+                    musicStarted = false;
+                }
+                
                 PlayNightOutro();
                 outroPlayed = true;
+            }
+        }
+        
+        private void SyncWithCurrentState()
+        {
+            var snapshot = runtime.CurrentSnapshot;
+
+            if (snapshot == null)
+                return;
+            
+            if (snapshot.IsPlayablePhase)
+            {
+                OnLoopStarted(snapshot);
             }
         }
     
         private void OnLoopStarted(DayLoopSnapshot snapshot)
         {
+            Debug.Log("[DayLoopAudioHandler] OnLoopStarted");
             outroPlayed = false;
-    
+            musicStarted = false;
+
             PlayMorningIntro();
+            StartCoroutine(StartMusicAfterIntro());
         }
     
         private void OnLoopEnded(DayLoopEndContext context)
@@ -75,6 +100,17 @@ namespace SpringJam2026.Audio
         private void PlayNightOutro()
         {
             audioService.PlayNightOutro();
+        }
+        
+        private IEnumerator StartMusicAfterIntro()
+        {
+            yield return new WaitForSeconds(INTRO_DURATION);
+
+            if (audioService != null)
+            {
+                audioService.StartMusic();
+                musicStarted = true;
+            }
         }
     }   
 }

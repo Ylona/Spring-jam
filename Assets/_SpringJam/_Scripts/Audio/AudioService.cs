@@ -19,6 +19,7 @@ namespace SpringJam2026.Audio
         
         private int forestZoneCount = 0;
         private const string FOREST_ID = "forest-ambience";
+        private bool isMusicPlaying;
 
         public void Initialize()
         {
@@ -128,14 +129,18 @@ namespace SpringJam2026.Audio
 
         public void StartMusic()
         {
-            controller.PlayLoop("forest-ambience", library.forestAmbience);
+            if (isMusicPlaying) return;
+
             controller.PlayLoop("music", library.zoneMusicSwitch);
+            isMusicPlaying = true;
         }
 
         public void StopMusic()
         {
-            controller.StopLoop("forest-ambience");
+            if (!isMusicPlaying) return;
+
             controller.StopLoop("music");
+            isMusicPlaying = false;
         }
         
         public void PlayPlayerFootstepGrass(Vector3? position = null)
@@ -225,6 +230,11 @@ namespace SpringJam2026.Audio
             {
                 controller.PlayOneShot(clip);
             }
+        }
+        
+        public void SetMusicZone(int value)
+        {
+            controller.SetParameter("music", "Zone Switch", value);
         }
         
         #endregion

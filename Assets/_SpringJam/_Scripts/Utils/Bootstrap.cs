@@ -51,9 +51,6 @@ namespace SpringJam2026.Utils
         private void InitializeSystems()
         {
             ServiceLocator.DebugDumpServices();
-            
-            // Not the best place to put this but just for testing
-            // ServiceLocator.Get<AudioService>()?.StartMusic();
         }
     }
 }
