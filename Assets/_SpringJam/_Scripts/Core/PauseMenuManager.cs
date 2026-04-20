@@ -1,3 +1,4 @@
+using System.Collections;
 using SpringJam.Dialogue;
 using SpringJam2026.Audio;
 using UnityEngine;
@@ -87,15 +88,38 @@ namespace SpringJam2026.Core
             };
 
             restartButton.RegisterCallback<MouseEnterEvent>(_ => PlayHover());
+            
+            playerMap.Disable();
+            uiMap.Disable();
         }
 
         public void Bind()
         {
+            playerMap.Enable();
+            uiMap.Enable();
+            
             playerPauseAction.performed += OnPausePressed;
             uiPauseAction.performed += OnPausePressed;
 
             playerPauseAction.Enable();
             uiPauseAction.Enable();
+        }
+        
+        private IEnumerator Start()
+        {
+            yield return null;
+            
+            playerMap.Enable();
+            uiMap.Enable();
+            playerPauseAction.Enable();
+            uiPauseAction.Enable();
+            
+            if (audioService != null)
+            {
+                float volume = audioService.GetMasterVolume();
+                volumeSlider.SetValueWithoutNotify(volume);
+                muteToggle.SetValueWithoutNotify(volume <= 0f);   
+            }
         }
 
         private void OnDestroy()

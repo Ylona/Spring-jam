@@ -46,8 +46,12 @@ namespace SpringJam2026.Core
             playButton.clicked += OnPlayClicked;
             
             playButton.RegisterCallback<MouseEnterEvent>(_ => audioService.PlayUIHover());
-            
-            audioService.StartMenuMusic();
+        }
+
+        private void Start()
+        {
+            if (audioService != null)
+                audioService.StartMenuMusic();
         }
         
         private void OnDestroy()
