@@ -31,6 +31,16 @@ namespace SpringJam2026.Audio
         {
             if (masterBusInitialized)
                 return;
+            
+            StartCoroutine(InitializeFMOD());
+        }
+        
+        private IEnumerator InitializeFMOD()
+        {
+            RuntimeManager.LoadBank("Master");
+            RuntimeManager.LoadBank("Master.strings");
+
+            yield return null;
 
             masterBus = RuntimeManager.GetBus("bus:/");
             masterBusInitialized = true;
